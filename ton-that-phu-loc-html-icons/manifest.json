@@ -1,10 +1,20 @@
 {
-  "name": "Gia phả dòng họ Tôn Thất - Chi nhánh Phú Lộc",
-  "short_name": "Tôn Thất Phú Lộc",
+  "name": "Gia phả họ Tôn Thất",
+  "short_name": "Gia phả Tôn Thất",
+  "description": "Gia phả dòng họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, nguyên quán Phú Lộc, Thừa Thiên Huế",
+  "lang": "vi",
+  "start_url": "../",
+  "scope": "../",
+  "display": "standalone",
+  "background_color": "#FBF8F0",
+  "theme_color": "#7d1014",
   "icons": [
-    {"src":"icon-192x192.png","sizes":"192x192","type":"image/png"},
-    {"src":"icon-512x512.png","sizes":"512x512","type":"image/png"}
-  ],
-  "start_url": ".",
-  "display": "standalone"
+    { "src": "icon-72x72.png",   "sizes": "72x72",   "type": "image/png" },
+    { "src": "icon-96x96.png",   "sizes": "96x96",   "type": "image/png" },
+    { "src": "icon-144x144.png", "sizes": "144x144", "type": "image/png" },
+    { "src": "icon-152x152.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "icon-180x180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
 }
