@@ -81,7 +81,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .bar{position:sticky;top:0;z-index:20;background:rgba(251,248,240,.96);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(138,94,14,.15)}
 .bar-in{max-width:960px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:8px 14px}
 .tabs{display:flex;gap:4px;margin-right:6px}
-.tab{border:0;background:none;padding:10px 12px 8px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:3px solid transparent}
+.tab{border:0;background:none;padding:10px 12px 8px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:3px solid transparent;white-space:nowrap}
 .tab:hover{color:var(--ink)}
 .tab[aria-selected=true]{color:var(--son);border-bottom-color:var(--son);font-weight:600}
 .search{flex:1 1 200px;min-width:160px;padding:8px 12px 8px 36px;border:1px solid var(--line);border-radius:999px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236F6556' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 12px center}
@@ -216,6 +216,8 @@ dd{margin:0}
 .foot p{margin:0 12px}
 
 @media (max-width:560px){
+  .tabs{margin-right:0;width:100%;justify-content:space-between}
+  .tab{padding:10px 6px 8px;font-size:14px}
   .fgrid{grid-template-columns:1fr}
   dl{grid-template-columns:96px 1fr}
   .tree ul{margin-left:16px}
@@ -226,6 +228,37 @@ dd{margin:0}
   .tree .card{width:max-content;max-width:none}
 }
 @media (prefers-reduced-motion:no-preference){.card,.btn,.gio .row{transition:border-color .15s,box-shadow .15s,background .15s}}
+/* ---------- Tra quan hệ ---------- */
+.kin{max-width:760px;margin:0 auto}
+.kin h2{font:700 20px var(--serif);color:var(--son-dam);margin:0 0 4px}
+.kin .lead{margin:0 0 16px;color:var(--muted)}
+.kin-pick{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
+.kin-pick label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted)}
+.kin-pick .swap{align-self:end;margin-bottom:2px}
+.kin-pick .pk{width:100%}
+.kin-pick .pk-in{width:100%;padding:9px 34px 9px 11px;border:1px solid #d7c9a6;border-radius:8px;background:#fff;color:var(--ink);font-size:15px}
+.kin-pick .pk-in:focus{border-color:var(--lam);outline:none;box-shadow:0 0 0 2px rgba(31,78,140,.18)}
+@media (max-width:620px){.kin-pick{grid-template-columns:1fr}.kin-pick .swap{justify-self:start}}
+.kin-card{margin-top:18px;background:#fff;border:1px solid var(--line);border-top:4px solid var(--son);border-radius:12px;padding:16px 18px;box-shadow:0 2px 8px rgba(80,55,10,.08)}
+.kin-title{font:700 22px/1.3 var(--serif);color:var(--son-dam);margin:0}
+.kin-sub{color:var(--muted);font-size:14px;margin-top:2px}
+.kin-line{margin-top:12px;padding:10px 12px;background:#fff8e3;border-left:4px solid var(--hoang);border-radius:6px;line-height:1.5}
+.kin-line b{font-family:var(--serif);font-size:17px;color:var(--son)}
+.kin-why{margin-top:14px;font-size:14px;color:var(--ink)}
+.kin-why h4{margin:0 0 4px;font-size:13px;color:var(--dong);font-weight:500}
+.kin-chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 8px}
+.kin-chain .n{padding:3px 10px;border:1px solid #d7c9a6;border-radius:999px;background:#fffdf5;font-size:13px}
+.kin-chain .n.top{background:#fff0c2;border-color:var(--hoang);font-weight:600}
+.kin-chain .ar{color:var(--dong)}
+.kin-note{margin-top:12px;font-size:12.5px;color:var(--muted)}
+.kin-tree{overflow-x:auto;background:linear-gradient(180deg,#fffdf5,#fbf4de);border:1px solid var(--line);border-radius:10px;padding:8px 4px}
+.kin-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;font-size:12.5px;color:var(--muted)}
+.kin-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px;border:2px solid}
+.kin-legend .la{background:#FFE9E6;border-color:var(--son)}
+.kin-legend .lb{background:#E4EEF9;border-color:var(--lam)}
+.kin-legend .ll{background:#FFF1C2;border-color:#D9A93F}
+.kin-legend i.ar{border:0;width:auto;height:auto;color:var(--son);font-style:normal;font-size:11px;margin-right:3px}
+
 /* ---------- Người đóng góp ---------- */
 .whobox{background:#fff8e3;border-left:4px solid var(--hoang);padding:10px 14px;border-radius:6px;font-size:14px;margin:10px 0}
 .mine{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px}
@@ -339,6 +372,7 @@ body.poster-open .toast{z-index:130}
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" aria-selected="true" data-tab="tree">Phả hệ</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="gio">Ngày giỗ</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="kin">Tra quan hệ</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="goc">Nguồn gốc</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="dg" id="tabDg" hidden>Đóng góp<span class="badge" id="dgBadge"></span></button>
   </div>
@@ -381,6 +415,9 @@ body.poster-open .toast{z-index:130}
     </label>
     <label>In từ
       <select id="pFrom"><option value="1">Tất cả các đời</option></select>
+    </label>
+    <label>Kiểu nối
+      <select id="pLink"><option value="branch" selected>Cành cây minh họa</option><option value="line">Đường nối đỏ</option></select>
     </label>
     <label>Nền
       <select id="pBg"><option value="img">Nền tranh (ảnh)</option><option value="draw">Nền vẽ đơn giản</option></select>
@@ -763,10 +800,11 @@ function render(){
     $('#view').innerHTML = `<div class="notice"><b>Chưa kết nối Supabase.</b><br>Mở file <code>index.html</code>, điền <code>SUPABASE_URL</code> và <code>SUPABASE_ANON_KEY</code> ở đầu phần script.</div>`;
     return;
   }
-  const isGoc = tab==='goc', isDg = tab==='dg';
-  ['#q','#btnExpand','#btnCollapse','#btnPrint'].forEach(s=>{ $(s).style.display = (isGoc||isDg) ? 'none' : ''; });
-  $('#view').innerHTML = tab==='tree' ? renderTree() : isGoc ? renderGoc() : isDg ? renderContribs() : renderGio();
+  const isGoc = tab==='goc', isDg = tab==='dg', isKin = tab==='kin';
+  ['#q','#btnExpand','#btnCollapse','#btnPrint'].forEach(s=>{ $(s).style.display = (isGoc||isDg||isKin) ? 'none' : ''; });
+  $('#view').innerHTML = tab==='tree' ? renderTree() : isGoc ? renderGoc() : isDg ? renderContribs() : isKin ? renderKin() : renderGio();
   if(tab==='tree') initTreeScroll();
+  if(isKin) bindKin();
   const gens = persons.length ? maxDepth() : 0;
   const go=genOff();
   $('#stats').textContent = persons.length ? `${persons.length} thành viên, từ đời ${1+go} đến đời ${gens+go}` : '';
@@ -850,7 +888,7 @@ function showDetail(id){
     ${p.alias?`<div class="sub">${esc(p.alias)}</div>`:''}
     <dl>${rows.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>
     ${sp.length?`<div class="sp-sec"><div class="sp-h">${p.gender==='M'?'Vợ':'Chồng'}</div>${sp.map(s=>`<div class="sp-row"><a class="sp-name" href="#" data-sp="${s.id}">${esc(s.full_name)}</a><span class="sub">${esc(pYears(s))}</span>${isAdmin?`<span class="sp-act"><button class="btn small" data-spe="${s.id}">Sửa</button><button class="btn small danger" data-spd="${s.id}">Xóa</button></span>`:''}</div>`).join('')}</div>`:''}
-    <div class="actions">${isAdmin?`
+    <div class="actions"><button class="btn small" id="aKin">Tra quan hệ</button>${isAdmin?`
       <button class="btn small" id="aEdit">Sửa</button>
       <button class="btn small" id="aChild">Thêm con</button>
       ${p.spouse_of?'':`<button class="btn small" id="aSpouse">Thêm ${p.gender==='M'?'vợ':'chồng'}</button>`}
@@ -860,6 +898,7 @@ function showDetail(id){
       ${p.spouse_of?'':`<button class="btn small" id="cSpouse">Đề xuất thêm ${p.gender==='M'?'vợ':'chồng'}</button>`}`}
     </div>`);
   document.querySelectorAll('#modal [data-sp]').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); showDetail(a.dataset.sp); }));
+  $('#aKin').onclick=()=>{ kinA=p.id; kinB=null; closeModal(); tab='kin'; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab==='kin')); render(); window.scrollTo(0,0); };
   if(isAdmin){
     document.querySelectorAll('#modal [data-spe]').forEach(b=>b.addEventListener('click',()=>editSpouse(byId.get(b.dataset.spe), p.id)));
     document.querySelectorAll('#modal [data-spd]').forEach(b=>b.addEventListener('click',()=>delSpouse(byId.get(b.dataset.spd), p.id)));
@@ -1019,6 +1058,298 @@ function enhancePicker(sel, placeholder){
   sync();
 }
 
+/* ---------- Tra quan hệ họ hàng giữa hai người ---------- */
+let kinA=null, kinB=null;
+const kSex=p=>p.gender==='F'?'F':'M';
+const kName=id=>byId.get(id)?.full_name||'?';
+function ancUp(id){   // đi ngược lên cha mẹ (cha trước, mẹ sau), trả về mọi tổ tiên kèm khoảng cách và đường đi ngắn nhất
+  const m=new Map([[id,{d:0,path:[id]}]]); let front=[id];
+  while(front.length){
+    const next=[];
+    for(const x of front){ const p=byId.get(x), inf=m.get(x); if(!p) continue;
+      [p.father_id,p.mother_id].forEach(par=>{ if(par && byId.has(par) && !m.has(par)){ m.set(par,{d:inf.d+1,path:[...inf.path,par]}); next.push(par); } });
+    }
+    front=next;
+  }
+  return m;
+}
+function kYear(p){ const s=p.birth_date?+p.birth_date.slice(0,4):(p.birth_year||0); return s||0; }
+function kCmp(x,y,preferSort){   // -1: x lớn hơn (sinh trước / thứ bậc cao hơn), 1: y lớn hơn, 0: chưa rõ
+  const byAge=()=>{ const a=kYear(x), b=kYear(y); if(a&&b&&a!==b) return a<b?-1:1; if(x.birth_date&&y.birth_date&&x.birth_date!==y.birth_date) return x.birth_date<y.birth_date?-1:1; return 0; };
+  const bySort=()=>{ if(x.sort_order>0&&y.sort_order>0&&x.sort_order!==y.sort_order) return x.sort_order<y.sort_order?-1:1; return 0; };
+  return preferSort ? (bySort()||byAge()) : (byAge()||bySort());
+}
+function bloodRel(A,B){
+  const mA=ancUp(A.id), mB=ancUp(B.id); let best=null;
+  for(const [id,ia] of mA){ const ib=mB.get(id); if(!ib) continue; const tot=ia.d+ib.d; if(!best||tot<best.tot) best={tot,id,a:ia.d,b:ib.d,pathA:ia.path,pathB:ib.path}; }
+  if(!best) return null;
+  best.commons=[...mA].filter(([id,ia])=>{ const ib=mB.get(id); return ib&&ia.d===best.a&&ib.d===best.b; }).map(([id])=>id);
+  best.lca=byId.get(best.id); return best;
+}
+const swapRel=r=>({...r,a:r.b,b:r.a,pathA:r.pathB,pathB:r.pathA});
+// X gọi Y là gì? (r: a = số đời từ X lên tổ chung, b = số đời từ Y lên tổ chung)
+function kCalls(X,Y,r){
+  const a=r.a, b=r.b, P=id=>byId.get(id), yM=kSex(Y)==='M';
+  if(a===0&&b===0) return 'chính người đó';
+  if(a===0){   // Y là con cháu của X
+    const g=b;
+    if(g===1) return yM?'con trai':'con gái';
+    if(g===2) return 'cháu '+(kSex(P(r.pathB[1]))==='M'?'nội':'ngoại')+(yM?' (trai)':' (gái)');
+    const c=P(r.pathB[b-1]), s=kSex(c)==='M'?'nội':'ngoại';
+    if(g===3) return 'chắt '+s; if(g===4) return 'chút '+s; if(g===5) return 'chít '+s;
+    return `cháu đời thứ ${g} (kém ${g} đời)`;
+  }
+  if(b===0){   // Y là tổ tiên của X
+    const g=a, side=kSex(P(r.pathA[1]))==='M'?'nội':'ngoại';
+    if(g===1) return yM?'cha (bố)':'mẹ';
+    if(g===2) return (yM?'ông ':'bà ')+side;
+    if(g===3) return 'cụ '+(yM?'ông ':'bà ')+side;
+    if(g===4) return 'kỵ '+(yM?'ông ':'bà ')+side;
+    return `tổ tiên (trên ${g} đời)`;
+  }
+  const hX=P(r.pathA[a-1]), hY=P(r.pathB[b-1]);
+  if(a===b){   // cùng đời: anh chị em hoặc anh chị em họ
+    const cmp=kCmp(hX,hY,a>1), cous=a>1?' họ':'';
+    if(cmp<0) return a===1?('em '+(yM?'trai':'gái')):('em'+cous);
+    if(cmp>0) return (yM?'anh':'chị')+cous;
+    return 'anh/chị/em'+cous+' (chưa rõ ai lớn hơn)';
+  }
+  if(a<b){     // Y thuộc đời dưới X
+    const g=b-a, k=a===1?'ruột':'họ';
+    if(g===1) return 'cháu '+k;
+    if(g===2) return `cháu ${k} (vai chắt)`;
+    if(g===3) return `cháu ${k} (vai chút)`;
+    return `cháu ${k} (kém ${g} đời)`;
+  }
+  // Y thuộc đời trên X
+  const g=a-b, Q=P(r.pathA[g]), qM=kSex(Q)==='M', k=b===1?'ruột':'họ';
+  const cmpY=kCmp(hY,P(r.pathA[a-1]),true);   // Y (nhánh Y) so với nhánh của X
+  let base;
+  if(qM) base = yM ? (cmpY<0?'bác':cmpY>0?'chú':'bác/chú') : 'cô';
+  else   base = yM ? 'cậu' : 'dì';
+  if(g===1) return `${base} ${k}`;
+  if(g===2) return `${yM?'ông':'bà'} ${base} (${k})`;
+  return `bề trên (vai ${g===3?'cụ':g===4?'kỵ':'tổ'}, hơn ${g} đời)`;
+}
+function kBloodTitle(r,A,B){
+  const a=r.a,b=r.b;
+  if(a===0||b===0) return 'Quan hệ trực hệ (ông bà, cha mẹ, con cháu)';
+  if(a===1&&b===1){
+    if(r.commons.length>=2) return 'Anh chị em ruột';
+    const par=byId.get(r.commons[0]);
+    const other=A.mother_id&&B.mother_id&&A.mother_id!==B.mother_id, otherF=A.father_id&&B.father_id&&A.father_id!==B.father_id;
+    if(kSex(par)==='M') return other?'Anh chị em cùng cha khác mẹ':'Anh chị em ruột (cùng cha)';
+    return otherF?'Anh chị em cùng mẹ khác cha':'Anh chị em ruột (cùng mẹ)';
+  }
+  if(a===b){
+    if(a===2){
+      const sa=kSex(byId.get(r.pathA[1])), sb=kSex(byId.get(r.pathB[1]));
+      const how = sa==='M'&&sb==='M' ? 'con chú con bác (cha của hai người là anh em trai)' : sa==='F'&&sb==='F' ? 'con dì con dì (mẹ của hai người là chị em gái)' : 'con cô con cậu (cha mẹ là anh em khác giới)';
+      return 'Anh chị em họ: '+how;
+    }
+    return a===3 ? 'Anh chị em họ (cùng cụ, cách 3 đời)' : `Anh chị em họ xa (cùng tổ đời thứ ${a})`;
+  }
+  const hi=Math.min(a,b), g=Math.abs(a-b);
+  return g===1 ? 'Chú, bác, cô, dì, cậu và cháu' : `Cách ${g} đời (vai ông bà và cháu)`;
+}
+function kChain(r){
+  const nm=(id,top)=>`<span class="n${top?' top':''}">${esc(kName(id))}</span>`;
+  const up=ids=>ids.map((id,i)=>nm(id,i===ids.length-1)).join('<span class="ar">→</span>');
+  const g=genOff(), dOf=id=>depthOf(id)+g;
+  return `<div class="kin-why"><h4>Cách xác định</h4>
+    <div>Tổ chung gần nhất: <b>${esc(kName(r.id))}</b> (đời ${dOf(r.id)})${r.commons.length>1?' và '+esc(r.commons.filter(x=>x!==r.id).map(kName).join(', ')):''}.</div>
+    <div class="kin-chain">${up(r.pathA)}</div>
+    <div class="kin-chain">${up(r.pathB)}</div></div>`;
+}
+// ---- quan hệ qua hôn nhân (dâu, rể, thông gia) ----
+function partnersOf(p){ if(p.spouse_of){ const h=byId.get(p.spouse_of); return h?[h]:[]; } return spouses.get(p.id)||[]; }
+function kDerived(A,Ap,B,r){   // A là vợ/chồng của Ap; r: quan hệ máu giữa Ap và B (a = đời của Ap, b = đời của B)
+  const a=r.a, b=r.b, g=b-a, aF=kSex(A)==='F', apM=kSex(Ap)==='M';
+  const apCallsB=kCalls(Ap,B,r), bCallsAp=kCalls(B,Ap,swapRel(r));
+  let aCallsB, bCallsA;
+  if(g===0){
+    const hAp=byId.get(r.pathA[a-1]) , hB=byId.get(r.pathB[b-1]), cmp=kCmp(hAp,hB,a>1), cous=a>1?' họ':'';
+    const bM=kSex(B)==='M';
+    if(cmp<0) bCallsA = aF?'chị dâu':'anh rể'; else if(cmp>0) bCallsA = aF?'em dâu':'em rể'; else bCallsA = aF?'chị/em dâu':'anh/em rể';
+    bCallsA+=cous;
+    if(aF){ aCallsB = cmp<0 ? 'em chồng' : cmp>0 ? (bM?'anh chồng':'chị chồng') : 'anh/chị/em chồng'; }
+    else  { aCallsB = cmp<0 ? 'em vợ'    : cmp>0 ? (bM?'anh vợ':'chị vợ')       : 'anh/chị/em vợ'; }
+    aCallsB+=cous;
+  } else if(g>0){
+    const w=bCallsAp.split(/[\s(]/)[0];
+    const map={bác:'bác gái',chú:'thím',cậu:'mợ',cô:'dượng',dì:'dượng',cha:'mẹ kế',mẹ:'cha kế'};
+    bCallsA = map[w] ? ((w==='bác'||w==='chú'||w==='cậu')&&!aF ? `chồng của ${bCallsAp}` : (w==='cô'||w==='dì')&&aF ? `vợ của ${bCallsAp}` : map[w]) : `${aF?'vợ':'chồng'} của ${bCallsAp}`;
+    aCallsB = apCallsB;
+  } else {
+    const isChild = (b===0&&a===1);
+    bCallsA = isChild ? (aF?'con dâu':'con rể') : (aF?'cháu dâu':'cháu rể');
+    if(isChild){ const bM=kSex(B)==='M'; aCallsB = (bM?'bố':'mẹ')+(aF?' chồng':' vợ'); }
+    else aCallsB = apCallsB;
+  }
+  return {aCallsB, bCallsA, apCallsB};
+}
+function marriageRel(A,B){
+  for(const Ap of partnersOf(A)){
+    if(Ap.id===B.id) continue;
+    const r=bloodRel(Ap,B); if(!r) continue;
+    const d=kDerived(A,Ap,B,r);
+    return {kind:'marry', aCallsB:d.aCallsB, bCallsA:d.bCallsA,
+      title:'Quan hệ qua hôn nhân (dâu, rể, thông gia)',
+      why:`${kName(A.id)} là ${kSex(A)==='F'?'vợ':'chồng'} của ${kName(Ap.id)}. ${kName(Ap.id)} gọi ${kName(B.id)} là ${d.apCallsB}, nên cách gọi của ${kName(A.id)} và ${kName(B.id)} suy ra từ đó.`, r, via:Ap, treeR:r, spL:A, spR:null};
+  }
+  for(const Bp of partnersOf(B)){
+    if(Bp.id===A.id) continue;
+    const r=bloodRel(Bp,A); if(!r) continue;
+    const d=kDerived(B,Bp,A,r);
+    return {kind:'marry', aCallsB:d.bCallsA, bCallsA:d.aCallsB,
+      title:'Quan hệ qua hôn nhân (dâu, rể, thông gia)',
+      why:`${kName(B.id)} là ${kSex(B)==='F'?'vợ':'chồng'} của ${kName(Bp.id)}. ${kName(Bp.id)} gọi ${kName(A.id)} là ${d.apCallsB}, nên cách gọi của hai người suy ra từ đó.`, r, via:Bp, treeR:swapRel(r), spL:null, spR:B};
+  }
+  for(const Ap of partnersOf(A)) for(const Bp of partnersOf(B)){
+    if(Ap.id===Bp.id) continue;
+    const r=bloodRel(Ap,Bp); if(!r) continue;
+    const aF=kSex(A)==='F', bF=kSex(B)==='F';
+    let t, aB, bA;
+    if(r.a===r.b && r.a<=2){
+      const cmp=kCmp(byId.get(r.pathA[r.a-1]),byId.get(r.pathB[r.b-1]),r.a>1), cous=r.a>1?' họ':'';
+      if(aF&&bF){ t='Chị em dâu'+cous+' (vợ của hai anh em)'; aB = cmp<0?'em dâu':cmp>0?'chị dâu':'chị/em dâu'; bA = cmp<0?'chị dâu':cmp>0?'em dâu':'chị/em dâu'; }
+      else if(!aF&&!bF){ t='Anh em rể'+cous+' / đồng hao (chồng của hai chị em)'; aB = cmp<0?'em rể':cmp>0?'anh rể':'anh/em rể'; bA = cmp<0?'anh rể':cmp>0?'em rể':'anh/em rể'; }
+      else { t='Thông gia (vợ/chồng của hai anh chị em)'; aB=bA='người thông gia'; }
+      return {kind:'marry', aCallsB:aB+cous, bCallsA:bA+cous, title:t, why:`${kName(A.id)} là ${aF?'vợ':'chồng'} của ${kName(Ap.id)}, ${kName(B.id)} là ${bF?'vợ':'chồng'} của ${kName(Bp.id)}; hai người ${kName(Ap.id)} và ${kName(Bp.id)} là ${kBloodTitle(r,Ap,Bp).toLowerCase()}.`, r, via:Ap, treeR:r, spL:A, spR:B};
+    }
+    return {kind:'marry', aCallsB:'người thông gia', bCallsA:'người thông gia', title:'Quan hệ thông gia', why:`${kName(A.id)} là ${aF?'vợ':'chồng'} của ${kName(Ap.id)}, ${kName(B.id)} là ${bF?'vợ':'chồng'} của ${kName(Bp.id)}; hai người này có quan hệ họ hàng với nhau.`, r, via:Ap, treeR:r, spL:A, spR:B};
+  }
+  return null;
+}
+function kinLookup(A,B){
+  if(!A||!B) return null;
+  if(A.id===B.id) return {kind:'self'};
+  if(A.spouse_of===B.id||B.spouse_of===A.id){ const bF=kSex(B)==='F', aF=kSex(A)==='F'; return {kind:'spouse', aCallsB:bF?'vợ':'chồng', bCallsA:aF?'vợ':'chồng', title:'Vợ chồng'}; }
+  const r=bloodRel(A,B);
+  if(r) return {kind:'blood', r, aCallsB:kCalls(A,B,r), bCallsA:kCalls(B,A,swapRel(r)), title:kBloodTitle(r,A,B)};
+  return marriageRel(A,B) || {kind:'none'};
+}
+
+// ---- Sơ đồ cây theo đời: người thứ nhất đi từ nhánh lên gốc chung gần nhất rồi xuống người thứ hai ----
+function kinTreeSVG(A,B,R){
+  const NW=172, NH=54, GY=56, PAD=14, LABW=70, FONT=PO_FONT;
+  const nodes=[], all=[];   // nodes: mọi ô vẽ; all: các ô tạo thành cây để vẽ cành
+  const gOf=id=>depthOf(id)+genOff();
+  const mkNode=(id,depth,cx,role,extra)=>{ const n={id,depth,cx,y:depth*(NH+GY),h:NH,kids:[],p:{id},role:role||new Set(),extra:extra||''}; nodes.push(n); return n; };
+  let rowDepthG={}, links=[];   // links: vợ chồng
+  if(R.kind==='spouse'){
+    const nA=mkNode(A.id,0,-(NW/2+34),new Set(['A'])), nB=mkNode(B.id,0,NW/2+34,new Set(['B']));
+    links.push([nA,nB]); rowDepthG[0]=gOf(A.id);
+  } else {
+    const r=R.kind==='blood'?R.r:R.treeR, a=r.a, b=r.b;
+    const lcaIds=r.commons&&r.commons.length>1?r.commons:[r.id];
+    const lca=mkNode(r.id,0,0,new Set(['LCA']),lcaIds.length>1?('& '+kName(lcaIds.find(x=>x!==r.id))):'');
+    all.push(lca); rowDepthG[0]=gOf(r.id);
+    const chainL=r.pathA.slice(0,a).reverse(), chainR=r.pathB.slice(0,b).reverse();
+    const both=chainL.length&&chainR.length, cxL=both?-(NW/2+30):0, cxR=both?(NW/2+30):0;
+    let prev=lca, endL=lca, endR=lca;
+    chainL.forEach((id,i)=>{ const n=mkNode(id,i+1,cxL); all.push(n); prev.kids.push(n); prev=n; rowDepthG[i+1]=gOf(id); endL=n; });
+    prev=lca;
+    chainR.forEach((id,i)=>{ const n=mkNode(id,i+1,cxR); all.push(n); prev.kids.push(n); prev=n; rowDepthG[i+1]=gOf(id); endR=n; });
+    const blood=R.kind==='blood';
+    if(blood){ endL.role.add('A'); endR.role.add('B'); }
+    else {
+      if(R.spL){ endL.role.add('end'); const s=mkNode(R.spL.id,endL.depth,endL.cx-(NW+36),new Set(['A'])); links.push([s,endL]); }
+      else endL.role.add('A');
+      if(R.spR){ endR.role.add('end'); const s=mkNode(R.spR.id,endR.depth,endR.cx+(NW+36),new Set(['B'])); links.push([endR,s]); }
+      else endR.role.add('B');
+    }
+  }
+  const maxD=Math.max(...nodes.map(n=>n.depth));
+  const rowY=[]; for(let d=0;d<=maxD+1;d++) rowY[d]=d*(NH+GY);
+  const minX=Math.min(...nodes.map(n=>n.cx-NW/2)), maxX=Math.max(...nodes.map(n=>n.cx+NW/2));
+  const ox=PAD+LABW-minX, vbW=(maxX-minX)+LABW+2*PAD, vbH=(maxD+1)*(NH+GY)-GY+2*PAD;
+  let s='';
+  // nhãn Đời n
+  for(let d=0;d<=maxD;d++){
+    const y=PAD+rowY[d]+NH/2-11;
+    s+=`<rect x="${PAD}" y="${y}" width="56" height="22" rx="4" fill="#FFF8DC" stroke="${PO_RED}" stroke-width="1.2"/><text x="${PAD+28}" y="${y+15.5}" text-anchor="middle" font-size="12.5" font-weight="700" fill="${PO_RED}">Đời ${rowDepthG[d]}</text>`;
+  }
+  // cành cây nối các đời
+  const g0=`<g transform="translate(${ox} ${PAD})">`;
+  s+=g0;
+  if(all.length>1) s+=pBranchSVG(all,rowY,0,0);
+  // mũi tên chiều đi: bên người thứ nhất đi LÊN, bên người thứ hai đi XUỐNG
+  const arrow=(px,py,qx,qy,dir)=>{ const mx=px+(qx-px)*0.3, my=py+(qy-py)*0.3, t=dir==='up'?`${mx},${my-7} ${mx-6},${my+4} ${mx+6},${my+4}`:`${mx},${my+7} ${mx-6},${my-4} ${mx+6},${my-4}`; return `<polygon points="${t}" fill="${PO_RED}" stroke="#fff" stroke-width="1.2"/>`; };
+  const lcaN=all[0];
+  if(lcaN){
+    const walk=(n,dir)=>n.kids.forEach(k=>{ s+=arrow(n.cx,n.y+n.h,k.cx,k.y,dir); walk(k,dir); });
+    lcaN.kids.forEach((k,i)=>{ const dir=(k.cx<0||(lcaN.kids.length===1&&nodes.find(x=>x.role.has('A')&&x.depth>0&&x.cx===k.cx)))?'up':'down'; s+=arrow(lcaN.cx,lcaN.y+lcaN.h,k.cx,k.y,dir); walk(k,dir); });
+  }
+  // dây hôn nhân (hai vòng lồng nhau)
+  links.forEach(([p,q])=>{ const y=p.y+NH/2, x1=Math.min(p.cx,q.cx)+NW/2, x2=Math.max(p.cx,q.cx)-NW/2, mx=(x1+x2)/2;
+    s+=`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#C88A1A" stroke-width="2" stroke-dasharray="4 3"/><circle cx="${mx-4}" cy="${y}" r="6" fill="#fff" stroke="#C88A1A" stroke-width="1.8"/><circle cx="${mx+4}" cy="${y}" r="6" fill="#fff" stroke="#C88A1A" stroke-width="1.8"/>`; });
+  // các ô tên
+  const fit=(t,bold,max)=>{ let sz=13.5; while(pTW(t,bold,sz)>max && sz>9.5) sz-=0.5; if(pTW(t,bold,sz)>max){ while(t.length>4 && pTW(t+'…',bold,sz)>max) t=t.slice(0,-1); t+='…'; } return [t,sz]; };
+  nodes.forEach(n=>{
+    const P=byId.get(n.id), isA=n.role.has('A'), isB=n.role.has('B'), isL=n.role.has('LCA');
+    const fill=isA?'#FFE9E6':isB?'#E4EEF9':isL?'#FFF1C2':'#FFFFFF';
+    const stroke=isA?PO_RED:isB?'#1F4E8C':isL?'#D9A93F':(kSex(P)==='F'?'#6A3F8F':'#1F4E8C');
+    const sw=(isA||isB||isL)?2.4:1.3, x=n.cx-NW/2, y=n.y;
+    let cap='';
+    if(isA&&isB) cap='Người thứ nhất';
+    if(isA) cap = isL ? 'Người thứ nhất, cũng là gốc chung' : 'Người thứ nhất';
+    else if(isB) cap = isL ? 'Người thứ hai, cũng là gốc chung' : 'Người thứ hai';
+    else if(isL) cap='Gốc chung gần nhất';
+    else if(n.role.has('end')) cap=(kSex(P)==='M'?'chồng':'vợ')+' của '+(n.cx<=0&&links.some(l=>l[1]===n)?'người thứ nhất':'người thứ hai');
+    const yr = P.birth_year?`(${P.birth_year})`:'';
+    const sub = cap || yr;
+    const [nm,sz]=fit(P.full_name,true,NW-16);
+    s+=`<g><rect x="${x}" y="${y}" width="${NW}" height="${NH}" rx="9" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+    s+=`<text x="${n.cx}" y="${y+(sub||n.extra?21:NH/2+5)}" text-anchor="middle" font-size="${sz}" font-weight="700" fill="#2A0F08">${esc(nm)}</text>`;
+    if(n.extra){ const [e2,sz2]=fit(n.extra,false,NW-16); s+=`<text x="${n.cx}" y="${y+36}" text-anchor="middle" font-size="${Math.min(sz2,12)}" fill="#4A1D0F">${esc(e2)}</text>`; }
+    if(sub) s+=`<text x="${n.cx}" y="${y+(n.extra?48:38)}" text-anchor="middle" font-size="11" ${cap?`font-weight="700" fill="${isA?PO_RED:isB?'#1F4E8C':'#8A5E0E'}"`:'fill="#6F6556"'}>${esc(sub)}</text>`;
+    s+='</g>';
+  });
+  s+='</g>';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${vbW.toFixed(0)} ${vbH.toFixed(0)}" font-family='${FONT}' style="display:block;margin:0 auto;width:100%;min-width:${Math.min(Math.round(vbW),560)}px;max-width:${Math.round(vbW*1.15)}px;height:auto" role="img" aria-label="Sơ đồ cây theo đời từ người thứ nhất lên tổ chung rồi xuống người thứ hai">${s}</svg>`;
+}
+function kinResultHTML(A,B){
+  const R=kinLookup(A,B); if(!R) return '<div class="empty">Hãy chọn hai người để tra quan hệ.</div>';
+  const an=esc(kName(A.id)), bn=esc(kName(B.id));
+  if(R.kind==='self') return `<div class="kin-card"><p class="kin-title">Đây là cùng một người</p><p class="kin-sub">Hãy chọn hai người khác nhau.</p></div>`;
+  if(R.kind==='none') return `<div class="kin-card"><p class="kin-title">Chưa tìm thấy quan hệ trong gia phả</p><p class="kin-sub">${an} và ${bn} chưa nối được với nhau qua cha mẹ hoặc hôn nhân đã nhập. Có thể còn thiếu các đời trên chung. Bạn có thể bổ sung bằng nút Đóng góp thông tin.</p></div>`;
+  let why='';
+  const legend=`<div class="kin-legend"><span><i class="la"></i>Người thứ nhất</span><span><i class="lb"></i>Người thứ hai</span>${R.kind==='spouse'?'':'<span><i class="ll"></i>Gốc chung gần nhất</span><span><i class="ar">▲</i>đi lên</span><span><i class="ar">▼</i>đi xuống</span>'}</div>`;
+  const tree=`<div class="kin-why"><h4>Sơ đồ cây theo đời</h4><div class="kin-tree">${kinTreeSVG(A,B,R)}</div>${legend}</div>`;
+  if(R.kind==='blood'){
+    const lc=R.r.commons.length>1 ? esc(R.r.commons.map(kName).join(' và ')) : esc(kName(R.r.id));
+    why=tree+`<div class="kin-why"><div>Gốc chung gần nhất: <b>${lc}</b> (đời ${depthOf(R.r.id)+genOff()}). ${an} cách gốc ${R.r.a} đời, ${bn} cách gốc ${R.r.b} đời.</div></div>`;
+  }
+  else if(R.kind==='marry') why=tree+`<div class="kin-why"><div>${esc(R.why)}</div></div>`;
+  else if(R.kind==='spouse') why=tree;
+  const note = R.kind==='blood' && R.r.a===R.r.b && R.r.a>1 ? 'Anh chị em họ xét thứ bậc theo cha mẹ: con của người anh (chị) luôn là anh (chị), dù có thể sinh sau.' : (R.aCallsB.includes('chưa rõ')||R.bCallsA.includes('chưa rõ')) ? 'Chưa đủ năm sinh hoặc thứ tự anh chị em để biết ai lớn hơn. Hãy bổ sung thông tin.' : '';
+  return `<div class="kin-card"><p class="kin-title">${esc(R.title)}</p>
+    <div class="kin-line"><b>${an}</b> gọi <b>${bn}</b> là: <b>${esc(R.aCallsB)}</b></div>
+    <div class="kin-line"><b>${bn}</b> gọi <b>${an}</b> là: <b>${esc(R.bCallsA)}</b></div>
+    ${why}
+    ${note?`<div class="kin-note">${esc(note)}</div>`:''}
+    <div class="kin-note">Cách xưng hô có thể khác nhau tùy vùng miền và từng gia đình, mục này theo cách gọi phổ biến.</div></div>`;
+}
+function renderKin(){
+  if(!persons.length) return '<div class="empty">Chưa có dữ liệu.</div>';
+  return `<div class="kin"><h2>Tra quan hệ họ hàng</h2>
+    <p class="lead">Chọn hai người trong gia phả để biết hai người gọi nhau là gì.</p>
+    <div class="kin-pick">
+      <label>Người thứ nhất<select id="kinA">${opts(()=>true,kinA)}</select></label>
+      <button type="button" class="btn small swap" id="kinSwap" title="Đổi chỗ hai người">⇄ Đổi</button>
+      <label>Người thứ hai<select id="kinB">${opts(()=>true,kinB)}</select></label>
+    </div>
+    <div id="kinRes"></div></div>`;
+}
+function bindKin(){
+  const sa=$('#kinA'), sb=$('#kinB'); if(!sa||!sb) return;
+  const show=()=>{ kinA=sa.value||null; kinB=sb.value||null; $('#kinRes').innerHTML = (kinA&&kinB) ? kinResultHTML(byId.get(kinA),byId.get(kinB)) : '<div class="empty" style="padding:28px 8px">Chọn người thứ nhất và người thứ hai.</div>'; };
+  enhancePicker(sa,'Gõ tên người thứ nhất…'); enhancePicker(sb,'Gõ tên người thứ hai…');
+  sa.addEventListener('change',show); sb.addEventListener('change',show);
+  $('#kinSwap').onclick=()=>{ const t=kinA; kinA=kinB; kinB=t; render(); };
+  show();
+}
 function sortOpts(cur){   // danh sách chọn số thứ tự thay cho ô gõ
   const c=Math.max(0,parseInt(cur,10)||0), max=Math.max(20,c);
   let s=`<option value="0" ${c===0?'selected':''}>Chưa xếp thứ tự</option>`;
@@ -1383,7 +1714,7 @@ function pPoster_bg(W,H,G){
 }
 
 const PO_RED='#C8161D';
-function pConnSVG(all,rowY,x0,y0){
+function pConnLines(all,rowY,x0,y0){
   let lines='';
   all.forEach(n=>{
     if(!n.kids.length) return;
@@ -1395,6 +1726,53 @@ function pConnSVG(all,rowY,x0,y0){
   });
   return `<g fill="none" stroke="${PO_RED}" stroke-width="1.6">${lines}</g>`;
 }
+
+// ---- Kiểu "cành cây": thân và cành thon dần, có lá và hoa, thay cho đường nối đỏ ----
+const BARK='#6b4222', BARK_DK='#4a2a12', LEAF='#5f9a45', LEAF_DK='#3f7a31';
+function pHash(s){ let x=2166136261; for(const c of String(s)){ x^=c.charCodeAt(0); x=Math.imul(x,16777619); } return ((x>>>0)%10000)/10000; }
+function pLeaf(x,y,ang,sz){
+  return `<path transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${ang.toFixed(0)}) scale(${sz.toFixed(2)})" d="M0 0C3 -5 11 -5.5 15 0C11 5.5 3 5 0 0Z" fill="${LEAF}" stroke="${LEAF_DK}" stroke-width=".7"/><path transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${ang.toFixed(0)}) scale(${sz.toFixed(2)})" d="M1 0H13" stroke="${LEAF_DK}" stroke-width=".5" opacity=".6"/>`;
+}
+function pBlos(x,y,r){
+  let s=''; for(let i=0;i<5;i++){ const a=i*Math.PI*2/5-Math.PI/2; s+=`<circle cx="${(x+Math.cos(a)*r*.62).toFixed(1)}" cy="${(y+Math.sin(a)*r*.62).toFixed(1)}" r="${(r*.5).toFixed(1)}" fill="#FBB9CE" stroke="#DD6E8E" stroke-width=".6"/>`; }
+  return s+`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r*.26).toFixed(1)}" fill="#F8D24C" stroke="#C88A1A" stroke-width=".5"/>`;
+}
+function pBranchSVG(all,rowY,x0,y0){
+  const cnt=n=>n.kids.reduce((a,k)=>a+1+cnt(k),0);
+  all.forEach(n=>{ n.dc=cnt(n); });
+  let wood='', deco='', knots='';
+  all.forEach(n=>{
+    if(!n.kids.length) return;
+    const px=x0+n.cx, py=y0+n.y+n.h-1, ky=y0+rowY[n.depth+1], dy=ky-py;
+    const w0=Math.min(10,3.2+1.0*Math.sqrt(n.dc));
+    knots+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${(w0*0.9).toFixed(1)}" fill="${BARK}" stroke="${BARK_DK}" stroke-width=".8"/>`;
+    n.kids.forEach((k,i)=>{
+      const kx=x0+k.cx, dx=kx-px, r=pHash(k.p.id);
+      const w1=Math.min(6.5,2.4+0.7*Math.sqrt(k.dc||0)), wob=(r-.5)*10;
+      const P=[[px,py],[px+dx*0.38+wob,py+dy*0.36],[kx-dx*0.05-wob*0.4,ky-dy*0.42],[kx,ky+1]];
+      const N=22, L=[], R=[], pts=[];
+      for(let j=0;j<=N;j++){
+        const t=j/N, u=1-t;
+        const x=u*u*u*P[0][0]+3*u*u*t*P[1][0]+3*u*t*t*P[2][0]+t*t*t*P[3][0];
+        const y=u*u*u*P[0][1]+3*u*u*t*P[1][1]+3*u*t*t*P[2][1]+t*t*t*P[3][1];
+        const tx=3*u*u*(P[1][0]-P[0][0])+6*u*t*(P[2][0]-P[1][0])+3*t*t*(P[3][0]-P[2][0]);
+        const ty=3*u*u*(P[1][1]-P[0][1])+6*u*t*(P[2][1]-P[1][1])+3*t*t*(P[3][1]-P[2][1]);
+        const l=Math.hypot(tx,ty)||1, w=(w0+(w1-w0)*Math.pow(t,0.75))/2;
+        L.push([x-ty/l*w,y+tx/l*w]); R.push([x+ty/l*w,y-tx/l*w]); pts.push({x,y,ang:Math.atan2(ty,tx)*180/Math.PI});
+      }
+      const poly='M'+L.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')+'L'+R.reverse().map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')+'Z';
+      wood+=`<path d="${poly}"/>`;
+      // lá dọc cành (so le hai bên) và hoa
+      const s1=(i%2?1:-1), A=pts[Math.round(N*0.42)], B=pts[Math.round(N*0.68)];
+      deco+=pLeaf(A.x,A.y,A.ang+s1*55,1.05)+pLeaf(B.x,B.y,B.ang-s1*50,0.95);
+      if(pHash(k.p.id+'b')>0.4){ const C=pts[Math.round(N*0.55)]; deco+=pBlos(C.x+s1*3.5,C.y,5); }
+      // đôi lá nhỏ ở đầu cành, ngay trên ô tên
+      deco+=pLeaf(kx-1,ky-1,-155,0.9)+pLeaf(kx+1,ky-1,-25,0.9);
+    });
+  });
+  return `<g fill="${BARK}" stroke="${BARK_DK}" stroke-width=".7" stroke-linejoin="round">${wood}</g>${knots}<g>${deco}</g>`;
+}
+function pConnSVG(all,rowY,x0,y0,style){ return style==='branch' ? pBranchSVG(all,rowY,x0,y0) : pConnLines(all,rowY,x0,y0); }
 function pBoxSVG(all,x0,y0){
   let s='';
   all.forEach(n=>{
@@ -1510,7 +1888,7 @@ function posterSVG(opts){
     o+=`<text x="${Wd/2}" y="${(Hd*0.236).toFixed(1)}" text-anchor="middle" font-size="${lsz}" font-weight="700" fill="#7A1F1F">${esc(lin)}</text>`;
     // cây phả hệ (gồm nhãn Đời n) thu phóng vào khung
     o+=`<g transform="translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${sc.toFixed(4)})">`;
-    o+=pLabelSVG(rowH,rowY,-LABW0+6,0,off+genOff())+pConnSVG(all,rowY,0,0)+`<g filter="url(#bsh)">${pBoxSVG(all,0,0)}</g></g>`;
+    o+=pLabelSVG(rowH,rowY,-LABW0+6,0,off+genOff())+pConnSVG(all,rowY,0,0,opts.link)+`<g filter="url(#bsh)">${pBoxSVG(all,0,0)}</g></g>`;
     const defsI=`<defs>${pat.defs}<linearGradient id="bgold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCE7A4"/><stop offset=".5" stop-color="#F3CF72"/><stop offset="1" stop-color="#D9A93F"/></linearGradient><marker id="parr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="${PO_RED}"/></marker><filter id="bsh" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.6" flood-color="#5A3A10" flood-opacity=".35"/></filter></defs>`;
     if(art) o+=bannerSVG(Wd,Hd,isAdmin);
     const svgI=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Wd} ${Hd}" font-family='${PO_FONT}'>${defsI}${o}</svg>`;
@@ -1552,7 +1930,7 @@ function posterSVG(opts){
 
   s+=pLabelSVG(rowH,rowY,SIDE-6,y0,off+genOff());
 
-  s+=pConnSVG(all,rowY,x0,y0);
+  s+=pConnSVG(all,rowY,x0,y0,opts.link);
   s+=pBoxSVG(all,x0,y0);
 
   // chân bảng
@@ -1670,7 +2048,7 @@ async function ensureBg(){
 async function renderPoster(){
   const useImg = $('#pBg').value==='img';
   const avail = useImg ? await ensureBg() : null;
-  const r = posterSVG({text:$('#pText').value, ori:$('#pOri').value, img:avail, from:+$('#pFrom').value||1});
+  const r = posterSVG({text:$('#pText').value, ori:$('#pOri').value, img:avail, from:+$('#pFrom').value||1, link:$('#pLink').value});
   if(!r){ $('#posterSvgWrap').innerHTML='<div class="empty" style="padding:60px">Chưa có dữ liệu để in.</div>'; return; }
   lastPoster=r;
   $('#posterSvgWrap').innerHTML=r.svg;
@@ -1695,7 +2073,9 @@ function fillFrom(){
 }
 function openPoster(){ document.body.classList.add('poster-open'); $('#poster').hidden=false; fillFrom(); renderPoster(); }
 function closePoster(){ $('#poster').hidden=true; document.body.classList.remove('poster-open'); }
-['pSize','pOri','pText','pBg','pFrom'].forEach(id=>$('#'+id).addEventListener('change',renderPoster));
+try{ const l=localStorage.getItem('gp_poster_link'); if(l) $('#pLink').value=l; }catch(e){}
+$('#pLink').addEventListener('change',()=>{ try{ localStorage.setItem('gp_poster_link',$('#pLink').value); }catch(e){} });
+['pSize','pOri','pText','pBg','pFrom','pLink'].forEach(id=>$('#'+id).addEventListener('change',renderPoster));
 $('#pPrint').onclick=()=>window.print();
 $('#pEditText').onclick=()=>openBannerEditor('main');
 $('#pClose').onclick=closePoster;
@@ -2046,7 +2426,7 @@ async function refresh(){ try{ await loadAll(); }catch(e){ $('#view').innerHTML=
   // khôi phục màn hình lần trước
   const ui=loadUI();
   if(ui){
-    if(['tree','gio','goc','dg'].includes(ui.tab)){ tab=ui.tab; if(ui.tab==='dg') pendingTab='dg'; }
+    if(['tree','gio','goc','dg','kin'].includes(ui.tab)){ tab=ui.tab; if(ui.tab==='dg') pendingTab='dg'; }
     query=ui.q||''; $('#q').value=query;
     dgFilter=['pending','approved','rejected'].includes(ui.dg)?ui.dg:'pending';
     if(Array.isArray(ui.open)) ui.open.forEach(id=>open.add(id));
