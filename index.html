@@ -71,8 +71,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .hv{height:14px;background:var(--hv) repeat-x center/28px 14px;opacity:.85}
 .cung .hv:first-child{margin-top:8px}
 .cung-in{padding:26px 16px 10px}
-.plaque{display:inline-block;max-width:100%;padding:14px clamp(22px,6vw,56px);border:2px solid var(--thep);outline:1px solid var(--thep);outline-offset:5px;background:linear-gradient(180deg,#2b0709,#3b0b0e);box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.plaque h1{margin:0;font:700 clamp(28px,7.5vw,54px)/1.15 var(--serif);letter-spacing:.16em;color:var(--thep);text-shadow:0 1px 0 #000,0 0 18px rgba(232,196,111,.25)}
+.plaque{display:inline-block;max-width:100%;padding:14px clamp(16px,5vw,50px);border:2px solid var(--thep);outline:1px solid var(--thep);outline-offset:5px;background:linear-gradient(180deg,#2b0709,#3b0b0e);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.plaque h1{margin:0;font:700 clamp(22px,5.4vw,46px)/1.2 var(--serif);letter-spacing:.1em;color:var(--thep);text-shadow:0 1px 0 #000,0 0 18px rgba(232,196,111,.25)}
 .cung .sub1{margin:18px 0 0;color:#f5e2b0;font-size:15px}
 .cung .sub2{margin:2px 0 0;color:#d9b56c;font-size:13px}
 .cung .stats{margin:6px 0 16px;color:#d9b56c;font-size:13px;min-height:20px}
@@ -220,6 +220,14 @@ dd{margin:0}
   .tree .card{width:max-content;max-width:none}
 }
 @media (prefers-reduced-motion:no-preference){.card,.btn,.gio .row{transition:border-color .15s,box-shadow .15s,background .15s}}
+/* ---------- Vợ/chồng trong thông tin chi tiết ---------- */
+.sp-sec{margin:14px 0 4px;padding-top:12px;border-top:1px solid var(--line)}
+.sp-h{font-size:13px;color:var(--dong);font-weight:500;margin-bottom:4px}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 0;flex-wrap:wrap}
+.sp-name{font:700 16px var(--serif);color:var(--ink);text-decoration:none;border-bottom:1px dotted var(--dong)}
+.sp-name:hover{color:var(--son)}
+.sp-act{margin-left:auto;display:flex;gap:6px}
+
 /* ---------- Ô chọn người có tìm kiếm ---------- */
 .pk{position:relative}
 .fgrid .pk .pk-in{padding-right:32px}
@@ -293,8 +301,8 @@ body.poster-open{overflow:hidden}
 <header class="cung">
   <div class="hv"></div>
   <div class="cung-in">
-    <div class="plaque"><h1>TÔN THẤT TỘC</h1></div>
-    <p class="sub1">Nguyễn Phước Tộc, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi</p>
+    <div class="plaque"><h1>NGUYỄN PHƯỚC TỘC</h1></div>
+    <p class="sub1">Họ Tôn Thất, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi</p>
     <p class="sub2">Nguyên quán Phú Lộc, Thừa Thiên Huế</p>
     <div class="stats" id="stats"></div>
   </div>
@@ -571,9 +579,6 @@ function spouseLine(p){
   const label = p.gender==='M' ? 'Vợ' : 'Chồng';
   return `<div class="spouse">${label}: ${s.map(x=>esc(x.full_name)).join('; ')}</div>`;
 }
-function countDesc(id){
-  let n=0; (kids.get(id)||[]).forEach(c=>{n+=1+countDesc(c.id)}); return n;
-}
 function matches(p, q){
   const hay = [p.full_name,p.alias,p.hometown,p.occupation,p.notes].join(' ').toLowerCase();
   return hay.includes(q);
@@ -603,6 +608,7 @@ function gioBanner(){
   if(!soon.length) return '';
   return `<div class="gio-bn"><b>Sắp đến giỗ</b>`+soon.map(x=>`<a data-id="${x.p.id}">${esc(x.p.full_name)}: ${x.g.d}/${x.g.m} âm lịch, ${pad(x.n.d)}/${pad(x.n.m)}/${x.n.y} dương lịch (${x.n.days===0?'hôm nay':'còn '+x.n.days+' ngày'})</a>`).join('')+`</div>`;
 }
+let GEN_OFF=0;
 function nodeHTML(p, depth, vs){
   if(vs && !vs.show.has(p.id)) return '';
   const ch = (kids.get(p.id)||[]).map(c=>nodeHTML(c, depth+1, vs)).join('');
@@ -615,17 +621,18 @@ function nodeHTML(p, depth, vs){
       <button class="tog ${total?'':'empty-tog'}" data-tog="${p.id}" aria-label="Mở/đóng">${isOpen?'▾':'▸'}</button>
       ${avatar(p)}
       <div class="main">
-        <div class="nm">${esc(p.full_name)}${p.alias?` <span class="sub">(${esc(p.alias)})</span>`:''}${total?`<span class="count">${countDesc(p.id)} hậu duệ</span>`:''}</div>
+        <div class="nm">${esc(p.full_name)}${p.alias?` <span class="sub">(${esc(p.alias)})</span>`:''}</div>
         ${info?`<div class="sub">${info}</div>`:''}
         ${spouseLine(p)}
       </div>
-      <span class="gen">Đời ${depth}</span>
+      <span class="gen">Đời ${depth+GEN_OFF}</span>
     </div>
     ${total && isOpen && ch ? `<ul>${ch}</ul>` : ''}
   </li>`;
 }
 
 function renderTree(){
+  GEN_OFF=genOff();
   const q = query.trim().toLowerCase();
   const vs = q ? visibleSet(q) : null;
   const rs = roots();
@@ -639,7 +646,8 @@ const CLAN = {
   ho: 'Tôn Thất', toc: 'Nguyễn Phước Tộc',
   he: 'Đệ Tam Hệ', phong: 'Đệ Nhất Phòng', chi: 'Đệ Tứ Chi',
   quequan: 'Phú Lộc, Thừa Thiên Huế',
-  thuyTo: ''   // điền tên vị tổ của chi khi đã đối chiếu thế phả, ví dụ 'Tôn Thất …'
+  thuyTo: '',  // điền tên vị tổ của chi khi đã đối chiếu thế phả, ví dụ 'Tôn Thất …'
+  anchor: {name:'Tôn Thất Cao Nguyên', gen:13}   // mốc đời: người này là đời 13, các đời khác tự tính theo
 };
 function renderGoc(){
   return `<div class="goc">
@@ -704,7 +712,8 @@ function render(){
   $('#view').innerHTML = tab==='tree' ? renderTree() : isGoc ? renderGoc() : isDg ? renderContribs() : renderGio();
   if(tab==='tree') initTreeScroll();
   const gens = persons.length ? maxDepth() : 0;
-  $('#stats').textContent = persons.length ? `${persons.length} thành viên, ${gens} đời` : '';
+  const go=genOff();
+  $('#stats').textContent = persons.length ? `${persons.length} thành viên, từ đời ${1+go} đến đời ${gens+go}` : '';
 }
 function updTreeRail(){
   const sc=$('#tscroll'), rail=$('#trail'), rg=$('#trailRange'); if(!sc||!rail||!rg) return;
@@ -723,6 +732,11 @@ function maxDepth(){
   let best=0;
   (function walk(list,d){ for(const p of list){ best=Math.max(best,d); walk(kids.get(p.id)||[], d+1);} })(roots(),1);
   return best;
+}
+function genOff(){   // số cần cộng vào độ sâu trong cây để ra số đời thật của dòng họ
+  const a=CLAN.anchor; if(!a) return 0;
+  const p=persons.find(x=>x.full_name===a.name && !x.spouse_of);
+  return p ? a.gen-depthOf(p.id) : 0;
 }
 function depthOf(id){
   // đời của một thành viên (vợ/chồng lấy theo đời của người mà họ kết hôn)
@@ -761,13 +775,12 @@ function showDetail(id){
   const sp = (spouses.get(p.id)||[]);
   const ch = (kids.get(p.id)||[]);
   const rows = [
-    ['Đời', 'Đời '+depthOf(p.id)+(p.spouse_of?' (dâu/rể)':'')],
+    ['Đời', 'Đời '+(depthOf(p.id)+genOff())+(p.spouse_of?' (dâu/rể)':'')],
     ['Giới tính', p.gender==='M'?'Nam':'Nữ'],
     ['Ngày sinh', p.birth_date?dateWithLunar(p.birth_date):p.birth_year],
     ['Ngày mất', p.is_alive?'Còn sống':(p.death_date?dateWithLunar(p.death_date):p.death_year)],
     ['Ngày giỗ (âm lịch)', (()=>{ const g=gioInfo(p); if(!g) return ''; const n=nextGio(g.d,g.m); return `${g.d}/${g.m}`+(n?` — giỗ tới: ${pad(n.d)}/${pad(n.m)}/${n.y} dương lịch`:''); })()],
     ['Cha', f?.full_name], ['Mẹ', m?.full_name],
-    [p.gender==='M'?'Vợ':'Chồng', sp.map(x=>x.full_name).join('; ')],
     ['Kết hôn với', h?.full_name],
     ['Con', ch.map(x=>x.full_name).join('; ')],
     ['Quê quán', p.hometown], ['Nghề nghiệp', p.occupation],
@@ -778,6 +791,7 @@ function showDetail(id){
     <h3>${esc(p.full_name)}</h3>
     ${p.alias?`<div class="sub">${esc(p.alias)}</div>`:''}
     <dl>${rows.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>
+    ${sp.length?`<div class="sp-sec"><div class="sp-h">${p.gender==='M'?'Vợ':'Chồng'}</div>${sp.map(s=>`<div class="sp-row"><a class="sp-name" href="#" data-sp="${s.id}">${esc(s.full_name)}</a><span class="sub">${esc(pYears(s))}</span>${isAdmin?`<span class="sp-act"><button class="btn small" data-spe="${s.id}">Sửa</button><button class="btn small danger" data-spd="${s.id}">Xóa</button></span>`:''}</div>`).join('')}</div>`:''}
     <div class="actions">${isAdmin?`
       <button class="btn small" id="aEdit">Sửa</button>
       <button class="btn small" id="aChild">Thêm con</button>
@@ -787,7 +801,10 @@ function showDetail(id){
       <button class="btn small" id="cChild">Đề xuất thêm con</button>
       ${p.spouse_of?'':`<button class="btn small" id="cSpouse">Đề xuất thêm ${p.gender==='M'?'vợ':'chồng'}</button>`}`}
     </div>`);
+  document.querySelectorAll('#modal [data-sp]').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); showDetail(a.dataset.sp); }));
   if(isAdmin){
+    document.querySelectorAll('#modal [data-spe]').forEach(b=>b.addEventListener('click',()=>editSpouse(byId.get(b.dataset.spe), p.id)));
+    document.querySelectorAll('#modal [data-spd]').forEach(b=>b.addEventListener('click',()=>delSpouse(byId.get(b.dataset.spd), p.id)));
     $('#aEdit').onclick = ()=>openForm(p);
     $('#aChild').onclick = ()=>{ openForm({}, {...childParents(p), sort_order:(kids.get(p.spouse_of||p.id)||[]).length+1}); };
     if($('#aSpouse')) $('#aSpouse').onclick = ()=>openForm({}, {spouse_of:p.id, gender:p.gender==='M'?'F':'M'});
@@ -970,7 +987,7 @@ function openForm(p={}, preset={}, hook=null){
     const r=readPersonFields();
     if(r.err){ $('#ferr').textContent=r.err; return; }
     $('#fSave').disabled = true;
-    if(hook){ const msg=await hook.save(r.row); $('#fSave').disabled=false; if(msg) $('#ferr').textContent='Lỗi: '+msg; return; }
+    if(hook){ const msg=await hook.save(r.row); const sv=$('#fSave'); if(sv) sv.disabled=false; if(msg && $('#ferr')) $('#ferr').textContent='Lỗi: '+msg; return; }
     const res = isEdit ? await sb.from('persons').update(r.row).eq('id',p.id) : await sb.from('persons').insert(r.row);
     $('#fSave').disabled = false;
     if(res.error){ $('#ferr').textContent='Lỗi: '+res.error.message; return; }
@@ -1010,6 +1027,28 @@ function readPersonFields(){
   }
   if(row.birth_date && !row.birth_year) row.birth_year=parseInt(row.birth_date.slice(0,4),10);
   return {row};
+}
+function editSpouse(sp, ownerId){
+  if(!sp) return;
+  const label = byId.get(ownerId)?.gender==='M' ? 'vợ' : 'chồng';
+  openForm(sp, {}, {
+    title:'Sửa '+label,
+    cancel:()=>showDetail(ownerId),
+    save:async row=>{
+      const {error}=await sb.from('persons').update(row).eq('id',sp.id);
+      if(error) return error.message;
+      toast('Đã lưu'); await refresh(); showDetail(ownerId); return null;
+    }
+  });
+}
+async function delSpouse(sp, ownerId){
+  if(!sp) return;
+  const kidsN=persons.filter(x=>x.mother_id===sp.id||x.father_id===sp.id).length;
+  const warn = kidsN ? `\n\nCó ${kidsN} con; các con vẫn được giữ lại, chỉ mất liên kết với người này.` : '';
+  if(!confirm(`Xóa “${sp.full_name}” khỏi gia phả?${warn}`)) return;
+  const {error}=await sb.from('persons').delete().eq('id',sp.id);
+  if(error){ toast('Lỗi: '+error.message); return; }
+  toast('Đã xóa'); await refresh(); showDetail(ownerId);
 }
 async function delPerson(p){
   const n = (kids.get(p.id)||[]).length, s = (spouses.get(p.id)||[]).length;
@@ -1307,7 +1346,7 @@ function posterSVG(opts){
     o+=`<text x="${Wd/2}" y="${(Hd*0.236).toFixed(1)}" text-anchor="middle" font-size="${lsz}" font-weight="700" fill="#7A1F1F">${esc(lin)}</text>`;
     // cây phả hệ (gồm nhãn Đời n) thu phóng vào khung
     o+=`<g transform="translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${sc.toFixed(4)})">`;
-    o+=pLabelSVG(rowH,rowY,-LABW0+6,0,off)+pConnSVG(all,rowY,0,0)+`<g filter="url(#bsh)">${pBoxSVG(all,0,0)}</g></g>`;
+    o+=pLabelSVG(rowH,rowY,-LABW0+6,0,off+genOff())+pConnSVG(all,rowY,0,0)+`<g filter="url(#bsh)">${pBoxSVG(all,0,0)}</g></g>`;
     const defsI=`<defs><marker id="parr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="${PO_RED}"/></marker><filter id="bsh" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.6" flood-color="#5A3A10" flood-opacity=".35"/></filter></defs>`;
     const svgI=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Wd} ${Hd}" font-family='${PO_FONT}'>${defsI}${o}</svg>`;
     return {svg:svgI, W:Wd, H:Hd, ori:'landscape', imgUrl:IMG.url, scale:sc};
@@ -1346,7 +1385,7 @@ function posterSVG(opts){
   let lsz=21; while(pTW(lin,true,lsz)>bw-70 && lsz>12) lsz-=1;
   s+=`<text x="${(W/2).toFixed(1)}" y="${by+bh+44}" text-anchor="middle" font-size="${lsz}" font-weight="700" fill="#8E1B1B">${e(lin)}</text>`;
 
-  s+=pLabelSVG(rowH,rowY,SIDE-6,y0,off);
+  s+=pLabelSVG(rowH,rowY,SIDE-6,y0,off+genOff());
 
   s+=pConnSVG(all,rowY,x0,y0);
   s+=pBoxSVG(all,x0,y0);
@@ -1397,7 +1436,7 @@ async function renderPoster(){
 function fillFrom(){
   const sel=$('#pFrom'), n=Math.max(1,maxDepth());
   sel.innerHTML='';
-  for(let g=1; g<=n; g++){ const o=document.createElement('option'); o.value=g; o.textContent = g===1 ? 'Tất cả các đời' : `Từ đời ${g} trở xuống`; sel.appendChild(o); }
+  for(let g=1; g<=n; g++){ const o=document.createElement('option'); o.value=g; o.textContent = g===1 ? 'Tất cả các đời' : `Từ đời ${g+genOff()} trở xuống`; sel.appendChild(o); }
   sel.value=1;   // mặc định in hết
 }
 function openPoster(){ document.body.classList.add('poster-open'); $('#poster').hidden=false; fillFrom(); renderPoster(); }
