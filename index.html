@@ -108,6 +108,21 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 56px;min-height:50vh}
 .legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:-1px}
 .legend .M{background:var(--lam)} .legend .F{background:var(--tim)}
 
+/* ---------- Thanh trượt ngang cho cây phả hệ ---------- */
+.tscroll{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tscroll::-webkit-scrollbar{display:none}
+.tinner{min-width:max-content;padding-bottom:4px}
+.trail{position:sticky;bottom:0;z-index:15;display:flex;align-items:center;gap:10px;margin-top:8px;padding:6px 12px;background:rgba(251,248,240,.96);border:1px solid var(--line);border-radius:999px;box-shadow:0 -2px 10px rgba(80,55,10,.08)}
+.trail[hidden]{display:none}
+.trail>span{flex:none;color:var(--dong);font-size:13px;user-select:none}
+.trail input[type=range]{flex:1;min-width:0;height:26px;margin:0;background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer}
+.trail input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:4px;background:#eadfc4;border:1px solid #d7c9a6}
+.trail input[type=range]::-moz-range-track{height:8px;border-radius:4px;background:#eadfc4;border:1px solid #d7c9a6}
+.trail input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:22px;margin-top:-8px;border-radius:11px;background:var(--dong);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.trail input[type=range]::-moz-range-thumb{width:26px;height:18px;border-radius:11px;background:var(--dong);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.trail input[type=range]:hover::-webkit-slider-thumb{background:var(--son)}
+.tree .card{min-width:270px}
+
 /* ---------- Cây ---------- */
 .tree,.tree ul{list-style:none;margin:0;padding:0}
 .tree ul{margin-left:26px;padding-left:4px;border-left:1.5px solid #dccfae}
@@ -202,6 +217,7 @@ dd{margin:0}
   .tree ul>li::before{width:14px}
   .gen{display:none}
   .card{padding-right:10px}
+  .tree .card{width:max-content;max-width:none}
 }
 @media (prefers-reduced-motion:no-preference){.card,.btn,.gio .row{transition:border-color .15s,box-shadow .15s,background .15s}}
 /* ---------- Ô chọn người có tìm kiếm ---------- */
@@ -250,6 +266,8 @@ dd{margin:0}
 #posterSvgWrap svg{display:block;width:100%;height:auto}
 body.poster-open{overflow:hidden}
 @media print{
+  .trail{display:none!important}
+  .tscroll{overflow:visible}
   body.poster-open > *:not(#poster){display:none!important}
   body.poster-open{overflow:visible;background:#fff}
   html,body.poster-open{height:auto;margin:0}
@@ -614,7 +632,7 @@ function renderTree(){
   if(!rs.length) return `<div class="empty">Chưa có dữ liệu. ${isAdmin?'Bấm “Thêm thủy tổ” để bắt đầu.':'Quản trị viên hãy đăng nhập để thêm thành viên.'}</div>`;
   const html = rs.map(r=>nodeHTML(r,1,vs)).join('');
   if(!html.trim()) return `<div class="empty">Không tìm thấy “${esc(query)}”.</div>`;
-  return (q?'':gioBanner()) + `<ul class="tree">${html}</ul>` + `<div class="legend"><span><i class="M"></i>Nam</span><span><i class="F"></i>Nữ</span></div>`;
+  return (q?'':gioBanner()) + `<div class="tscroll" id="tscroll"><div class="tinner"><ul class="tree">${html}</ul></div></div><div class="trail" id="trail" hidden><span>◂</span><input type="range" id="trailRange" min="0" max="0" value="0" step="1" aria-label="Trượt ngang phả hệ"><span>▸</span></div>` + `<div class="legend"><span><i class="M"></i>Nam</span><span><i class="F"></i>Nữ</span></div>`;
 }
 
 const CLAN = {
@@ -684,9 +702,23 @@ function render(){
   const isGoc = tab==='goc', isDg = tab==='dg';
   ['#q','#btnExpand','#btnCollapse','#btnPrint'].forEach(s=>{ $(s).style.display = (isGoc||isDg) ? 'none' : ''; });
   $('#view').innerHTML = tab==='tree' ? renderTree() : isGoc ? renderGoc() : isDg ? renderContribs() : renderGio();
+  if(tab==='tree') initTreeScroll();
   const gens = persons.length ? maxDepth() : 0;
   $('#stats').textContent = persons.length ? `${persons.length} thành viên, ${gens} đời` : '';
 }
+function updTreeRail(){
+  const sc=$('#tscroll'), rail=$('#trail'), rg=$('#trailRange'); if(!sc||!rail||!rg) return;
+  const max=Math.max(0, sc.scrollWidth-sc.clientWidth);
+  rail.hidden = max<=2;
+  rg.max=max; rg.value=sc.scrollLeft;
+}
+function initTreeScroll(){
+  const sc=$('#tscroll'), rg=$('#trailRange'); if(!sc||!rg) return;
+  sc.addEventListener('scroll',()=>{ rg.value=sc.scrollLeft; });
+  rg.addEventListener('input',()=>{ sc.scrollLeft=+rg.value; });
+  updTreeRail(); requestAnimationFrame(updTreeRail);
+}
+window.addEventListener('resize',()=>{ if(tab==='tree') updTreeRail(); });
 function maxDepth(){
   let best=0;
   (function walk(list,d){ for(const p of list){ best=Math.max(best,d); walk(kids.get(p.id)||[], d+1);} })(roots(),1);
