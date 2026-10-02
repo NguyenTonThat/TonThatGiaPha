@@ -327,6 +327,9 @@ body.poster-open{overflow:hidden}
         <option value="v">Tất cả chữ dọc</option>
       </select>
     </label>
+    <label>In từ
+      <select id="pFrom"><option value="1">Tất cả các đời</option></select>
+    </label>
     <label>Nền
       <select id="pBg"><option value="img">Nền tranh (ảnh)</option><option value="draw">Nền vẽ đơn giản</option></select>
     </label>
@@ -1176,23 +1179,52 @@ function pBoxSVG(all,x0,y0){
   });
   return s;
 }
-function pLabelSVG(rowH,rowY,lx,y0,sc){
+function pLabelSVG(rowH,rowY,lx,y0,off){
   let s='';
   rowH.forEach((h_,d)=>{
     const ly=y0+rowY[d]+h_/2-12;
     s+=`<rect x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" width="54" height="24" rx="4" fill="#FFF8DC" stroke="${PO_RED}" stroke-width="1.4"/>`;
-    s+=`<text x="${(lx+27).toFixed(1)}" y="${(ly+17).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="${PO_RED}">Đời ${d+1}</text>`;
+    s+=`<text x="${(lx+27).toFixed(1)}" y="${(ly+17).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="${PO_RED}">Đời ${d+1+(off||0)}</text>`;
   });
   return s;
 }
+// Vùng giấy trống của tranh nền (tỉ lệ theo ảnh): [y trên, y dưới, x trái, x phải]. Tránh tre, thông, tòa thành, hoa sen.
+const BG_ZONES=[[.255,.44,.22,.77],[.44,.64,.20,.77],[.64,.76,.27,.77],[.76,.86,.32,.77]];
+function fitZones(Wd,Hd,rows,treeW,treeH,labLeft,smax){
+  const yTop=.268*Hd, yBot=.855*Hd, ctrX=.495*Wd;
+  for(let s=smax; s>=0.08; s-=0.01){
+    const th=s*treeH; if(th>yBot-yTop) continue;
+    const ideal=yTop+(yBot-yTop-th)/2; let best=null;
+    for(let ty=yTop; ty<=yBot-th+0.01; ty+=2){
+      let A=-Infinity, B=Infinity;
+      for(const r of rows){
+        const y1=ty+s*r.y1, y2=ty+s*r.y2; let lo=0, hi=Wd;
+        for(const z of BG_ZONES){ if(y2>z[0]*Hd && y1<z[1]*Hd){ lo=Math.max(lo,z[2]*Wd); hi=Math.min(hi,z[3]*Wd); } }
+        A=Math.max(A, lo-s*labLeft); B=Math.min(B, hi-s*r.maxX);
+        if(A>B) break;
+      }
+      if(A<=B){ const sc=Math.abs(ty-ideal); if(!best||sc<best.sc) best={s, ty, tx:Math.min(B,Math.max(A,ctrX-s*treeW/2)), sc}; }
+    }
+    if(best) return best;
+  }
+  return null;
+}
 function posterSVG(opts){
   if(opts.text==='auto'){   // thử 3 kiểu chữ, lấy kiểu cho chữ to và dễ đọc nhất khi có ảnh nền
-    const c=['h','h2','mix','v'].map(t=>posterSVG({...opts,text:t}));
+    const c=['h2','h','mix','v'].map(t=>posterSVG({...opts,text:t}));
     if(!c[0]) return null;
-    return c.some(x=>x.scale) ? c.slice().sort((a,b)=>(b.scale||0)-(a.scale||0))[0] : c[2];
+    if(!c.some(x=>x.scale)) return c[2];   // c[2] = kiểu 'mix' khi dùng nền vẽ
+    const best=Math.max(...c.map(x=>x.scale||0));
+    return c.find(x=>(x.scale||0)>=best*0.75) || c[0];   // ưu tiên chữ ngang nếu không nhỏ hơn quá 25%
   }
   const mk = (p,d)=>({p, depth:d, lines:pLines(p, opts.text==='h2'), kids:(kids.get(p.id)||[]).map(c=>mk(c,d+1))});
-  const forest = roots().map(r=>mk(r,0));
+  let forest = roots().map(r=>mk(r,0));
+  const from=Math.max(1,opts.from||1), off=from-1;
+  if(off>0){   // chỉ lấy những người từ đời N trở xuống, các nhánh xếp cạnh nhau
+    const pick=(ns,d)=> d===off ? ns : ns.flatMap(n=>pick(n.kids,d+1));
+    forest=pick(forest,0);
+    (function rd(ns,d){ ns.forEach(n=>{ n.depth=d; rd(n.kids,d+1); }); })(forest,0);
+  }
   if(!forest.length) return null;
   const all=[]; (function walk(ns){ ns.forEach(n=>{ all.push(n); walk(n.kids); }); })(forest);
 
@@ -1226,11 +1258,16 @@ function posterSVG(opts){
   const IMG = opts.img;   // {url, w, h} hoặc null
   if(IMG){
     const Wd=1536, Hd=Math.round(1536*IMG.h/IMG.w);
-    const AR={x:.23, y:.25, w:.54, h:.56};      // khung chừa cho cây, tính theo tỉ lệ của ảnh
-    const area={x:AR.x*Wd, y:AR.y*Hd, w:AR.w*Wd, h:AR.h*Hd};
-    const LABW0=72, boxW=LABW0+treeW, SMAX=1.35;
-    const sc=Math.min(area.w/boxW, area.h/treeH, SMAX);
-    const tx=area.x+(area.w-sc*boxW)/2+sc*LABW0, ty=area.y+(area.h-sc*treeH)/2;
+    const LABW0=72, SMAX=1.35;
+    const rows=rowH.map((hh,d)=>({y1:rowY[d], y2:rowY[d]+hh, maxX:Math.max(...all.filter(n=>n.depth===d).map(n=>n.cx+n.w/2))}));
+    const fit=fitZones(Wd,Hd,rows,treeW,treeH,-LABW0+6,SMAX);
+    let sc,tx,ty;
+    if(fit){ sc=fit.s; tx=fit.tx; ty=fit.ty; }
+    else {   // cây quá lớn: thu nhỏ vào khung chữ nhật chung
+      const area={x:.23*Wd, y:.25*Hd, w:.54*Wd, h:.56*Hd}, boxW=LABW0+treeW;
+      sc=Math.min(area.w/boxW, area.h/treeH);
+      tx=area.x+(area.w-sc*boxW)/2+sc*LABW0; ty=area.y+(area.h-sc*treeH)/2;
+    }
     let o=`<image href="${esc(IMG.url)}" x="0" y="0" width="${Wd}" height="${Hd}" preserveAspectRatio="none"/>`;
     // dòng hệ, phòng, chi dưới tấm biển tiêu đề (tiêu đề đã có sẵn trong ảnh)
     const lin=[CLAN.toc,CLAN.he,CLAN.phong,CLAN.chi].join(', ');
@@ -1238,7 +1275,7 @@ function posterSVG(opts){
     o+=`<text x="${Wd/2}" y="${(Hd*0.236).toFixed(1)}" text-anchor="middle" font-size="${lsz}" font-weight="700" fill="#7A1F1F">${esc(lin)}</text>`;
     // cây phả hệ (gồm nhãn Đời n) thu phóng vào khung
     o+=`<g transform="translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${sc.toFixed(4)})">`;
-    o+=pLabelSVG(rowH,rowY,-LABW0+6,0,1)+pConnSVG(all,rowY,0,0)+`<g filter="url(#bsh)">${pBoxSVG(all,0,0)}</g></g>`;
+    o+=pLabelSVG(rowH,rowY,-LABW0+6,0,off)+pConnSVG(all,rowY,0,0)+`<g filter="url(#bsh)">${pBoxSVG(all,0,0)}</g></g>`;
     const defsI=`<defs><marker id="parr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="${PO_RED}"/></marker><filter id="bsh" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.6" flood-color="#5A3A10" flood-opacity=".35"/></filter></defs>`;
     const svgI=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Wd} ${Hd}" font-family='${PO_FONT}'>${defsI}${o}</svg>`;
     return {svg:svgI, W:Wd, H:Hd, ori:'landscape', imgUrl:IMG.url, scale:sc};
@@ -1277,7 +1314,7 @@ function posterSVG(opts){
   let lsz=21; while(pTW(lin,true,lsz)>bw-70 && lsz>12) lsz-=1;
   s+=`<text x="${(W/2).toFixed(1)}" y="${by+bh+44}" text-anchor="middle" font-size="${lsz}" font-weight="700" fill="#8E1B1B">${e(lin)}</text>`;
 
-  s+=pLabelSVG(rowH,rowY,SIDE-6,y0,1);
+  s+=pLabelSVG(rowH,rowY,SIDE-6,y0,off);
 
   s+=pConnSVG(all,rowY,x0,y0);
   s+=pBoxSVG(all,x0,y0);
@@ -1310,7 +1347,7 @@ async function ensureBg(){ if(bgAvail===undefined) bgAvail=await probeImg(BG_FIL
 async function renderPoster(){
   const useImg = $('#pBg').value==='img';
   const avail = useImg ? await ensureBg() : null;
-  const r = posterSVG({text:$('#pText').value, ori:$('#pOri').value, img:avail});
+  const r = posterSVG({text:$('#pText').value, ori:$('#pOri').value, img:avail, from:+$('#pFrom').value||1});
   if(!r){ $('#posterSvgWrap').innerHTML='<div class="empty" style="padding:60px">Chưa có dữ liệu để in.</div>'; return; }
   lastPoster=r;
   $('#posterSvgWrap').innerHTML=r.svg;
@@ -1325,9 +1362,15 @@ async function renderPoster(){
     $('#pInfo').textContent=`${size}, ${r.ori==='portrait'?'giấy dọc':'giấy ngang'}${note}`;
   }
 }
-function openPoster(){ document.body.classList.add('poster-open'); $('#poster').hidden=false; renderPoster(); }
+function fillFrom(){
+  const sel=$('#pFrom'), n=Math.max(1,maxDepth());
+  sel.innerHTML='';
+  for(let g=1; g<=n; g++){ const o=document.createElement('option'); o.value=g; o.textContent = g===1 ? 'Tất cả các đời' : `Từ đời ${g} trở xuống`; sel.appendChild(o); }
+  sel.value=1;   // mặc định in hết
+}
+function openPoster(){ document.body.classList.add('poster-open'); $('#poster').hidden=false; fillFrom(); renderPoster(); }
 function closePoster(){ $('#poster').hidden=true; document.body.classList.remove('poster-open'); }
-['pSize','pOri','pText','pBg'].forEach(id=>$('#'+id).addEventListener('change',renderPoster));
+['pSize','pOri','pText','pBg','pFrom'].forEach(id=>$('#'+id).addEventListener('change',renderPoster));
 $('#pPrint').onclick=()=>window.print();
 $('#pClose').onclick=closePoster;
 $('#pPng').onclick=async ()=>{
