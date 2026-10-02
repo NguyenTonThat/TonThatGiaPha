@@ -196,6 +196,12 @@ dd{margin:0}
 .lun .chk input{width:auto}
 .hint{font-size:13px;color:var(--lam);min-height:18px}
 [hidden]{display:none!important}
+.dpick{display:flex;gap:8px;align-items:stretch}
+.dpick>input[type=text]{flex:1;min-width:0}
+.calbtn{position:relative;flex:none;width:46px;border:1px solid #d7c9a6;border-radius:8px;background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--dong)}
+.calbtn:hover{border-color:var(--dong);background:#fff4d6}
+.calbtn svg{pointer-events:none}
+.fgrid .calbtn input[type=date]{position:absolute;inset:0;width:100%;height:100%;opacity:0;padding:0;border:0;cursor:pointer}
 .dgh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .seg{display:inline-flex;border:1px solid #d7c9a6;border-radius:8px;overflow:hidden;background:#fff}
 .segb{border:0;background:#fff;padding:5px 12px;font-size:13px;cursor:pointer;color:var(--ink)}
@@ -384,6 +390,7 @@ const sb = configured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON
 let persons = [], byId = new Map(), kids = new Map(), spouses = new Map();
 let isAdmin = false, tab = 'tree', query = '';
 let contribs = [], dgFilter = 'pending', adminUid = null;
+let curDetailId = null, pendingTab = null, uiRestored = false, uiTimer = null;
 const open = new Set();
 
 const $ = s => document.querySelector(s);
@@ -487,13 +494,24 @@ function vnToISO(s){   // "dd/mm/yyyy" -> "yyyy-mm-dd", trả null nếu sai ho�
   if(t.getUTCFullYear()!==y||t.getUTCMonth()!==mo-1||t.getUTCDate()!==d) return null;
   return `${y}-${pad(mo)}-${pad(d)}`;
 }
-function maskDate(e){   // tự chèn dấu "/" khi gõ: 13031981 -> 13/03/1981
+function maskDate(e){   // gõ 13031981 -> 13/03/1981; gõ 1985 giữ nguyên (chỉ năm)
   const el=e.target; let v=el.value;
   if(!String(e.inputType||'').startsWith('delete')){
     v=v.replace(/^(\d)[\/\-.]/,'0$1/').replace(/^(\d{2})[\/\-.](\d)[\/\-.]/,'$1/0$2/');
   }
+  if(/[\/\-.\s]/.test(v)){   // người dùng tự gõ dấu phân cách
+    const lim=[2,2,4], parts=v.split(/[\/\-.\s]+/).slice(0,3).map((s,i)=>s.replace(/\D/g,'').slice(0,lim[i]));
+    el.value=parts.join('/'); return;
+  }
   const dg=v.replace(/\D/g,'').slice(0,8);
-  el.value = dg.length>4 ? dg.slice(0,2)+'/'+dg.slice(2,4)+'/'+dg.slice(4) : dg.length>2 ? dg.slice(0,2)+'/'+dg.slice(2) : dg;
+  el.value = dg.length<=4 ? dg : dg.length<=6 ? dg.slice(0,2)+'/'+dg.slice(2,4)+(dg.length>4?'/'+dg.slice(4):'') : dg.slice(0,2)+'/'+dg.slice(2,4)+'/'+dg.slice(4);
+}
+function parseDateField(s){   // ngày đầy đủ dd/mm/yyyy, hoặc chỉ năm (4 chữ số)
+  s=String(s||'').trim();
+  if(!s) return {t:'empty'};
+  if(/^\d{4}$/.test(s)){ const y=+s; return (y>=1000&&y<=2100) ? {t:'year',y} : {t:'bad'}; }
+  const iso=vnToISO(s);
+  return iso ? {t:'date',iso} : {t:'bad'};
 }
 function s2l(y,m,d){ const r=convertSolar2Lunar(d,m,y,TZ); return {d:r[0],m:r[1],y:r[2],leap:!!r[3]}; }
 function l2s(d,m,y,leap){
@@ -702,6 +720,23 @@ function renderGio(){
   return out+'</div>';
 }
 
+/* ---------- Nhớ màn hình: tab, nhánh đang mở, ô tìm kiếm, vị trí cuộn, người đang xem ---------- */
+const UI_KEY='gp_ui_v1';
+function saveUI(){
+  clearTimeout(uiTimer);
+  uiTimer=setTimeout(()=>{
+    try{ localStorage.setItem(UI_KEY, JSON.stringify({tab, open:[...open], q:query, dg:dgFilter, y:Math.round(window.scrollY), d:curDetailId, t:Date.now()})); }catch(e){}
+  },150);
+}
+function loadUI(){
+  try{
+    const u=JSON.parse(localStorage.getItem(UI_KEY)||'null');
+    if(!u || Date.now()-(u.t||0) > 30*86400e3) return null;   // bỏ trạng thái quá 30 ngày
+    return u;
+  }catch(e){ return null; }
+}
+window.addEventListener('scroll',()=>saveUI(),{passive:true});
+window.addEventListener('pagehide',()=>{ clearTimeout(uiTimer); try{ localStorage.setItem(UI_KEY, JSON.stringify({tab, open:[...open], q:query, dg:dgFilter, y:Math.round(window.scrollY), d:curDetailId, t:Date.now()})); }catch(e){} });
 function render(){
   if(!configured){
     $('#view').innerHTML = `<div class="notice"><b>Chưa kết nối Supabase.</b><br>Mở file <code>index.html</code>, điền <code>SUPABASE_URL</code> và <code>SUPABASE_ANON_KEY</code> ở đầu phần script.</div>`;
@@ -714,6 +749,7 @@ function render(){
   const gens = persons.length ? maxDepth() : 0;
   const go=genOff();
   $('#stats').textContent = persons.length ? `${persons.length} thành viên, từ đời ${1+go} đến đời ${gens+go}` : '';
+  saveUI();
 }
 function updTreeRail(){
   const sc=$('#tscroll'), rail=$('#trail'), rg=$('#trailRange'); if(!sc||!rail||!rg) return;
@@ -765,12 +801,13 @@ $('#btnPrint').onclick = openPoster;
 
 /* ---------- Modal ---------- */
 function openModal(html){ $('#modal').innerHTML = `<button class="x" aria-label="Đóng">×</button>${html}`; $('#bd').classList.add('open'); $('#modal .x').onclick=closeModal; }
-function closeModal(){ $('#bd').classList.remove('open'); }
+function closeModal(){ $('#bd').classList.remove('open'); curDetailId=null; saveUI(); }
 $('#bd').addEventListener('mousedown', e=>{ if(e.target===$('#bd')) closeModal(); });
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 
 function showDetail(id){
   const p = byId.get(id); if(!p) return;
+  curDetailId=id; saveUI();
   const f = byId.get(p.father_id), m = byId.get(p.mother_id), h = byId.get(p.spouse_of);
   const sp = (spouses.get(p.id)||[]);
   const ch = (kids.get(p.id)||[]);
@@ -823,11 +860,13 @@ function childParents(p){   // cha, mẹ của một người con sinh ra từ p
 }
 
 function gioFallback(v){ const m=String(v.death_lunar||'').match(/(\d{1,2})\s*[\/\-.]\s*(\d{1,2})/); return m?{d:+m[1],m:+m[2]}:null; }
-function dateGroup(k, title, iso, fb){
+function dateGroup(k, title, iso, fb, yr){
   const l = lunarOfISO(iso);
   const dv = l?l.d:(fb?fb.d:''), mv = l?l.m:(fb?fb.m:'');
-  const mode = (!iso && fb) ? 'lunar' : 'solar';       // mặc định nhập dương lịch
+  const mode = (!iso && !yr && fb) ? 'lunar' : 'solar';       // mặc định nhập dương lịch
   const on = m => mode===m ? 'true' : 'false';
+  const txt = iso ? isoToVN(iso) : (yr ? String(yr) : '');
+  const calVal = iso || (yr ? `${yr}-01-01` : '');
   return `<div class="dg" id="dg_${k}" data-mode="${mode}">
     <div class="dgh">
       <div class="dgt">${title}</div>
@@ -836,8 +875,12 @@ function dateGroup(k, title, iso, fb){
         <button type="button" class="segb" data-mode="lunar" aria-pressed="${on('lunar')}">Âm lịch</button>
       </div>
     </div>
-    <div class="m-solar" ${mode==='solar'?'':'hidden'}>
-      <input id="f_${k}_date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="dd/mm/yyyy" value="${esc(isoToVN(iso))}" aria-label="Ngày dương lịch (dd/mm/yyyy)">
+    <div class="m-solar dpick" ${mode==='solar'?'':'hidden'}>
+      <input id="f_${k}_date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="dd/mm/yyyy hoặc chỉ năm" value="${esc(txt)}" aria-label="Ngày dương lịch: dd/mm/yyyy, hoặc chỉ năm nếu không biết ngày">
+      <span class="calbtn" title="Chọn trên lịch">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>
+        <input type="date" id="cal_${k}" min="1700-01-01" max="2100-12-31" value="${esc(calVal)}" tabindex="-1" aria-label="Chọn ngày trên lịch">
+      </span>
     </div>
     <div class="lun m-lunar" ${mode==='lunar'?'':'hidden'}>
       <input id="l_${k}_d" type="number" min="1" max="30" placeholder="ngày" value="${dv}" aria-label="Ngày âm">
@@ -849,12 +892,15 @@ function dateGroup(k, title, iso, fb){
   </div>`;
 }
 function linkDates(k){
-  const box=$('#dg_'+k), sd=$('#f_'+k+'_date'), ld=$('#l_'+k+'_d'), lm=$('#l_'+k+'_m'), ly=$('#l_'+k+'_y'), lp=$('#l_'+k+'_leap'), hint=$('#h_'+k);
+  const box=$('#dg_'+k), sd=$('#f_'+k+'_date'), cal=$('#cal_'+k), ld=$('#l_'+k+'_d'), lm=$('#l_'+k+'_m'), ly=$('#l_'+k+'_y'), lp=$('#l_'+k+'_leap'), hint=$('#h_'+k);
   let note='';                       // thông báo lỗi / hướng dẫn tạm thời
   const mode=()=>box.dataset.mode;
+  const syncCal=()=>{ const q=parseDateField(sd.value); cal.value = q.t==='date' ? q.iso : q.t==='year' ? `${q.y}-01-01` : ''; };
   const showHint=()=>{
     if(note){ hint.textContent=note; return; }
-    const iso=vnToISO(sd.value);
+    const q=parseDateField(sd.value);
+    if(q.t==='year'){ hint.textContent=`Chỉ có năm ${q.y} (năm ${canChi(q.y)}). Muốn đủ ngày, nhập dd/mm/yyyy.`; return; }
+    const iso=q.t==='date'?q.iso:null;
     if(mode()==='solar'){
       const l=lunarOfISO(iso); hint.textContent = l ? 'Âm lịch: '+lunarFull(l) : '';
     } else {
@@ -862,13 +908,14 @@ function linkDates(k){
     }
   };
   const fromSolar=()=>{
-    note=''; const iso=vnToISO(sd.value), p=parseISO(iso);
-    if(sd.value.length===10 && !iso) note='Ngày dương lịch không hợp lệ. Nhập theo dạng dd/mm/yyyy.';
-    else if(p){
+    note=''; const q=parseDateField(sd.value);
+    if(q.t==='bad' && sd.value.trim().length>=8) note='Chưa đúng. Nhập dd/mm/yyyy, hoặc chỉ năm (4 chữ số).';
+    else if(q.t==='date'){
+      const p=parseISO(q.iso);
       if(p.y<1900||p.y>2100) note='Chỉ quy đổi được trong khoảng năm 1900 đến 2100.';
       else { const l=s2l(p.y,p.m,p.d); ld.value=l.d; lm.value=l.m; ly.value=l.y; lp.checked=l.leap; }
     }
-    showHint();
+    syncCal(); showHint();
   };
   const fromLunar=()=>{
     note=''; const d=+ld.value, m=+lm.value, y=+ly.value;
@@ -879,9 +926,13 @@ function linkDates(k){
     } else if(d&&m){
       note = k==='death' ? 'Nhập thêm năm âm lịch để quy ra dương lịch. Bỏ trống năm thì chỉ lưu ngày giỗ.' : 'Nhập thêm năm âm lịch để quy ra dương lịch.';
     }
-    showHint();
+    syncCal(); showHint();
   };
-  sd.addEventListener('input',e=>{ maskDate(e); fromSolar(); }); sd.addEventListener('change',fromSolar);
+  sd.addEventListener('input',e=>{ maskDate(e); fromSolar(); });
+  sd.addEventListener('blur',()=>{ const q=sd.value.trim(), m=q.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if(m){ sd.value=`${pad(+m[1])}/${pad(+m[2])}/${m[3]}`; fromSolar(); } });
+  // chọn trên lịch -> điền vào ô ngày
+  cal.addEventListener('click',()=>{ try{ cal.showPicker && cal.showPicker(); }catch(e){} });
+  cal.addEventListener('change',()=>{ if(cal.value){ sd.value=isoToVN(cal.value); fromSolar(); } });
   [ld,lm,ly].forEach(e=>e.addEventListener('input',fromLunar)); lp.addEventListener('change',fromLunar);
   box.querySelectorAll('.segb').forEach(b=>b.addEventListener('click',()=>{
     const m=b.dataset.mode; box.dataset.mode=m;
@@ -947,6 +998,12 @@ function enhancePicker(sel, placeholder){
   sync();
 }
 
+function sortOpts(cur){   // danh sách chọn số thứ tự thay cho ô gõ
+  const c=Math.max(0,parseInt(cur,10)||0), max=Math.max(20,c);
+  let s=`<option value="0" ${c===0?'selected':''}>Chưa xếp thứ tự</option>`;
+  for(let i=1;i<=max;i++) s+=`<option value="${i}" ${i===c?'selected':''}>${i===1?'Con thứ 1 (con trưởng)':'Con thứ '+i}</option>`;
+  return s;
+}
 function openForm(p={}, preset={}, hook=null){
   const v = {...preset, ...p};
   const isEdit = !!p.id;
@@ -954,22 +1011,20 @@ function openForm(p={}, preset={}, hook=null){
   openModal(`
     <h3>${esc(hook?.title || (isEdit?'Sửa thông tin':'Thêm thành viên'))}</h3>
     <div class="fgrid">
-      <label class="full">Họ và tên *<input id="f_full_name" value="${val('full_name')}" placeholder="Tôn Thất …"></label>
-      <label>Tên húy / hiệu<input id="f_alias" value="${val('alias')}"></label>
+      <label class="full">Họ và tên *<input id="f_full_name" value="${val('full_name')}" data-orig="${val('full_name')}" placeholder="Tôn Thất …"></label>
+      <label>Tên húy / hiệu<input id="f_alias" value="${val('alias')}" data-orig="${val('alias')}"></label>
       <label>Chữ đệm / chữ đời<input id="f_generation_word" value="${val('generation_word')}"></label>
       <label>Giới tính<select id="f_gender"><option value="M" ${v.gender!=='F'?'selected':''}>Nam</option><option value="F" ${v.gender==='F'?'selected':''}>Nữ</option></select></label>
-      <label>Thứ tự anh chị em<input id="f_sort_order" type="number" min="0" value="${v.sort_order??0}"></label>
+      <label>Thứ tự anh chị em<select id="f_sort_order">${sortOpts(v.sort_order)}</select></label>
       <label>Cha<select id="f_father_id">${opts(x=>x.gender==='M'&&x.id!==v.id, v.father_id)}</select></label>
       <label>Mẹ<select id="f_mother_id">${opts(x=>x.gender==='F'&&x.id!==v.id, v.mother_id)}</select></label>
       <label class="full">Là dâu/rể của (để trống nếu là con cháu trong họ)<select id="f_spouse_of">${opts(x=>!x.spouse_of&&x.id!==v.id, v.spouse_of)}</select></label>
       <div class="dgwrap">
-        ${dateGroup('birth','Ngày sinh',v.birth_date)}
-        <label>Năm sinh (chỉ nhập nếu không biết ngày)<input id="f_birth_year" type="number" value="${val('birth_year')}"></label>
+        ${dateGroup('birth','Ngày sinh',v.birth_date,null,v.birth_year)}
       </div>
       <label class="chk full"><input id="f_is_alive" type="checkbox" ${v.is_alive===false?'':'checked'}> Còn sống</label>
       <div class="dgwrap" id="deathWrap" style="${v.is_alive===false?'':'display:none'}">
-        ${dateGroup('death','Ngày mất (ngày giỗ sẽ tự tính)',v.death_date, gioFallback(v))}
-        <label>Năm mất (chỉ nhập nếu không biết ngày)<input id="f_death_year" type="number" value="${val('death_year')}"></label>
+        ${dateGroup('death','Ngày mất (ngày giỗ sẽ tự tính)',v.death_date, gioFallback(v), v.death_year)}
       </div>
       <label>Phần mộ<input id="f_burial_place" value="${val('burial_place')}"></label>
       <label>Quê quán / nơi ở<input id="f_hometown" value="${val('hometown')}" placeholder="Phú Lộc, Thừa Thiên Huế"></label>
@@ -979,6 +1034,7 @@ function openForm(p={}, preset={}, hook=null){
     </div>
     <div class="err" id="ferr"></div>
     <div class="actions"><button class="btn primary" id="fSave">Lưu</button><button class="btn" id="fCancel">Hủy</button></div>`);
+  bindNameFields(['f_full_name','f_alias']);
   linkDates('birth'); linkDates('death');
   ['f_father_id','f_mother_id','f_spouse_of'].forEach(id=>enhancePicker($('#'+id)));
   $('#f_is_alive').addEventListener('change', e=>{ $('#deathWrap').style.display = e.target.checked ? 'none' : ''; });
@@ -995,37 +1051,58 @@ function openForm(p={}, preset={}, hook=null){
   };
 }
 // Đọc các ô trong form (form quản trị và form đóng góp dùng chung). Chỉ lấy ô nào có trong form.
+// Quy tắc viết hoa tên: 'title' = Tôn Thất Anh Tú | 'upper' = TÔN THẤT ANH TÚ | 'none' = giữ nguyên
+const NAME_CASE='title';
+function fixName(s){
+  s=String(s||'').normalize('NFC').replace(/\s+/g,' ').trim();
+  if(!s || NAME_CASE==='none') return s;
+  if(NAME_CASE==='upper') return s.toLocaleUpperCase('vi');
+  return s.toLocaleLowerCase('vi').replace(/(^|[\s\-'’(])(\p{L})/gu,(m,a,b)=>a+b.toLocaleUpperCase('vi'));
+}
+function bindNameFields(ids){   // tự viết hoa khi rời ô; chỉ đổi nếu người dùng đã sửa nội dung
+  ids.forEach(id=>{
+    const el=$('#'+id); if(!el) return;
+    el.style.textTransform = NAME_CASE==='upper' ? 'uppercase' : NAME_CASE==='title' ? 'capitalize' : '';
+    el.addEventListener('blur',()=>{ if(el.value.trim()!==(el.dataset.orig||'')) el.value=fixName(el.value); });
+  });
+}
+function readName(id){   // giá trị ô tên đã chuẩn hóa (giữ nguyên nếu chưa sửa)
+  const x=$('#'+id); if(!x) return null;
+  const v=x.value.trim(); if(!v) return null;
+  return v===(x.dataset.orig||'') ? v : fixName(v);
+}
 function readPersonFields(){
   const el=id=>$('#f_'+id);
   const g=id=>{ const x=el(id); if(!x) return null; return x.type==='checkbox' ? x.checked : (x.value.trim()||null); };
   const n=id=>{ const x=g(id); if(x==null) return null; const v=parseInt(x,10); return isNaN(v)?null:v; };
   const fail=m=>({err:m});
-  const name=g('full_name');
+  const name=readName('f_full_name');
   if(!name) return fail('Vui lòng nhập họ và tên.');
   if(name.length>120) return fail('Họ và tên quá dài.');
-  let birthISO=null, deathISO=null;
-  const bdRaw=g('birth_date');
-  if(bdRaw){ birthISO=vnToISO(bdRaw); if(!birthISO) return fail('Ngày sinh không hợp lệ. Nhập theo dạng dd/mm/yyyy.'); }
+  let birthISO=null, birthYear=null, deathISO=null, deathYear=null;
+  const pb=parseDateField(g('birth_date'));
+  if(pb.t==='bad') return fail('Ngày sinh chưa đúng. Nhập dd/mm/yyyy, hoặc chỉ năm (4 chữ số).');
+  if(pb.t==='date'){ birthISO=pb.iso; birthYear=+pb.iso.slice(0,4); } else if(pb.t==='year'){ birthYear=pb.y; }
   const alive=g('is_alive');
   if(!alive){
-    const ddRaw=g('death_date');
-    if(ddRaw){ deathISO=vnToISO(ddRaw); if(!deathISO) return fail('Ngày mất không hợp lệ. Nhập theo dạng dd/mm/yyyy.'); }
+    const pd=parseDateField(g('death_date'));
+    if(pd.t==='bad') return fail('Ngày mất chưa đúng. Nhập dd/mm/yyyy, hoặc chỉ năm (4 chữ số).');
+    if(pd.t==='date'){ deathISO=pd.iso; deathYear=+pd.iso.slice(0,4); } else if(pd.t==='year'){ deathYear=pd.y; }
   }
   const photo=g('photo_url');
   if(photo && !/^https?:\/\//i.test(photo)) return fail('Link ảnh phải bắt đầu bằng http:// hoặc https://');
   const row={}; const put=(k,v)=>{ if(el(k)) row[k]=v; };
-  put('full_name',name); put('alias',g('alias')); put('generation_word',g('generation_word')); put('gender',g('gender'));
+  put('full_name',name); put('alias',readName('f_alias')); put('generation_word',g('generation_word')); put('gender',g('gender'));
   put('sort_order',n('sort_order')||0); put('father_id',g('father_id')); put('mother_id',g('mother_id')); put('spouse_of',g('spouse_of'));
   put('hometown',g('hometown')); put('occupation',g('occupation')); put('burial_place',g('burial_place'));
   put('photo_url',photo); put('notes',g('notes'));
-  row.birth_date=birthISO; row.birth_year=n('birth_year'); row.is_alive=alive;
-  row.death_year = alive ? null : n('death_year'); row.death_date=null; row.death_lunar=null;
+  row.birth_date=birthISO; row.birth_year=birthYear; row.is_alive=alive;
+  row.death_year = alive ? null : deathYear; row.death_date=null; row.death_lunar=null;
   if(!alive){
     const ldv=+$('#l_death_d').value, lmv=+$('#l_death_m').value;
-    if(deathISO){ const l=lunarOfISO(deathISO); row.death_date=deathISO; row.death_year=parseInt(deathISO.slice(0,4),10); if(l) row.death_lunar=`${l.d}/${l.m}`; }
+    if(deathISO){ const l=lunarOfISO(deathISO); row.death_date=deathISO; if(l) row.death_lunar=`${l.d}/${l.m}`; }
     else if(ldv && lmv){ row.death_lunar=`${ldv}/${lmv}`; }
   }
-  if(row.birth_date && !row.birth_year) row.birth_year=parseInt(row.birth_date.slice(0,4),10);
   return {row};
 }
 function editSpouse(sp, ownerId){
@@ -1515,17 +1592,15 @@ function openContribForm(kind, target, preset={}){
       ${isEdit?'':`
       <label>Người này là<select id="c_rel"><option value="child" ${relSel==='child'?'selected':''}>Con của</option><option value="spouse" ${relSel==='spouse'?'selected':''}>Vợ hoặc chồng của</option><option value="unknown">Chưa rõ quan hệ</option></select></label>
       <label id="c_relp_wrap">Chọn người<select id="c_relp">${opts(()=>true, preset.relPerson)}</select></label>`}
-      <label class="full">Họ và tên *<input id="f_full_name" maxlength="120" value="${val('full_name')}" placeholder="Tôn Thất …"></label>
-      <label>Tên húy / hiệu<input id="f_alias" maxlength="120" value="${val('alias')}"></label>
+      <label class="full">Họ và tên *<input id="f_full_name" maxlength="120" value="${val('full_name')}" data-orig="${val('full_name')}" placeholder="Tôn Thất …"></label>
+      <label>Tên húy / hiệu<input id="f_alias" maxlength="120" value="${val('alias')}" data-orig="${val('alias')}"></label>
       <label>Giới tính<select id="f_gender"><option value="M" ${v.gender!=='F'?'selected':''}>Nam</option><option value="F" ${v.gender==='F'?'selected':''}>Nữ</option></select></label>
       <div class="dgwrap">
-        ${dateGroup('birth','Ngày sinh',v.birth_date)}
-        <label>Năm sinh (chỉ nhập nếu không biết ngày)<input id="f_birth_year" type="number" value="${val('birth_year')}"></label>
+        ${dateGroup('birth','Ngày sinh',v.birth_date,null,v.birth_year)}
       </div>
       <label class="chk full"><input id="f_is_alive" type="checkbox" ${v.is_alive===false?'':'checked'}> Còn sống</label>
       <div class="dgwrap" id="deathWrap" style="${v.is_alive===false?'':'display:none'}">
-        ${dateGroup('death','Ngày mất (ngày giỗ sẽ tự tính)',v.death_date, gioFallback(v))}
-        <label>Năm mất (chỉ nhập nếu không biết ngày)<input id="f_death_year" type="number" value="${val('death_year')}"></label>
+        ${dateGroup('death','Ngày mất (ngày giỗ sẽ tự tính)',v.death_date, gioFallback(v), v.death_year)}
       </div>
       <label>Quê quán / nơi ở<input id="f_hometown" maxlength="200" value="${val('hometown')}"></label>
       <label>Nghề nghiệp<input id="f_occupation" maxlength="200" value="${val('occupation')}"></label>
@@ -1540,6 +1615,7 @@ function openContribForm(kind, target, preset={}){
     </div>
     <div class="err" id="ferr"></div>
     <div class="actions"><button class="btn primary" id="cSend">Gửi đóng góp</button><button class="btn" id="cCancel">Hủy</button></div>`);
+  bindNameFields(['f_full_name','f_alias','c_name']);
   linkDates('birth'); linkDates('death');
   $('#f_is_alive').addEventListener('change', e=>{ $('#deathWrap').style.display = e.target.checked ? 'none' : ''; });
   if(!isEdit){
@@ -1551,7 +1627,7 @@ function openContribForm(kind, target, preset={}){
   $('#cSend').onclick=async ()=>{
     const err=m=>{ $('#ferr').textContent=m; };
     const r=readPersonFields(); if(r.err) return err(r.err);
-    const name=$('#c_name').value.trim();
+    const name=fixName($('#c_name').value);
     if(name.length<2) return err('Vui lòng nhập họ tên của bạn.');
     const row=r.row;
     if(isEdit){
@@ -1669,7 +1745,9 @@ function setAdmin(on){
   $('#btnAddRoot').style.display = on ? '' : 'none';
   $('#btnExport').style.display = on ? '' : 'none';
   $('#tabDg').hidden = !on;
-  if(!on && tab==='dg'){ tab='tree'; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab==='tree')); }
+  if(!on && tab==='dg'){ pendingTab='dg'; tab='tree'; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab==='tree')); }
+  if(on && pendingTab && tab!==pendingTab){ tab=pendingTab; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab===tab)); }
+  if(on) pendingTab=null;
   if(on) loadContribs().then(render); else { contribs=[]; updBadge(); }
   render();
 }
@@ -1695,15 +1773,32 @@ $('#btnExport').onclick = ()=>{
   a.download = `gia-pha-ton-that-${new Date().toISOString().slice(0,10)}.json`; a.click();
 };
 
-async function refresh(){ try{ await loadAll(); }catch(e){ $('#view').innerHTML=`<div class="notice">Không tải được dữ liệu: ${esc(e.message)}<br>Kiểm tra đã chạy <code>schema.sql</code> và đúng URL/key.</div>`; return; } if(open.size===0) roots().forEach(r=>open.add(r.id)); render(); }
+async function refresh(){ try{ await loadAll(); }catch(e){ $('#view').innerHTML=`<div class="notice">Không tải được dữ liệu: ${esc(e.message)}<br>Kiểm tra đã chạy <code>schema.sql</code> và đúng URL/key.</div>`; return; } if(open.size===0 && !uiRestored) roots().forEach(r=>open.add(r.id)); render(); }
 
 (async function init(){
   if(!configured){ render(); $('#btnAuth').disabled=true; return; }
   const {data:{session}} = await sb.auth.getSession();
   isAdmin = !!session; adminUid = session?.user?.id || null;
   sb.auth.onAuthStateChange((_ev, s)=>{ adminUid = s?.user?.id || null; setAdmin(!!s); });
+  // khôi phục màn hình lần trước
+  const ui=loadUI();
+  if(ui){
+    if(['tree','gio','goc','dg'].includes(ui.tab)){ tab=ui.tab; if(ui.tab==='dg') pendingTab='dg'; }
+    query=ui.q||''; $('#q').value=query;
+    dgFilter=['pending','approved','rejected'].includes(ui.dg)?ui.dg:'pending';
+    if(Array.isArray(ui.open)) ui.open.forEach(id=>open.add(id));
+    uiRestored=true;
+    document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab===tab));
+  }
   await refresh();
+  uiRestored=false;
   setAdmin(isAdmin);
+  if(ui){
+    requestAnimationFrame(()=>{
+      if(ui.y) window.scrollTo(0,ui.y);
+      if(ui.d && byId.has(ui.d) && Date.now()-(ui.t||0) < 30*60e3) showDetail(ui.d);   // mở lại người đang xem (trong 30 phút)
+    });
+  }
 })();
 </script>
 </body>
