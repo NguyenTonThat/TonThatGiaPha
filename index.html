@@ -2000,47 +2000,88 @@ function openBulkPhotos(){
 $('#btnPhotos').onclick=openBulkPhotos;
 
 /* ---------- Nhập ảnh có sẵn trong tài liệu Truồi (thư mục anh-truoi/ + tệp anh-truoi.json) lên Supabase ---------- */
+async function readZipBlobs(file){   // đọc file .zip ngay trên trình duyệt (không cần thư viện ngoài)
+  const buf=new Uint8Array(await file.arrayBuffer()), dv=new DataView(buf.buffer), td=new TextDecoder(), out=new Map();
+  let e=-1; for(let i=buf.length-22;i>=Math.max(0,buf.length-65557);i--){ if(dv.getUint32(i,true)===0x06054b50){ e=i; break; } }
+  if(e<0) throw new Error('Không đọc được file zip');
+  const n=dv.getUint16(e+10,true); let p=dv.getUint32(e+16,true);
+  for(let k=0;k<n;k++){
+    if(dv.getUint32(p,true)!==0x02014b50) break;
+    const method=dv.getUint16(p+10,true), csize=dv.getUint32(p+20,true), nl=dv.getUint16(p+28,true), el=dv.getUint16(p+30,true), cl=dv.getUint16(p+32,true), lho=dv.getUint32(p+42,true);
+    const name=td.decode(buf.subarray(p+46,p+46+nl)); p+=46+nl+el+cl;
+    if(name.endsWith('/') || /(^|\/)\./.test(name) || /__MACOSX/.test(name)) continue;
+    const ds=lho+30+dv.getUint16(lho+26,true)+dv.getUint16(lho+28,true), data=buf.subarray(ds,ds+csize);
+    let blob;
+    if(method===0) blob=new Blob([data]);
+    else if(method===8){
+      if(typeof DecompressionStream==='undefined') throw new Error('Trình duyệt này chưa giải nén được zip. Hãy giải nén file zip rồi chọn các ảnh bên trong.');
+      blob=await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).blob();
+    } else continue;
+    out.set(name.split('/').pop(), new Blob([blob],{type:'image/jpeg'}));
+  }
+  return out;
+}
 async function openImportPhotosTruoi(){
   if(!isAdmin) return;
   let data, pp;
   try{
     const r1=await fetch('anh-truoi.json?v='+Date.now()); if(!r1.ok) throw new Error('anh-truoi.json: HTTP '+r1.status); data=await r1.json();
     const r2=await fetch('phaphe-truoi.json?v='+Date.now()); if(!r2.ok) throw new Error('phaphe-truoi.json: HTTP '+r2.status); pp=await r2.json();
-  }catch(e){ openModal(`<h3>Nhập ảnh phả hệ Truồi</h3><p>Không đọc được tệp (${esc(e.message)}). Hãy đưa <b>anh-truoi.json</b>, <b>phaphe-truoi.json</b> và thư mục <b>anh-truoi</b> lên GitHub cùng chỗ với index.html rồi thử lại.</p><div class="actions"><button class="btn" id="ipX">Đóng</button></div>`); $('#ipX').onclick=closeModal; return; }
+  }catch(e){ openModal(`<h3>Nhập ảnh phả hệ Truồi</h3><p>Không đọc được tệp (${esc(e.message)}). Hãy đưa <b>anh-truoi.json</b> và <b>phaphe-truoi.json</b> lên GitHub cùng chỗ với index.html rồi thử lại.</p><div class="actions"><button class="btn" id="ipX">Đóng</button></div>`); $('#ipX').onclick=closeModal; return; }
   const {map}=planImport(pp.nodes||[]);
-  const rows=(data.anh||[]).map(a=>{ const m=map.get(a.k); const p=m&&!m.isNew?byId.get(m.id):null; return {a,p}; });
-  const found=rows.filter(r=>r.p), missing=rows.length-found.length;
-  const has=found.filter(r=>r.p.photo_url).length;
-  openModal(`<h3>Nhập ảnh phả hệ Truồi</h3>
-    <p class="sub">Nguồn: ${esc(data.nguon||'')}</p>
-    <div class="whobox">Tài liệu có <b>${rows.length}</b> ảnh chân dung (của người trong họ và vợ, chồng).<br>
-      Ghép được với người trong gia phả: <b>${found.length}</b>${missing?`; chưa ghép được <b>${missing}</b> (người đó chưa có trong gia phả, hãy nhập phả hệ Truồi trước)`:''}.<br>
+  const all=(data.anh||[]).map(a=>{ const m=map.get(a.k); const p=m&&!m.isNew?byId.get(m.id):null; return {a,p}; });
+  const blobs=new Map(), urls=new Map();
+  let siteOK=false; try{ const r=await fetch('anh-truoi/'+(data.anh[0]||{}).f,{method:'HEAD'}); siteOK=r.ok; }catch(e){}
+  const draw=()=>{
+    const useBlobs=blobs.size>0, avail=r=>useBlobs?blobs.has(r.a.f):siteOK;
+    const found=all.filter(r=>r.p&&avail(r)), noPerson=all.filter(r=>!r.p).length, noFile=all.filter(r=>r.p&&!avail(r)).length;
+    const has=found.filter(r=>r.p.photo_url).length;
+    const srcOf=r=>{ if(!useBlobs) return 'anh-truoi/'+encodeURIComponent(r.a.f); if(!urls.has(r.a.f)) urls.set(r.a.f,URL.createObjectURL(blobs.get(r.a.f))); return urls.get(r.a.f); };
+    $('#ipBody').innerHTML=`<div class="whobox">Tài liệu có <b>${all.length}</b> ảnh chân dung (người trong họ và vợ, chồng).<br>
+      ${useBlobs||siteOK?`Nguồn ảnh: <b>${useBlobs?`${blobs.size} file bạn vừa chọn`:'thư mục anh-truoi trên trang'}</b>.<br>`:`<b>Chưa có ảnh để tải.</b> Bấm nút bên trên để chọn file <b>anh-truoi.zip</b> (hoặc các ảnh đã giải nén).<br>`}
+      Sẵn sàng tải: <b>${found.length}</b>${noPerson?`; <b>${noPerson}</b> ảnh chưa ghép được vì người đó chưa có trong gia phả (hãy nhập phả hệ Truồi trước)`:''}${noFile&&(useBlobs||siteOK)?`; ${noFile} ảnh không có trong file đã chọn`:''}.<br>
       ${has?`<b>${has}</b> người đã có ảnh.`:'Chưa người nào có ảnh.'}</div>
     <label class="chk" style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="ipRep"> Thay cả ảnh của những người đã có ảnh</label>
     <details class="ph"><summary><b>Xem lại từng ảnh trước khi tải lên</b> <span class="sub">(bỏ chọn ảnh nào bạn thấy sai người)</span></summary>
-      <div class="ph-body" style="max-height:340px;overflow:auto"><table class="gt" style="min-width:300px">${found.map((r,i)=>`<tr><td style="width:24px"><input type="checkbox" data-ip="${i}" checked></td><td style="width:54px"><img src="anh-truoi/${esc(r.a.f)}" alt="" loading="lazy" style="width:46px;height:46px;object-fit:cover;border-radius:50%;border:2px solid var(--thep)"></td><td>${esc(r.p.full_name)}${pYears(r.p)?' <span class="sub">'+esc(pYears(r.p))+'</span>':''}${r.p.photo_url?' <span class="sub">(đã có ảnh)</span>':''}${/giới tính/.test(r.a.note||'')?'<div class="sub">Ghép theo giới tính trong ảnh</div>':''}</td></tr>`).join('')}</table></div></details>
-    <div class="err" id="ipErr"></div>
-    <div class="actions"><button class="btn primary" id="ipGo" ${found.length?'':'disabled'}>Tải ảnh lên</button><button class="btn" id="ipNo">Đóng</button></div>`);
-  $('#ipNo').onclick=closeModal;
-  $('#ipGo').onclick=async ()=>{
-    const rep=$('#ipRep').checked, err=$('#ipErr'); err.style.color='var(--lam)';
-    const todo=found.filter((r,i)=>document.querySelector(`[data-ip="${i}"]`).checked && (rep||!r.p.photo_url));
-    if(!todo.length){ err.textContent='Không có ảnh nào cần tải.'; return; }
-    $('#ipGo').disabled=true; let done=0, fail=[];
-    for(const r of todo){
-      err.textContent=`Đang tải ${done+fail.length+1}/${todo.length}: ${r.p.full_name}…`;
-      try{
-        const blob=await (await fetch('anh-truoi/'+r.a.f)).blob();
-        const up=await uploadPhotoFile(new File([blob],r.a.f,{type:blob.type||'image/jpeg'}),`persons/${r.p.id}`);
-        const {error}=await sb.from('persons').update({photo_url:up.url}).eq('id',r.p.id); if(error) throw error;
-        const old=r.p.photo_url; r.p.photo_url=up.url; if(old) await dropOldPhoto(old,r.p.id); done++;
-      }catch(e){ fail.push(`${r.p.full_name}: ${photoErr(e)}`); if(/kho ảnh|quyền/i.test(photoErr(e))) break; }
-    }
-    await refresh();
-    err.style.color=fail.length?'var(--son)':'var(--lam)';
-    err.innerHTML=`Đã tải lên <b>${done}</b>/${todo.length} ảnh.${fail.length?'<br>'+fail.slice(0,6).map(esc).join('<br>'):''}`;
-    toast(`Đã tải lên ${done} ảnh`); $('#ipGo').textContent='Xong'; $('#ipGo').disabled=false; $('#ipGo').onclick=closeModal;
+      <div class="ph-body" style="max-height:340px;overflow:auto"><table class="gt" style="min-width:300px">${found.map((r,i)=>`<tr><td style="width:24px"><input type="checkbox" data-ip="${i}" checked></td><td style="width:54px"><img src="${srcOf(r)}" alt="" loading="lazy" style="width:46px;height:46px;object-fit:cover;border-radius:50%;border:2px solid var(--thep)"></td><td>${esc(r.p.full_name)}${pYears(r.p)?' <span class="sub">'+esc(pYears(r.p))+'</span>':''}${r.p.photo_url?' <span class="sub">(đã có ảnh)</span>':''}${/giới tính/.test(r.a.note||'')?'<div class="sub">Ghép theo giới tính trong ảnh</div>':''}</td></tr>`).join('')}</table></div></details>`;
+    $('#ipGo').disabled=!found.length;
+    $('#ipGo').onclick=async ()=>{
+      const rep=$('#ipRep').checked, err=$('#ipErr'); err.style.color='var(--lam)';
+      const todo=found.filter((r,i)=>document.querySelector(`[data-ip="${i}"]`).checked && (rep||!r.p.photo_url));
+      if(!todo.length){ err.textContent='Không có ảnh nào cần tải.'; return; }
+      $('#ipGo').disabled=true; $('#ipPick').disabled=true; let done=0, fail=[];
+      for(const r of todo){
+        err.textContent=`Đang tải ${done+fail.length+1}/${todo.length}: ${r.p.full_name}…`;
+        try{
+          const blob=useBlobs?blobs.get(r.a.f):await (await fetch('anh-truoi/'+encodeURIComponent(r.a.f))).blob();
+          const up=await uploadPhotoFile(new File([blob],r.a.f,{type:blob.type||'image/jpeg'}),`persons/${r.p.id}`);
+          const {error}=await sb.from('persons').update({photo_url:up.url}).eq('id',r.p.id); if(error) throw error;
+          const old=r.p.photo_url; r.p.photo_url=up.url; if(old) await dropOldPhoto(old,r.p.id); done++;
+        }catch(e){ fail.push(`${r.p.full_name}: ${photoErr(e)}`); if(/kho ảnh|quyền/i.test(photoErr(e))) break; }
+      }
+      await refresh();
+      err.style.color=fail.length?'var(--son)':'var(--lam)';
+      err.innerHTML=`Đã tải lên <b>${done}</b>/${todo.length} ảnh.${fail.length?'<br>'+fail.slice(0,6).map(esc).join('<br>'):''}`;
+      toast(`Đã tải lên ${done} ảnh`); $('#ipGo').textContent='Xong'; $('#ipGo').disabled=false; $('#ipGo').onclick=closeModal;
+    };
   };
+  openModal(`<h3>Nhập ảnh phả hệ Truồi</h3>
+    <p class="sub">Nguồn: ${esc(data.nguon||'')}. Ảnh được ghép với người trong gia phả, rồi tải lên kho ảnh Supabase.</p>
+    <label class="btn small ph-btn" style="display:inline-block">Chọn file anh-truoi.zip (hoặc các ảnh)…<input type="file" id="ipPick" class="vh" accept=".zip,application/zip,image/*" multiple></label>
+    <div id="ipBody"></div><div class="err" id="ipErr"></div>
+    <div class="actions"><button class="btn primary" id="ipGo" disabled>Tải ảnh lên</button><button class="btn" id="ipNo">Đóng</button></div>`);
+  $('#ipNo').onclick=closeModal;
+  $('#ipPick').addEventListener('change',async e=>{
+    const fs=[...e.target.files]; e.target.value=''; const err=$('#ipErr'); err.style.color='var(--lam)'; err.textContent='Đang đọc file…';
+    try{
+      for(const f of fs){
+        if(/\.zip$/i.test(f.name)||f.type==='application/zip'||f.type==='application/x-zip-compressed'){ (await readZipBlobs(f)).forEach((b,n)=>blobs.set(n,b)); }
+        else if(/^image\//.test(f.type)||/\.(jpe?g|png|webp)$/i.test(f.name)) blobs.set(f.name,f);
+      }
+      err.textContent=''; draw();
+    }catch(ex){ err.style.color='var(--son)'; err.textContent=ex.message||String(ex); }
+  });
+  draw();
 }
 $('#btnImportPhotos').onclick=openImportPhotosTruoi;
 
