@@ -247,6 +247,9 @@ img.about-av{cursor:zoom-in}
 .k-path{background:#fff;border:3px solid #1F4E8C}.k-m{background:#DCEFF0;border:1.5px solid #3C7F86}.k-f{background:#FBE9F0;border:1.5px solid #B05A7A}
 .sdc-wrap{overflow:auto;max-height:80vh;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#fffdf5,#fbf4de);padding:0 4px 4px;-webkit-overflow-scrolling:touch}
 .sdc-wrap svg{display:block}
+.sdc-per{cursor:pointer;outline:none}
+.sdc-per:hover>rect,.sdc-per:focus-visible>rect{stroke-width:3;filter:drop-shadow(0 2px 3px rgba(80,55,10,.3))}
+.sdc-ph{cursor:zoom-in}
 .sdc-wrap .sdc-head{position:sticky;top:0;z-index:3;background:#fdf6e0;border-bottom:1px solid #ecdcae;box-shadow:0 2px 4px rgba(120,90,30,.12)}
 .tl-fig{margin:14px 0;text-align:center}
 .tl-fig img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
@@ -1185,7 +1188,11 @@ function sdcSVG(){   // cây nằm ngang: Đời 1 ở bên trái, các đời s
   const GAPX=30, SLOT=6, TOP=12, PAD=10, HEADH=38, byId2=new Map(SDC_DATA.map(n=>[n.id,{...n,kids:[]}]));
   const roots=[]; byId2.forEach(n=>{ if(n.p) byId2.get(n.p).kids.push(n); else roots.push(n); });
   const all=[...byId2.values()], maxG=Math.max(...all.map(n=>n.g));
-  all.forEach(n=>{ n.t=n.n+(n.o?` (${n.o})`:''); n.h=n.l?40:28; n.w=Math.max(46, Math.ceil(pTW(n.t,true,13))+16, n.l?Math.ceil(pTW(n.l,false,9.5))+14:0); });
+  const link={}, doc=persons.find(p=>!p.spouse_of && vnKey(p.full_name)==='ton that doc');   // cụ Dốc và các con có trong gia phả
+  if(doc){ link.doc=doc; const ks=kids.get(doc.id)||[], lw=s=>vnKey(s).split(' ').pop();
+    byId2.forEach(n=>{ if(n.p==='doc'){ const m=ks.find(k=>lw(k.full_name)===lw(n.n.replace(/^C\.\s*/,'')) && ((k.gender==='F')===!!n.f)); if(m) link[n.id]=m; } }); }
+  all.forEach(n=>{ n.t=n.n+(n.o?` (${n.o})`:''); n.per=link[n.id]||null; n.ph=!!(n.per&&n.per.photo_url); n.h=n.ph?48:(n.l?40:28);
+    n.w=Math.max(46, Math.ceil(pTW(n.t,true,13))+16, n.l?Math.ceil(pTW(n.l,false,9.5))+14:0)+(n.ph?40:0); });
   const colW=[]; for(let g=1; g<=maxG; g++) colW[g]=Math.max(...all.filter(n=>n.g===g).map(n=>n.w));
   const colX=[]; let xx=PAD; for(let g=1; g<=maxG; g++){ colX[g]=xx; xx+=colW[g]+GAPX; }
   let cursor=TOP;
@@ -1204,12 +1211,15 @@ function sdcSVG(){   // cây nằm ngang: Đời 1 ở bên trái, các đời s
     n.kids.forEach(k=>{ if(k.pa&&n.pa) hi+=`M${x1} ${n.cy}H${mid}V${k.cy}H${k.x}`; });
   });
   let s=`<path d="${lines}" fill="none" stroke="#9AA9AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="${hi}" fill="none" stroke="#1F4E8C" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>`;
-  all.forEach(n=>{
+  all.forEach((n,idx)=>{
     const isDoc=n.id==='doc';
     const fill=isDoc?'#FFE9A8':n.pa?'#FFFFFF':n.f?'#FBE9F0':'#DCEFF0', stroke=isDoc?'#A4161A':n.pa?'#1F4E8C':n.f?'#B05A7A':'#3C7F86';
-    s+=`<g><title>${esc(n.t)}${n.l?' · '+esc(n.l):''}</title><rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="7" fill="${fill}" stroke="${stroke}" stroke-width="${n.pa?3:1.4}"/>`+
-       `<text x="${n.x+n.w/2}" y="${n.y+(n.l?17:19)}" text-anchor="middle" font-size="13" font-weight="700" fill="#1D1B16">${esc(n.t)}</text>`+
-       (n.l?`<text x="${n.x+n.w/2}" y="${n.y+32}" text-anchor="middle" font-size="9.5" fill="${/^(Đệ|Nhánh)/.test(n.l)?'#A4161A':'#5A5A5A'}">${esc(n.l)}</text>`:'')+`</g>`;
+    const tx=n.ph?n.x+40+(n.w-40)/2:n.x+n.w/2, dy=n.h-(n.l?40:28);
+    let av='';
+    if(n.ph){ const R=18, ax=n.x+23, ay=n.cy; av=`<clipPath id="sdcp${idx}"><circle cx="${ax}" cy="${ay}" r="${R}"/></clipPath><g class="sdc-ph" data-photo="${n.per.id}"><title>Bấm để xem ảnh đầy đủ</title><circle cx="${ax}" cy="${ay}" r="${R+2}" fill="${stroke}"/><image href="${esc(n.per.photo_url)}" x="${ax-R}" y="${ay-R}" width="${R*2}" height="${R*2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#sdcp${idx})"/></g>`; }
+    s+=`<g${n.per?` class="sdc-per" data-sdcpid="${n.per.id}" tabindex="0" role="button"`:''}><title>${esc(n.t)}${n.l?' · '+esc(n.l):''}${n.per?' · bấm để xem thông tin':''}</title><rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="7" fill="${fill}" stroke="${stroke}" stroke-width="${n.pa?3:1.4}"/>`+av+
+       `<text x="${tx}" y="${n.y+(n.l?17:19)+dy/2}" text-anchor="middle" font-size="13" font-weight="700" fill="#1D1B16">${esc(n.t)}</text>`+
+       (n.l?`<text x="${tx}" y="${n.y+32+dy/2}" text-anchor="middle" font-size="9.5" fill="${/^(Đệ|Nhánh)/.test(n.l)?'#A4161A':'#5A5A5A'}">${esc(n.l)}</text>`:'')+`</g>`;
   });
   let hs=''; for(let g=1; g<=maxG; g++){ const cx=colX[g]+colW[g]/2; hs+=`<rect x="${cx-25}" y="8" width="50" height="22" rx="4" fill="#FFF8DC" stroke="#A4161A" stroke-width="1.1"/><text x="${cx}" y="23" text-anchor="middle" font-size="12" font-weight="700" fill="#A4161A">Đời ${g}</text>`; }
   sdcBase={W,H,HEADH};
@@ -1378,7 +1388,7 @@ function renderGoc(){
       <div class="sdc-bar"><div class="czoom"><button type="button" class="btn small" data-sdc="-" aria-label="Thu nhỏ">−</button><span id="sdcZv">${Math.round(sdcZoom*100)}%</span><button type="button" class="btn small" data-sdc="+" aria-label="Phóng to">+</button><button type="button" class="btn small" data-sdc="fit">Vừa khung</button></div>
         <span class="sdc-key"><i class="k-path"></i> đường từ ông Kỳ đến cụ Dốc</span><span class="sdc-key"><i class="k-m"></i> nam</span><span class="sdc-key"><i class="k-f"></i> nữ (C. = cô)</span></div>
       <div class="sdc-wrap" id="sdcWrap">${sdcSVG()}</div>
-      <p class="sub">Số trong ngoặc là thứ tự con trai trong nhà (ví dụ ông Cơ là con thứ 2 của ông Trí). Khung viền xanh đậm và đường tô đậm là dòng trực hệ của gia đình; cụ Dốc có mã số <b>4-2-3/2-2-2/1-2</b>. Nhãn đỏ là tên chi, tên nhánh. Trong sơ đồ, ông Tẩu (Nhánh IV) là nhánh của gia đình.${gC(13)}</p>
+      <p class="sub">Số trong ngoặc là thứ tự con trai trong nhà (ví dụ ông Cơ là con thứ 2 của ông Trí). Khung viền xanh đậm và đường tô đậm là dòng trực hệ của gia đình; cụ Dốc có mã số <b>4-2-3/2-2-2/1-2</b>. Nhãn đỏ là tên chi, tên nhánh. Trong sơ đồ, ông Tẩu (Nhánh IV) là nhánh của gia đình. Những vị đã có trong gia phả điện tử (cụ Dốc và các con của cụ) hiện kèm <b>ảnh tròn</b> nếu đã có ảnh: bấm vào ảnh để xem ảnh đầy đủ, bấm vào ô để xem thông tin chi tiết.${gC(13)}</p>
     </section>
 
     <section class="gsec" id="g-phan-he"><h3>Tiền hệ, Phiên hệ và Đế hệ</h3>
@@ -1588,6 +1598,7 @@ $('#view').addEventListener('click', e=>{
   const ci=e.target.closest('[data-cid]'); if(ci){ reviewContrib(ci.dataset.cid); return; }
   const tm=e.target.closest('[data-tmode]'); if(tm){ treeMode=tm.dataset.tmode; chartFirst=true; render(); return; }
   const zm=e.target.closest('[data-zoom]'); if(zm){ const k=zm.dataset.zoom; if(k==='fit'){ const wrap=$('#chartWrap'); if(wrap&&chartLast) setZoom((wrap.clientWidth-8)/chartLast.W); } else setZoom(chartZoom*(k==='+'?1.2:1/1.2)); return; }
+  const sp=e.target.closest('[data-sdcpid]'); if(sp){ showDetail(sp.dataset.sdcpid); return; }
   const sz=e.target.closest('[data-sdc]'); if(sz){ const k=sz.dataset.sdc; if(k==='fit'){ const w=$('#sdcWrap'); if(w&&sdcBase) sdcSetZoom((w.clientWidth-10)/sdcBase.W); } else sdcSetZoom(sdcZoom*(k==='+'?1.2:1/1.2)); return; }
   const ci2=e.target.closest('[data-cinfo]'); if(ci2){ e.stopPropagation(); chartSel=ci2.dataset.cinfo; chartHighlight(); showDetail(ci2.dataset.cinfo); return; }
   const ct=e.target.closest('[data-ctog]'); if(ct){ chartToggle(ct.dataset.ctog); return; }
@@ -1597,7 +1608,8 @@ $('#view').addEventListener('click', e=>{
   const c = e.target.closest('[data-id]');
   if(c) showDetail(c.dataset.id);
 });
-$('#view').addEventListener('keydown', e=>{ if((e.key==='Enter'||e.key===' ') && e.target.matches && e.target.matches('img[data-lbsrc]')){ e.preventDefault(); const of=e.target.closest('figure')&&e.target.closest('figure').querySelector('a.tl-orig:not([hidden])'); openLightboxSrc(e.target.getAttribute('src'), e.target.alt||'Sơ đồ', '', true, of?of.getAttribute('href'):null); return; }
+$('#view').addEventListener('keydown', e=>{ if((e.key==='Enter'||e.key===' ') && e.target.matches && e.target.matches('[data-sdcpid]')){ e.preventDefault(); showDetail(e.target.dataset.sdcpid); return; }
+  if((e.key==='Enter'||e.key===' ') && e.target.matches && e.target.matches('img[data-lbsrc]')){ e.preventDefault(); const of=e.target.closest('figure')&&e.target.closest('figure').querySelector('a.tl-orig:not([hidden])'); openLightboxSrc(e.target.getAttribute('src'), e.target.alt||'Sơ đồ', '', true, of?of.getAttribute('href'):null); return; }
   if(e.key==='Enter'||e.key===' '){ const n=e.target.closest('[data-cn]'); if(n){ e.preventDefault(); chartSelect(n.dataset.cn,true); return; } } if(e.key==='Enter'){ const c=e.target.closest('.card[data-id]'); if(c) showDetail(c.dataset.id);} });
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
   if(b.dataset.tab!==tab && query){ query=''; $('#q').value=''; }   // đổi trang thì xóa chữ trong ô tìm kiếm, để trang mới hiện đủ thông tin
