@@ -286,6 +286,16 @@ dd{margin:0}
   .tree .card{width:max-content;max-width:none}
 }
 @media (prefers-reduced-motion:no-preference){.card,.btn,.gio .row{transition:border-color .15s,box-shadow .15s,background .15s}}
+.tmode{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 12px}
+.czoom{display:flex;align-items:center;gap:6px}
+.czoom span{min-width:42px;text-align:center;font-size:13px;color:var(--muted)}
+.chart-wrap{overflow:auto;max-height:78vh;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#fffdf5,#fbf4de);padding:4px;-webkit-overflow-scrolling:touch}
+.chart-wrap svg{display:block}
+.cn{cursor:pointer;outline:none}
+.cn:hover rect:first-of-type,.cn:focus-visible rect:first-of-type{stroke-width:2.6;filter:drop-shadow(0 2px 4px rgba(80,55,10,.25))}
+.cinfo{cursor:help}
+.cinfo:hover circle{fill:#fff0c2}
+.ctog{cursor:pointer}
 /* ---------- Tra quan hệ ---------- */
 .kin{max-width:760px;margin:0 auto}
 .kin h2{font:700 20px var(--serif);color:var(--son-dam);margin:0 0 4px}
@@ -442,6 +452,8 @@ body.poster-open .toast{z-index:130}
   <button class="btn small" id="btnAddRoot" style="display:none">Thêm thủy tổ</button>
   <button class="btn small" id="btnExport" style="display:none">Xuất JSON</button>
   <button class="btn small" id="btnImport" style="display:none">Nhập phả hệ Truồi</button>
+  <button class="btn small" id="btnPhotos" style="display:none">Tải ảnh hàng loạt</button>
+  <button class="btn small" id="btnImportPhotos" style="display:none">Nhập ảnh phả hệ Truồi</button>
   <button class="btn small primary" id="btnContrib">Đóng góp thông tin</button>
   <button class="btn small" id="btnAuth">Quản trị</button>
 </div></div>
@@ -459,7 +471,7 @@ body.poster-open .toast{z-index:130}
 <div class="poster" id="poster" hidden>
   <div class="poster-bar">
     <label>Khổ giấy
-      <select id="pSize"><option value="A4">A4</option><option value="A3" selected>A3</option><option value="A2">A2</option><option value="A1">A1</option></select>
+      <select id="pSize"><option value="A4">A4</option><option value="A3" selected>A3</option><option value="A2">A2</option><option value="A1">A1</option><option value="A0">A0</option></select>
     </label>
     <label>Hướng giấy
       <select id="pOri"><option value="auto">Tự chọn cho vừa</option><option value="p">Dọc</option><option value="l">Ngang</option></select>
@@ -747,6 +759,105 @@ function gioBanner(){
   if(!soon.length) return '';
   return `<div class="gio-bn"><b>Sắp đến giỗ</b>`+soon.map(x=>`<a data-id="${x.p.id}">${esc(x.p.full_name)}: ${x.g.d}/${x.g.m} âm lịch, ${pad(x.n.d)}/${pad(x.n.m)}/${x.n.y} dương lịch (${x.n.days===0?'hôm nay':'còn '+x.n.days+' ngày'})</a>`).join('')+`</div>`;
 }
+/* ---------- Sơ đồ cây tương tác: bấm vào một người để mở hoặc đóng con cháu ---------- */
+let treeMode='list', chartZoom=1, chartPending=null, chartPos=new Map();
+try{ treeMode=localStorage.getItem('gp_tree_mode')==='chart'?'chart':'list'; const z=parseFloat(localStorage.getItem('gp_chart_zoom')); if(z>0.3&&z<2.5) chartZoom=z; }catch(e){}
+const CH={W:150,H:74,GX:14,GY:58,LAB:62,PAD:14};
+function treeModeBar(){
+  return `<div class="tmode"><div class="seg" role="group" aria-label="Kiểu hiển thị cây">
+      <button type="button" class="segb" data-tmode="list" aria-pressed="${treeMode==='list'}">Danh sách</button>
+      <button type="button" class="segb" data-tmode="chart" aria-pressed="${treeMode==='chart'}">Sơ đồ cây</button></div>
+    ${treeMode==='chart'?`<div class="czoom"><button type="button" class="btn small" data-zoom="-" aria-label="Thu nhỏ">−</button><span id="czv">${Math.round(chartZoom*100)}%</span><button type="button" class="btn small" data-zoom="+" aria-label="Phóng to">+</button><button type="button" class="btn small" data-zoom="fit">Vừa khung</button></div>
+    <span class="sub">Bấm vào một người để mở hoặc đóng con cháu. Bấm ⓘ để xem chi tiết.</span>`:''}</div>`;
+}
+function chartLayout(vs){
+  const mk=(p,d)=>{
+    const ks=(kids.get(p.id)||[]);
+    const expanded = vs ? vs.show.has(p.id) && ks.some(c=>vs.show.has(c.id)) : open.has(p.id);
+    const vis = ks.filter(c=>!vs||vs.show.has(c.id));
+    return {p,depth:d,total:ks.length,expanded:expanded&&vis.length>0,kids:expanded?vis.map(c=>mk(c,d+1)):[],w:CH.W,h:CH.H};
+  };
+  const rs=roots().filter(r=>!vs||vs.show.has(r.id));
+  const forest=rs.map(r=>mk(r,0));
+  const all=[]; (function walk(ns){ ns.forEach(n=>{ all.push(n); walk(n.kids); }); })(forest);
+  const maxD=Math.max(0,...all.map(n=>n.depth));
+  const rowY=[]; for(let d=0;d<=maxD+1;d++) rowY[d]=d*(CH.H+CH.GY);
+  const sw=n=>{ n.cw=n.kids.length?n.kids.reduce((a,k)=>a+sw(k),0)+CH.GX*(n.kids.length-1):0; return n.sw=Math.max(n.w,n.cw); };
+  forest.forEach(sw);
+  const place=(n,left)=>{ n.y=rowY[n.depth]; let cl=left+(n.sw-n.cw)/2; n.kids.forEach(k=>{ place(k,cl); cl+=k.sw+CH.GX; }); n.cx=n.kids.length?(n.kids[0].cx+n.kids[n.kids.length-1].cx)/2:left+n.sw/2; };
+  let left=0; forest.forEach(r=>{ place(r,left); left+=r.sw+CH.GX*2; });
+  return {forest,all,rowY,maxD,width:Math.max(left-CH.GX*2,CH.W)};
+}
+function chartLines(all){   // đường nối kiểu sơ đồ tổ chức: thả xuống, nối ngang, thả tới từng con
+  let d='';
+  all.forEach(n=>{
+    if(!n.kids.length) return;
+    const y1=n.y+n.h+11, yc=n.kids[0].y, mid=yc-CH.GY/2+4, xs=n.kids.map(k=>k.cx), a=Math.min(...xs,n.cx), b=Math.max(...xs,n.cx);
+    d+=`M${n.cx} ${y1}V${mid}`; if(b>a) d+=`M${a} ${mid}H${b}`;
+    n.kids.forEach(k=>{ d+=`M${k.cx} ${mid}V${k.y}`; });
+  });
+  return d?`<path d="${d}" fill="none" stroke="#7A4A22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`:'';
+}
+function chartSVG(L,vs){
+  const W=L.width+CH.LAB+CH.PAD*2, H=(L.maxD+1)*(CH.H+CH.GY)-CH.GY+CH.PAD*2;
+  const ox=CH.PAD+CH.LAB, oy=CH.PAD, g=genOff();
+  let s=`<g transform="translate(${ox} ${oy})">`+chartLines(L.all);
+  const fit=(t,b,max)=>{ let z=13; while(pTW(t,b,z)>max && z>9) z-=0.5; if(pTW(t,b,z)>max){ while(t.length>4 && pTW(t+'…',b,z)>max) t=t.slice(0,-1); t+='…'; } return [t,z]; };
+  L.all.forEach(n=>{
+    const p=n.p, F=p.gender==='F', col=F?'#6A3F8F':'#1F4E8C', x=n.cx-n.w/2, y=n.y;
+    const sp=(spouses.get(p.id)||[]).map(x=>x.full_name)[0]||'';
+    const [nm,nz]=fit(p.full_name,true,n.w-26);
+    const yr=years(p), hit=vs&&vs.hit.has(p.id);
+    s+=`<g class="cn${n.total?' has':''}${n.expanded?' open':''}" data-cn="${p.id}" tabindex="0" role="button" aria-label="${esc(p.full_name)}${n.total?(n.expanded?', đang mở con cháu':', có '+n.total+' người con'):''}" aria-expanded="${n.total?n.expanded:'false'}">
+      <rect x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="9" fill="${hit?'#FFF1C2':'#fff'}" stroke="${hit?'#D9A93F':col}" stroke-width="${hit?3:1.6}"${p.is_alive?'':' stroke-dasharray="0"'} />
+      <rect x="${x}" y="${y+6}" width="5" height="${n.h-12}" rx="2.5" fill="${col}"/>
+      <text x="${x+14}" y="${y+22}" font-size="${nz}" font-weight="700" fill="#2A0F08">${esc(nm)}</text>
+      ${yr?`<text x="${x+14}" y="${y+38}" font-size="11" fill="#6F6556">${esc(yr)}</text>`:''}
+      ${sp?`<text x="${x+14}" y="${y+53}" font-size="10.5" fill="#8A5E0E">${esc((F?'Chồng: ':'Vợ: ')+fit(sp,false,n.w-62)[0])}</text>`:''}
+      <g class="cinfo" data-cinfo="${p.id}" role="button" aria-label="Xem chi tiết ${esc(p.full_name)}"><circle cx="${x+n.w-14}" cy="${y+14}" r="9" fill="#FFF8DC" stroke="#C88A1A" stroke-width="1.2"/><text x="${x+n.w-14}" y="${y+18}" text-anchor="middle" font-size="12" font-weight="700" fill="#8A5E0E">i</text></g>
+      ${n.total?`<g class="ctog"><circle cx="${n.cx}" cy="${y+n.h}" r="11" fill="${n.expanded?'#fff':'#A4161A'}" stroke="#A4161A" stroke-width="1.6"/><text x="${n.cx}" y="${y+n.h+4}" text-anchor="middle" font-size="${n.expanded?16:11}" font-weight="700" fill="${n.expanded?'#A4161A':'#fff'}">${n.expanded?'−':'+'+n.total}</text></g>`:''}
+    </g>`;
+  });
+  s+='</g>';
+  // nhãn Đời n bên trái
+  const rows=[...new Set(L.all.map(n=>n.depth))];
+  rows.forEach(d=>{ const yy=oy+L.rowY[d]+CH.H/2-11; s+=`<rect x="${CH.PAD-6}" y="${yy}" width="52" height="22" rx="4" fill="#FFF8DC" stroke="#A4161A" stroke-width="1.1"/><text x="${CH.PAD+20}" y="${yy+15}" text-anchor="middle" font-size="12" font-weight="700" fill="#A4161A">Đời ${d+1+(L.base||0)+g}</text>`; });
+  return {svg:`<svg id="chartSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W.toFixed(0)} ${H.toFixed(0)}" width="${Math.round(W*chartZoom)}" height="${Math.round(H*chartZoom)}" font-family='${PO_FONT}' role="group" aria-label="Sơ đồ cây phả hệ">${s}</svg>`, W, H, ox};
+}
+function renderChart(){
+  const q=query.trim().toLowerCase(); const vs=q?visibleSet(q):null;
+  if(!roots().length) return `<div class="empty">Chưa có dữ liệu.</div>`;
+  const L=chartLayout(vs); if(!L.all.length) return `<div class="empty">Không tìm thấy “${esc(query)}”.</div>`;
+  chartPos=new Map(L.all.map(n=>[n.p.id,{cx:n.cx,y:n.y}]));
+  const c=chartSVG(L,vs); chartLast={W:c.W,H:c.H,ox:c.ox};
+  return (q?'':gioBanner())+`<div class="chart-wrap" id="chartWrap">${c.svg}</div><div class="legend"><span><i class="M"></i>Nam</span><span><i class="F"></i>Nữ</span><span class="sub">Vòng đỏ có dấu + là người còn con cháu chưa mở; ${L.all.length} người đang hiện.</span></div>`;
+}
+let chartLast=null;
+function chartAfterRender(){
+  const wrap=$('#chartWrap'); if(!wrap) return;
+  if(chartPending){   // giữ nguyên vị trí người vừa bấm trên màn hình
+    const np=chartPos.get(chartPending.id);
+    if(np){ wrap.scrollLeft=(chartLast.ox+np.cx)*chartZoom-chartPending.screenX; }
+    chartPending=null;
+  } else if(chartFirst){ const r=roots()[0]; const np=r&&chartPos.get(r.id); if(np) wrap.scrollLeft=Math.max(0,(chartLast.ox+np.cx)*chartZoom-wrap.clientWidth/2); }
+  chartFirst=false;
+}
+let chartFirst=true;
+function setZoom(z){
+  chartZoom=Math.min(2.2,Math.max(0.35,z)); try{ localStorage.setItem('gp_chart_zoom',String(chartZoom)); }catch(e){}
+  const wrap=$('#chartWrap'), svg=$('#chartSvg'); if(!svg||!chartLast) { render(); return; }
+  const mid=(wrap.scrollLeft+wrap.clientWidth/2)/ (parseFloat(svg.getAttribute('width'))/chartLast.W);
+  svg.setAttribute('width',Math.round(chartLast.W*chartZoom)); svg.setAttribute('height',Math.round(chartLast.H*chartZoom));
+  wrap.scrollLeft=mid*chartZoom-wrap.clientWidth/2; const v=$('#czv'); if(v) v.textContent=Math.round(chartZoom*100)+'%';
+}
+function chartToggle(id){
+  const wrap=$('#chartWrap'), pos=chartPos.get(id); const p=byId.get(id);
+  if(!(kids.get(id)||[]).length){ showDetail(id); return; }
+  if(wrap&&pos) chartPending={id,screenX:(chartLast.ox+pos.cx)*chartZoom-wrap.scrollLeft};
+  open.has(id)?open.delete(id):open.add(id);
+  if(query.trim()){ query=''; $('#q').value=''; }
+  render();
+}
 let GEN_OFF=0;
 function nodeHTML(p, depth, vs){
   if(vs && !vs.show.has(p.id)) return '';
@@ -772,13 +883,14 @@ function nodeHTML(p, depth, vs){
 
 function renderTree(){
   GEN_OFF=genOff();
+  if(treeMode==='chart') return treeModeBar()+renderChart();
   const q = query.trim().toLowerCase();
   const vs = q ? visibleSet(q) : null;
   const rs = roots();
   if(!rs.length) return `<div class="empty">Chưa có dữ liệu. ${isAdmin?'Bấm “Thêm thủy tổ” để bắt đầu.':'Quản trị viên hãy đăng nhập để thêm thành viên.'}</div>`;
   const html = rs.map(r=>nodeHTML(r,1,vs)).join('');
   if(!html.trim()) return `<div class="empty">Không tìm thấy “${esc(query)}”.</div>`;
-  return (q?'':gioBanner()) + `<div class="tscroll" id="tscroll"><div class="tinner"><ul class="tree">${html}</ul></div></div><div class="trail" id="trail" hidden><span>◂</span><input type="range" id="trailRange" min="0" max="0" value="0" step="1" aria-label="Trượt ngang phả hệ"><span>▸</span></div>` + `<div class="legend"><span><i class="M"></i>Nam</span><span><i class="F"></i>Nữ</span></div>`;
+  return treeModeBar() + (q?'':gioBanner()) + `<div class="tscroll" id="tscroll"><div class="tinner"><ul class="tree">${html}</ul></div></div><div class="trail" id="trail" hidden><span>◂</span><input type="range" id="trailRange" min="0" max="0" value="0" step="1" aria-label="Trượt ngang phả hệ"><span>▸</span></div>` + `<div class="legend"><span><i class="M"></i>Nam</span><span><i class="F"></i>Nữ</span></div>`;
 }
 
 const CLAN = {
@@ -1200,7 +1312,8 @@ function render(){
   const isGoc = tab==='goc', isDg = tab==='dg', isKin = tab==='kin';
   ['#q','#btnExpand','#btnCollapse','#btnPrint'].forEach(s=>{ $(s).style.display = (isGoc||isDg||isKin) ? 'none' : ''; });
   $('#view').innerHTML = tab==='tree' ? renderTree() : isGoc ? renderGoc() : isDg ? renderContribs() : isKin ? renderKin() : renderGio();
-  if(tab==='tree') initTreeScroll();
+  if(tab==='tree' && treeMode==='list') initTreeScroll();
+  if(tab==='tree' && treeMode==='chart') chartAfterRender();
   if(isKin) bindKin();
   const gens = persons.length ? maxDepth() : 0;
   const go=genOff();
@@ -1242,12 +1355,16 @@ $('#view').addEventListener('click', e=>{
   const go=e.target.closest('[data-go]'); if(go){ e.preventDefault(); const el=document.getElementById(go.dataset.go); if(el){ if(el.tagName==='DETAILS') el.open=true; else { const d=el.closest('details'); if(d) d.open=true; } el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } return; }
   const dgf=e.target.closest('[data-dgf]'); if(dgf){ dgFilter=dgf.dataset.dgf; render(); return; }
   const ci=e.target.closest('[data-cid]'); if(ci){ reviewContrib(ci.dataset.cid); return; }
+  const tm=e.target.closest('[data-tmode]'); if(tm){ treeMode=tm.dataset.tmode; chartFirst=true; try{ localStorage.setItem('gp_tree_mode',treeMode); }catch(_){} render(); return; }
+  const zm=e.target.closest('[data-zoom]'); if(zm){ const k=zm.dataset.zoom; if(k==='fit'){ const wrap=$('#chartWrap'); if(wrap&&chartLast) setZoom((wrap.clientWidth-8)/chartLast.W); } else setZoom(chartZoom*(k==='+'?1.2:1/1.2)); return; }
+  const ci2=e.target.closest('[data-cinfo]'); if(ci2){ e.stopPropagation(); showDetail(ci2.dataset.cinfo); return; }
+  const cn=e.target.closest('[data-cn]'); if(cn){ chartToggle(cn.dataset.cn); return; }
   const tg = e.target.closest('[data-tog]');
   if(tg){ e.stopPropagation(); const id=tg.dataset.tog; open.has(id)?open.delete(id):open.add(id); render(); return; }
   const c = e.target.closest('[data-id]');
   if(c) showDetail(c.dataset.id);
 });
-$('#view').addEventListener('keydown', e=>{ if(e.key==='Enter'){ const c=e.target.closest('.card[data-id]'); if(c) showDetail(c.dataset.id);} });
+$('#view').addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ const n=e.target.closest('[data-cn]'); if(n){ e.preventDefault(); chartToggle(n.dataset.cn); return; } } if(e.key==='Enter'){ const c=e.target.closest('.card[data-id]'); if(c) showDetail(c.dataset.id);} });
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
   tab=b.dataset.tab; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b)); render(); if(tab==='dg') loadContribs().then(render);
 }));
@@ -1286,6 +1403,14 @@ function showDetail(id){
     ${p.alias?`<div class="sub">${esc(p.alias)}</div>`:''}
     <dl>${rows.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>
     ${sp.length?`<div class="sp-sec"><div class="sp-h">${p.gender==='M'?'Vợ':'Chồng'}</div>${sp.map(s=>`<div class="sp-row"><a class="sp-name" href="#" data-sp="${s.id}">${esc(s.full_name)}</a><span class="sub">${esc(pYears(s))}</span>${isAdmin?`<span class="sp-act"><button class="btn small" data-spe="${s.id}">Sửa</button><button class="btn small danger" data-spd="${s.id}">Xóa</button></span>`:''}</div>`).join('')}</div>`:''}
+${isAdmin?`<div class="ph-act" style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <label class="btn small ph-btn">${p.photo_url?'Đổi ảnh':'Thêm ảnh'}<input type="file" id="dPhFile" class="vh" accept="image/*"></label>
+        <label class="btn small ph-btn">Chụp ảnh<input type="file" id="dPhCam" class="vh" accept="image/*" capture="environment"></label>
+        ${p.photo_url?'<button class="btn small danger" id="dPhDel">Xóa ảnh</button>':''}</div>`
+      :`<div class="ph-act" style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <label class="btn small ph-btn">Gửi ảnh cho người này<input type="file" id="vPhFile" class="vh" accept="image/*"></label>
+        <label class="btn small ph-btn">Chụp ảnh<input type="file" id="vPhCam" class="vh" accept="image/*" capture="environment"></label></div>`}
+    <div class="hint" id="phSt"></div>
     <div class="actions"><button class="btn small" id="aKin">Tra quan hệ</button>${isAdmin?`
       <button class="btn small" id="aEdit">Sửa</button>
       <button class="btn small" id="aChild">Thêm con</button>
@@ -1296,6 +1421,7 @@ function showDetail(id){
       ${p.spouse_of?'':`<button class="btn small" id="cSpouse">Đề xuất thêm ${p.gender==='M'?'vợ':'chồng'}</button>`}`}
     </div>`);
   document.querySelectorAll('#modal [data-sp]').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); showDetail(a.dataset.sp); }));
+  bindDetailPhoto(p);
   $('#aKin').onclick=()=>{ kinA=p.id; kinB=null; closeModal(); tab='kin'; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab==='kin')); render(); window.scrollTo(0,0); };
   if(isAdmin){
     document.querySelectorAll('#modal [data-spe]').forEach(b=>b.addEventListener('click',()=>editSpouse(byId.get(b.dataset.spe), p.id)));
@@ -1748,6 +1874,176 @@ function bindKin(){
   $('#kinSwap').onclick=()=>{ const t=kinA; kinA=kinB; kinB=t; render(); };
   show();
 }
+/* ---------- Ảnh từng người: thêm, đổi, xóa; gửi ảnh (khách); tải hàng loạt (quản trị) ---------- */
+function photoErr(e){
+  const m=String(e&&e.message||e);
+  return /bucket/i.test(m) ? 'Chưa có kho ảnh. Hãy chạy file anh.sql trong Supabase (SQL Editor).' : /row-level|policy|unauthor/i.test(m) ? 'Không có quyền tải ảnh lên. Hãy chạy lại file anh.sql.' : 'Không tải được ảnh: '+m;
+}
+async function uploadPhotoFile(file, folder, prefix){
+  const {blob,w,h}=await shrinkImage(file);
+  const path=`${folder}/${prefix?prefix+'-':''}${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}.jpg`;
+  const {error}=await sb.storage.from('photos').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000'});
+  if(error) throw error;
+  return {url:sb.storage.from('photos').getPublicUrl(path).data.publicUrl, path, kb:Math.max(1,Math.round(blob.size/1024)), w, h};
+}
+const storagePathOf=u=>{ const m=String(u||'').match(/\/storage\/v1\/object\/public\/photos\/([^?#]+)/); return m?decodeURIComponent(m[1]):null; };
+async function dropOldPhoto(url, exceptId){   // xóa file ảnh cũ trong kho nếu không còn ai dùng
+  const path=storagePathOf(url); if(!path) return;
+  if(persons.some(x=>x.id!==exceptId && x.photo_url===url)) return;
+  try{ await sb.storage.from('photos').remove([path]); }catch(e){}
+}
+const isImageFile=f=>/^image\//.test(f.type)||/\.(jpe?g|png|webp|heic|heif|gif|bmp)$/i.test(f.name);
+async function setPersonPhoto(p, file, say){
+  say('Đang giảm kích thước ảnh…');
+  const up=await uploadPhotoFile(file,`persons/${p.id}`);
+  say(`Đã giảm còn ${up.kb} KB (${up.w}×${up.h}). Đang lưu…`);
+  const {error}=await sb.from('persons').update({photo_url:up.url}).eq('id',p.id);
+  if(error) throw error;
+  const old=p.photo_url; await refresh(); if(old) await dropOldPhoto(old,p.id);
+  return up;
+}
+async function removePersonPhoto(p){
+  if(!p.photo_url) return;
+  const {error}=await sb.from('persons').update({photo_url:null}).eq('id',p.id); if(error) throw error;
+  const old=p.photo_url; await refresh(); await dropOldPhoto(old,p.id);
+}
+async function sendPhotoContribution(p, file, say){
+  const prof=getProfile(); if(!prof) throw new Error('Chưa đăng nhập người đóng góp');
+  if(!contribRateOk()) throw new Error('Bạn gửi hơi nhiều trong một giờ. Hãy thử lại sau.');
+  say('Đang giảm kích thước ảnh…');
+  const up=await uploadPhotoFile(file,'pending',p.id.slice(0,8));
+  say(`Đã giảm còn ${up.kb} KB. Đang gửi…`);
+  const cid=newUUID();
+  const {error}=await sb.from('contributions').insert({id:cid,kind:'edit_person',target_person_id:p.id,payload:{photo_url:up.url},contributor_name:prof.name,contributor_contact:prof.contact||null,note:'Gửi ảnh cho người này'});
+  if(error) throw error;
+  const hist=getHist(); hist.unshift({id:cid,kind:'edit_person',subject:p.full_name+' (ảnh)',t:Date.now(),status:'pending'}); saveHist(hist);
+  return up;
+}
+function bindDetailPhoto(p){
+  const st=$('#phSt'); const say=(m,bad)=>{ if(st){ st.textContent=m; st.style.color=bad?'var(--son)':'var(--lam)'; } };
+  const busy=b=>document.querySelectorAll('#modal .ph-act input,#modal .ph-act button').forEach(x=>x.disabled=b);
+  const pick=(id,fn)=>{ const el=$('#'+id); if(!el) return; el.addEventListener('change',async e=>{
+    const f=e.target.files[0]; e.target.value=''; if(!f) return;
+    if(!isImageFile(f)){ say('Hãy chọn một file ảnh.',true); return; }
+    busy(true);
+    try{ const r=await fn(f); showDetail(p.id); toast(r.msg); }
+    catch(err){ say(photoErr(err),true); busy(false); }
+  }); };
+  if(isAdmin){
+    const go=async f=>{ const up=await setPersonPhoto(p,f,say); return {msg:`Đã lưu ảnh (${up.kb} KB)`}; };
+    pick('dPhFile',go); pick('dPhCam',go);
+    const del=$('#dPhDel'); if(del) del.onclick=async ()=>{ if(!confirm('Xóa ảnh của '+p.full_name+'?')) return; busy(true); try{ await removePersonPhoto(p); showDetail(p.id); toast('Đã xóa ảnh'); }catch(err){ say(photoErr(err),true); busy(false); } };
+  } else {
+    const go=f=>new Promise((res,rej)=>{
+      const run=async()=>{ try{ const up=await sendPhotoContribution(p,f,say); res({msg:'Đã gửi ảnh, quản trị viên sẽ xem và duyệt'}); }catch(e){ rej(e); } };
+      if(getProfile()) run(); else openContribLogin(()=>{ showDetail(p.id); run(); },false);
+    });
+    pick('vPhFile',go); pick('vPhCam',go);
+  }
+}
+function matchPhotoName(name){
+  const base=name.replace(/\.[^.]+$/,'');
+  const ym=base.match(/(?:^|\D)((?:19|20)\d\d)(?!\d)/), year=ym?+ym[1]:null;
+  const key=vnKey(base.replace(/\(.*?\)/g,' ')); if(!key) return {cands:[],year};
+  const toks=key.split(' ');
+  let c=persons.filter(p=>vnKey(p.full_name)===key);
+  if(!c.length) c=persons.filter(p=>{ const pk=vnKey(p.full_name).split(' '); return toks.length>=2 && toks.every(t=>pk.includes(t)); });
+  if(c.length>1 && year){ const y=c.filter(p=>String(p.birth_year||(p.birth_date||'').slice(0,4))===String(year)); if(y.length) c=y; }
+  return {cands:c,year};
+}
+const personLabel=p=>`${p.full_name}${pYears(p)?' '+pYears(p):''} — đời ${depthOf(p.id)+genOff()}${p.photo_url?' (đã có ảnh)':''}`;
+function openBulkPhotos(){
+  if(!isAdmin) return;
+  openModal(`<h3>Tải ảnh hàng loạt</h3>
+    <p class="sub">Chọn nhiều ảnh cùng lúc. Đặt tên file theo họ tên người trong ảnh, ví dụ <b>Tôn Thất Anh Tú.jpg</b> (không dấu cũng được: <b>Ton That Anh Tu.jpg</b>). Nếu có hai người trùng tên, thêm năm sinh: <b>Tôn Thất Tuấn 1956.jpg</b>. Trang tự ghép tên file với người trong gia phả, bạn xem lại rồi mới tải lên. Mỗi ảnh được giảm còn khoảng 30 KB.</p>
+    <label class="btn small ph-btn" style="display:inline-block">Chọn ảnh…<input type="file" id="bpFiles" class="vh" accept="image/*" multiple></label>
+    <div id="bpList"></div><div class="err" id="bpErr"></div>
+    <div class="actions"><button class="btn primary" id="bpGo" disabled>Tải lên</button><button class="btn" id="bpClose">Đóng</button></div>`);
+  $('#bpClose').onclick=closeModal;
+  const everyone=[...persons].sort((a,b)=>vnKey(a.full_name).localeCompare(vnKey(b.full_name)));
+  let items=[];
+  $('#bpFiles').addEventListener('change',e=>{
+    items=[...e.target.files].filter(isImageFile).slice(0,300).map(f=>{ const m=matchPhotoName(f.name); return {f,m,url:URL.createObjectURL(f)}; });
+    const ok=items.filter(x=>x.m.cands.length===1).length;
+    $('#bpList').innerHTML=`<div class="sub" style="margin:8px 0">${items.length} ảnh: ${ok} ảnh đã ghép được, ${items.length-ok} ảnh cần bạn chọn người (hoặc bỏ qua).</div>
+      <div class="gt-wrap"><table class="gt" style="min-width:420px"><tr><th>Ảnh</th><th>File</th><th>Người trong gia phả</th></tr>
+      ${items.map((x,i)=>{ const c=x.m.cands; const list=c.length?c:everyone;
+        const opts=(c.length===1?'':`<option value="">— bỏ qua —</option>`)+list.map(p=>`<option value="${p.id}" ${c.length===1&&p.id===c[0].id?'selected':''}>${esc(personLabel(p))}</option>`).join('');
+        return `<tr><td><img src="${x.url}" alt="" style="width:46px;height:46px;object-fit:cover;border-radius:50%;border:2px solid var(--thep)"></td><td style="word-break:break-all;font-size:12.5px">${esc(x.f.name)}</td><td><select data-bp="${i}" style="max-width:300px">${opts}</select>${c.length===0?'<div class="sub">Không ghép được theo tên file</div>':c.length>1?'<div class="sub">Có nhiều người trùng tên, hãy chọn</div>':''}</td></tr>`; }).join('')}
+      </table></div>`;
+    $('#bpGo').disabled=!items.length;
+  });
+  $('#bpGo').onclick=async ()=>{
+    const jobs=items.map((x,i)=>({x,id:document.querySelector(`[data-bp="${i}"]`).value})).filter(j=>j.id);
+    if(!jobs.length){ $('#bpErr').textContent='Chưa có ảnh nào được chọn người.'; return; }
+    const seen=new Set(); const dup=jobs.filter(j=>seen.size===seen.add(j.id).size);
+    if(dup.length && !confirm(`Có ${dup.length} ảnh cùng một người; ảnh sau sẽ thay ảnh trước. Vẫn tiếp tục?`)) return;
+    $('#bpGo').disabled=true; $('#bpFiles').disabled=true; const err=$('#bpErr'); err.style.color='var(--lam)';
+    let done=0, fail=[];
+    for(const j of jobs){
+      const p=byId.get(j.id);
+      err.textContent=`Đang tải ${done+fail.length+1}/${jobs.length}: ${j.x.f.name}…`;
+      try{
+        const up=await uploadPhotoFile(j.x.f,`persons/${p.id}`);
+        const {error}=await sb.from('persons').update({photo_url:up.url}).eq('id',p.id); if(error) throw error;
+        const old=p.photo_url; p.photo_url=up.url; if(old) await dropOldPhoto(old,p.id);
+        done++;
+      }catch(e){ fail.push(`${j.x.f.name}: ${photoErr(e)}`); if(/bucket|quyền/i.test(photoErr(e))) break; }
+    }
+    await refresh();
+    err.style.color=fail.length?'var(--son)':'var(--lam)';
+    err.innerHTML=`Đã tải lên <b>${done}</b>/${jobs.length} ảnh.${fail.length?'<br>'+fail.slice(0,6).map(esc).join('<br>'):''}`;
+    toast(`Đã tải lên ${done} ảnh`);
+    $('#bpGo').textContent='Xong'; $('#bpGo').disabled=false; $('#bpGo').onclick=closeModal;
+  };
+}
+$('#btnPhotos').onclick=openBulkPhotos;
+
+/* ---------- Nhập ảnh có sẵn trong tài liệu Truồi (thư mục anh-truoi/ + tệp anh-truoi.json) lên Supabase ---------- */
+async function openImportPhotosTruoi(){
+  if(!isAdmin) return;
+  let data, pp;
+  try{
+    const r1=await fetch('anh-truoi.json?v='+Date.now()); if(!r1.ok) throw new Error('anh-truoi.json: HTTP '+r1.status); data=await r1.json();
+    const r2=await fetch('phaphe-truoi.json?v='+Date.now()); if(!r2.ok) throw new Error('phaphe-truoi.json: HTTP '+r2.status); pp=await r2.json();
+  }catch(e){ openModal(`<h3>Nhập ảnh phả hệ Truồi</h3><p>Không đọc được tệp (${esc(e.message)}). Hãy đưa <b>anh-truoi.json</b>, <b>phaphe-truoi.json</b> và thư mục <b>anh-truoi</b> lên GitHub cùng chỗ với index.html rồi thử lại.</p><div class="actions"><button class="btn" id="ipX">Đóng</button></div>`); $('#ipX').onclick=closeModal; return; }
+  const {map}=planImport(pp.nodes||[]);
+  const rows=(data.anh||[]).map(a=>{ const m=map.get(a.k); const p=m&&!m.isNew?byId.get(m.id):null; return {a,p}; });
+  const found=rows.filter(r=>r.p), missing=rows.length-found.length;
+  const has=found.filter(r=>r.p.photo_url).length;
+  openModal(`<h3>Nhập ảnh phả hệ Truồi</h3>
+    <p class="sub">Nguồn: ${esc(data.nguon||'')}</p>
+    <div class="whobox">Tài liệu có <b>${rows.length}</b> ảnh chân dung (của người trong họ và vợ, chồng).<br>
+      Ghép được với người trong gia phả: <b>${found.length}</b>${missing?`; chưa ghép được <b>${missing}</b> (người đó chưa có trong gia phả, hãy nhập phả hệ Truồi trước)`:''}.<br>
+      ${has?`<b>${has}</b> người đã có ảnh.`:'Chưa người nào có ảnh.'}</div>
+    <label class="chk" style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="ipRep"> Thay cả ảnh của những người đã có ảnh</label>
+    <details class="ph"><summary><b>Xem lại từng ảnh trước khi tải lên</b> <span class="sub">(bỏ chọn ảnh nào bạn thấy sai người)</span></summary>
+      <div class="ph-body" style="max-height:340px;overflow:auto"><table class="gt" style="min-width:300px">${found.map((r,i)=>`<tr><td style="width:24px"><input type="checkbox" data-ip="${i}" checked></td><td style="width:54px"><img src="anh-truoi/${esc(r.a.f)}" alt="" loading="lazy" style="width:46px;height:46px;object-fit:cover;border-radius:50%;border:2px solid var(--thep)"></td><td>${esc(r.p.full_name)}${pYears(r.p)?' <span class="sub">'+esc(pYears(r.p))+'</span>':''}${r.p.photo_url?' <span class="sub">(đã có ảnh)</span>':''}${/giới tính/.test(r.a.note||'')?'<div class="sub">Ghép theo giới tính trong ảnh</div>':''}</td></tr>`).join('')}</table></div></details>
+    <div class="err" id="ipErr"></div>
+    <div class="actions"><button class="btn primary" id="ipGo" ${found.length?'':'disabled'}>Tải ảnh lên</button><button class="btn" id="ipNo">Đóng</button></div>`);
+  $('#ipNo').onclick=closeModal;
+  $('#ipGo').onclick=async ()=>{
+    const rep=$('#ipRep').checked, err=$('#ipErr'); err.style.color='var(--lam)';
+    const todo=found.filter((r,i)=>document.querySelector(`[data-ip="${i}"]`).checked && (rep||!r.p.photo_url));
+    if(!todo.length){ err.textContent='Không có ảnh nào cần tải.'; return; }
+    $('#ipGo').disabled=true; let done=0, fail=[];
+    for(const r of todo){
+      err.textContent=`Đang tải ${done+fail.length+1}/${todo.length}: ${r.p.full_name}…`;
+      try{
+        const blob=await (await fetch('anh-truoi/'+r.a.f)).blob();
+        const up=await uploadPhotoFile(new File([blob],r.a.f,{type:blob.type||'image/jpeg'}),`persons/${r.p.id}`);
+        const {error}=await sb.from('persons').update({photo_url:up.url}).eq('id',r.p.id); if(error) throw error;
+        const old=r.p.photo_url; r.p.photo_url=up.url; if(old) await dropOldPhoto(old,r.p.id); done++;
+      }catch(e){ fail.push(`${r.p.full_name}: ${photoErr(e)}`); if(/kho ảnh|quyền/i.test(photoErr(e))) break; }
+    }
+    await refresh();
+    err.style.color=fail.length?'var(--son)':'var(--lam)';
+    err.innerHTML=`Đã tải lên <b>${done}</b>/${todo.length} ảnh.${fail.length?'<br>'+fail.slice(0,6).map(esc).join('<br>'):''}`;
+    toast(`Đã tải lên ${done} ảnh`); $('#ipGo').textContent='Xong'; $('#ipGo').disabled=false; $('#ipGo').onclick=closeModal;
+  };
+}
+$('#btnImportPhotos').onclick=openImportPhotosTruoi;
+
 /* ---------- Nhập phả hệ Truồi (từ tệp phaphe-truoi.json) vào cơ sở dữ liệu ---------- */
 const vnKey=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase().replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim();
 const lastWord=s=>vnKey(s).split(' ').pop();
@@ -2240,19 +2536,20 @@ function pBlos(x,y,r){
   let s=''; for(let i=0;i<5;i++){ const a=i*Math.PI*2/5-Math.PI/2; s+=`<circle cx="${(x+Math.cos(a)*r*.62).toFixed(1)}" cy="${(y+Math.sin(a)*r*.62).toFixed(1)}" r="${(r*.5).toFixed(1)}" fill="#FBB9CE" stroke="#DD6E8E" stroke-width=".6"/>`; }
   return s+`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r*.26).toFixed(1)}" fill="#F8D24C" stroke="#C88A1A" stroke-width=".5"/>`;
 }
-function pBranchSVG(all,rowY,x0,y0,withDeco){
+function pBranchSVG(all,rowY,x0,y0,withDeco,opt){
+  opt=opt||{};
   const cnt=n=>n.kids.reduce((a,k)=>a+1+cnt(k),0);
   all.forEach(n=>{ n.dc=cnt(n); });
   let wood='', deco='', knots='';
   all.forEach(n=>{
     if(!n.kids.length) return;
     const px=x0+n.cx, py=y0+n.y+n.h-1, ky=y0+rowY[n.depth+1], dy=ky-py;
-    const w0=Math.min(10,3.2+1.0*Math.sqrt(n.dc));
+    const w0=opt.thin?Math.min(4.2,2.2+0.18*Math.sqrt(n.dc)):Math.min(10,3.2+1.0*Math.sqrt(n.dc));
     knots+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${(w0*0.9).toFixed(1)}" fill="${BARK}" stroke="${BARK_DK}" stroke-width=".8"/>`;
     n.kids.forEach((k,i)=>{
       const kx=x0+k.cx, dx=kx-px, r=pHash(k.p.id);
-      const w1=Math.min(6.5,2.4+0.7*Math.sqrt(k.dc||0)), wob=(r-.5)*10;
-      const P=[[px,py],[px+dx*0.38+wob,py+dy*0.36],[kx-dx*0.05-wob*0.4,ky-dy*0.42],[kx,ky+1]];
+      const w1=opt.thin?Math.min(3,1.8+0.12*Math.sqrt(k.dc||0)):Math.min(6.5,2.4+0.7*Math.sqrt(k.dc||0)), wob=opt.vertical?0:(r-.5)*10;
+      const P=opt.vertical?[[px,py],[px,py+dy*0.5],[kx,ky-dy*0.5],[kx,ky+1]]:[[px,py],[px+dx*0.38+wob,py+dy*0.36],[kx-dx*0.05-wob*0.4,ky-dy*0.42],[kx,ky+1]];
       const N=22, L=[], R=[], pts=[];
       for(let j=0;j<=N;j++){
         const t=j/N, u=1-t;
@@ -2347,27 +2644,28 @@ function posterSVG(opts){
   if(!forest.length) return null;
   const all=[]; (function walk(ns){ ns.forEach(n=>{ all.push(n); walk(n.kids); }); })(forest);
 
-  // kích thước từng ô
+  // kích thước từng ô (cây đông người thì xếp khít hơn để chữ to hơn)
+  const dense=all.length>24, PADW=dense?14:24, PADV=dense?9:14, GAPX=dense?10:PO_GAP, MINB=dense?70:100;
   all.forEach(n=>{
     n.vert = opts.text==='v' || (opts.text==='mix' && n.depth>=3);
     n.ws = n.lines.map(l=>pTW(l.t,l.b));
     const mx = Math.max(...n.ws);
-    if(n.vert){ n.w = n.lines.length*PO_LH+14; n.h = Math.max(100, mx+24); }
-    else      { n.w = Math.max(100, mx+24);     n.h = n.lines.length*PO_LH+14; }
+    if(n.vert){ n.w = n.lines.length*PO_LH+PADV; n.h = Math.max(MINB, mx+PADW); }
+    else      { n.w = Math.max(MINB, mx+PADW);   n.h = n.lines.length*PO_LH+14; }
   });
   // các hàng theo đời
   const rowH=[]; all.forEach(n=>{ rowH[n.depth]=Math.max(rowH[n.depth]||0, n.h); });
   const rowY=[]; let yy=0; rowH.forEach((h,i)=>{ rowY[i]=yy; yy+=h+PO_VG; });
   const treeH = yy-PO_VG;
   // xếp ngang: cha đứng giữa các con
-  const sw = n=>{ n.cw = n.kids.length ? n.kids.reduce((a,k)=>a+sw(k),0)+PO_GAP*(n.kids.length-1) : 0; return n.sw=Math.max(n.w,n.cw); };
+  const sw = n=>{ n.cw = n.kids.length ? n.kids.reduce((a,k)=>a+sw(k),0)+GAPX*(n.kids.length-1) : 0; return n.sw=Math.max(n.w,n.cw); };
   forest.forEach(sw);
   const place=(n,left)=>{
     n.y=rowY[n.depth]; let cl=left+(n.sw-n.cw)/2;
-    n.kids.forEach(k=>{ place(k,cl); cl+=k.sw+PO_GAP; });
+    n.kids.forEach(k=>{ place(k,cl); cl+=k.sw+GAPX; });
     n.cx = n.kids.length ? (n.kids[0].cx+n.kids[n.kids.length-1].cx)/2 : left+n.sw/2;
   };
-  let left=0; forest.forEach(r=>{ place(r,left); left+=r.sw+PO_GAP*2; });
+  let left=0; forest.forEach(r=>{ place(r,left); left+=r.sw+GAPX*2; });
   let minX=Infinity, maxX=-Infinity;
   all.forEach(n=>{ minX=Math.min(minX,n.cx-n.w/2); maxX=Math.max(maxX,n.cx+n.w/2); });
   all.forEach(n=>{ n.cx-=minX; });
@@ -2574,7 +2872,7 @@ async function renderPoster(){
   if(isAdmin && r.editable) $('#posterSvgWrap').querySelectorAll('[data-ed]').forEach(el=>el.addEventListener('click',()=>openBannerEditor(el.dataset.ed)));
   const size=$('#pSize').value;
   if(r.imgUrl){
-    const L={A4:297,A3:420,A2:594,A1:841}[size];
+    const L={A4:297,A3:420,A2:594,A1:841,A0:1189}[size];
     $('#pageCss').textContent=`@page{size:${L}mm ${(L*r.H/r.W).toFixed(1)}mm;margin:0}`;
     const mm=r.scale?15*r.scale*L/1536:null;   // cỡ chữ in ra, tính bằng mm
     const br=$('#pBranch').value?` | nhánh ${byId.get($('#pBranch').value)?.full_name||''}: ${r.count||''} người`:'';
@@ -2642,6 +2940,7 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('#poster').h
 
 /* ---------- Đóng góp từ người xem, quản trị duyệt ---------- */
 const FIELD_LABELS={full_name:'Họ và tên',alias:'Tên húy / hiệu',generation_word:'Chữ đệm / chữ đời',gender:'Giới tính',birth_date:'Ngày sinh',birth_year:'Năm sinh',death_date:'Ngày mất',death_year:'Năm mất',death_lunar:'Ngày giỗ (âm lịch)',is_alive:'Tình trạng',hometown:'Quê quán / nơi ở',occupation:'Nghề nghiệp',burial_place:'Phần mộ',notes:'Ghi chú',photo_url:'Link ảnh',father_id:'Cha',mother_id:'Mẹ',spouse_of:'Là vợ/chồng của',sort_order:'Thứ tự anh chị em'};
+function fmtFieldHTML(k,v){ return (k==='photo_url' && v) ? `<img src="${esc(v)}" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:50%;border:2px solid var(--thep)">` : esc(fmtField(k,v)); }
 function fmtField(k,v){
   if(v===null||v===undefined||v==='') return '(trống)';
   if(k==='gender') return v==='M'?'Nam':'Nữ';
@@ -2861,12 +3160,12 @@ function reviewContrib(id){
   let body='', d=null;
   if(isNew){
     const rows=Object.keys(c.payload).filter(k=>FIELD_LABELS[k] && k!=='sort_order' && c.payload[k]!==null && c.payload[k]!=='').map(k=>[FIELD_LABELS[k],fmtField(k,c.payload[k])]);
-    body=`<dl>${rows.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>`;
+    body=`<dl>${rows.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>${c.payload.photo_url?`<div style="margin-top:8px">${fmtFieldHTML('photo_url',c.payload.photo_url)}</div>`:''}`;
   } else {
     d=diffContrib(c);
     body = d===null ? '<p class="err">Người cần sửa không còn trong gia phả.</p>'
       : d.length===0 ? '<p class="sub">Không có thay đổi nào so với dữ liệu hiện tại.</p>'
-      : `<table class="diff"><tr><th>Mục</th><th>Hiện tại</th><th>Đề xuất</th></tr>${d.map(x=>`<tr><td>${esc(FIELD_LABELS[x.k])}</td><td class="old">${esc(fmtField(x.k,x.old))}</td><td class="new">${esc(fmtField(x.k,x.nw))}</td></tr>`).join('')}</table>`;
+      : `<table class="diff"><tr><th>Mục</th><th>Hiện tại</th><th>Đề xuất</th></tr>${d.map(x=>`<tr><td>${esc(FIELD_LABELS[x.k])}</td><td class="old">${fmtFieldHTML(x.k,x.old)}</td><td class="new">${fmtFieldHTML(x.k,x.nw)}</td></tr>`).join('')}</table>`;
   }
   const broken = !isNew && d===null;   // đề xuất sửa nhưng người đó đã bị xóa
   const same=contribs.filter(x=>pkNorm(x.contributor_name)===pkNorm(c.contributor_name) && (x.contributor_contact||'')===(c.contributor_contact||''));
@@ -2924,6 +3223,8 @@ function setAdmin(on){
   $('#btnAddRoot').style.display = on ? '' : 'none';
   $('#btnExport').style.display = on ? '' : 'none';
   $('#btnImport').style.display = on ? '' : 'none';
+  $('#btnPhotos').style.display = on ? '' : 'none';
+  $('#btnImportPhotos').style.display = on ? '' : 'none';
   $('#tabDg').hidden = !on;
   if(!on && tab==='dg'){ pendingTab='dg'; tab='tree'; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab==='tree')); }
   if(on && pendingTab && tab!==pendingTab){ tab=pendingTab; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab===tab)); }
