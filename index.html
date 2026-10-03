@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Gia phả dòng họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, nguyên quán Phú Lộc, Thừa Thiên Huế.">
+<meta name="description" content="Gia phả dòng họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, nguyên quán Truồi, Thừa Thiên Huế.">
 <meta name="theme-color" content="#7d1014">
 <link rel="icon" href="ton-that-phu-loc-html-icons/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="16x16" href="ton-that-phu-loc-html-icons/icon-16x16.png">
@@ -31,7 +31,7 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="vi_VN">
 <meta property="og:title" content="Gia phả họ Tôn Thất">
-<meta property="og:description" content="Gia phả dòng họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, nguyên quán Phú Lộc, Thừa Thiên Huế.">
+<meta property="og:description" content="Gia phả dòng họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, nguyên quán Truồi, Thừa Thiên Huế.">
 <meta property="og:url" content="https://nguyentonthat.github.io/TonThatGiaPha/">
 <meta property="og:image" content="https://nguyentonthat.github.io/TonThatGiaPha/ton-that-phu-loc-html-icons/icon-512x512.png">
 <title>Gia phả họ Tôn Thất — Nguyễn Phước Tộc, Đệ Tam Hệ</title>
@@ -206,6 +206,17 @@ details.ph[open]>summary::before{transform:rotate(90deg)}
 details.ph[open]>summary{border-bottom:1px solid var(--line)}
 .ph-body{padding:8px 14px 10px}
 .ph-line{margin:2px 0}
+.tl-card{border:1px solid var(--line);border-left:4px solid var(--hoang);border-radius:10px;background:#fffdf7;padding:10px 14px;margin:10px 0}
+.tl-card .tl-h{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;margin-bottom:4px}
+.tl-card .tl-he{font-size:12px;font-weight:600;color:#fff;background:var(--son);border-radius:999px;padding:1px 10px;white-space:nowrap}
+.tl-card b{font-family:var(--serif);font-size:16px;color:var(--son-dam)}
+.tl-card p{margin:6px 0;font-size:14.5px}
+details.tl>summary{padding:11px 14px}
+details.tl .ph-body{padding:10px 16px 14px}
+details.tl .ph-body h4{margin:16px 0 6px}
+.tl-fig{margin:14px 0;text-align:center}
+.tl-fig img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
+.tl-fig figcaption{font-size:12.5px;color:var(--muted);margin-top:4px}
 .refs{margin:6px 0 0;padding-left:22px}
 .refs li{margin:6px 0;font-size:14px;line-height:1.5;word-break:break-word}
 .refs li a{color:var(--lam)}
@@ -409,8 +420,8 @@ body.poster-open .toast{z-index:130}
   <div class="hv"></div>
   <div class="cung-in">
     <div class="plaque"><h1>NGUYỄN PHƯỚC TỘC</h1></div>
-    <p class="sub1">Họ Tôn Thất, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi</p>
-    <p class="sub2">Nguyên quán Phú Lộc, Thừa Thiên Huế</p>
+    <p class="sub1">Họ Tôn Thất, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái</p>
+    <p class="sub2">Nguyên quán Truồi, Thừa Thiên Huế</p>
     <div class="stats" id="stats"></div>
   </div>
   <div class="hv"></div>
@@ -430,6 +441,7 @@ body.poster-open .toast{z-index:130}
   <button class="btn small" id="btnPrint">In bảng phả</button>
   <button class="btn small" id="btnAddRoot" style="display:none">Thêm thủy tổ</button>
   <button class="btn small" id="btnExport" style="display:none">Xuất JSON</button>
+  <button class="btn small" id="btnImport" style="display:none">Nhập phả hệ Truồi</button>
   <button class="btn small primary" id="btnContrib">Đóng góp thông tin</button>
   <button class="btn small" id="btnAuth">Quản trị</button>
 </div></div>
@@ -440,7 +452,7 @@ body.poster-open .toast{z-index:130}
 
 <footer class="foot">
   <div class="hv"></div>
-  <p>Gia phả họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi</p>
+  <p>Gia phả họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái</p>
 </footer>
 
 <style id="pageCss"></style>
@@ -463,6 +475,9 @@ body.poster-open .toast{z-index:130}
     </label>
     <label>In từ
       <select id="pFrom"><option value="1">Tất cả các đời</option></select>
+    </label>
+    <label>Nhánh (in từ người này trở xuống)
+      <select id="pBranch"><option value="">Toàn bộ cây</option></select>
     </label>
     <label>Kiểu nối
       <select id="pLink"><option value="branch" selected>Cành cây (không hoa lá)</option><option value="leaf">Cành cây có hoa lá</option><option value="line">Đường nối đỏ</option></select>
@@ -768,8 +783,8 @@ function renderTree(){
 
 const CLAN = {
   ho: 'Tôn Thất', toc: 'Nguyễn Phước Tộc',
-  he: 'Đệ Tam Hệ', phong: 'Đệ Nhất Phòng', chi: 'Đệ Tứ Chi',
-  quequan: 'Phú Lộc, Thừa Thiên Huế',
+  he: 'Đệ Tam Hệ', phong: 'Đệ Nhất Phòng', chi: 'Đệ Tứ Chi', phai: 'Đệ Nhị Phái',
+  quequan: 'Truồi, Thừa Thiên Huế',
   thuyTo: '',  // điền tên vị tổ của chi khi đã đối chiếu thế phả, ví dụ 'Tôn Thất …'
   anchor: {name:'Tôn Thất Cao Nguyên', gen:13}   // mốc đời: người này là đời 13, các đời khác tự tính theo
 };
@@ -786,20 +801,42 @@ const GOC_REFS=[
   {t:'Quốc sử quán triều Nguyễn, <i>Đại Nam thực lục</i> (大南寔錄), biên soạn 1844–1909.', u:'https://en.wikipedia.org/wiki/%C4%90%E1%BA%A1i_Nam_th%E1%BB%B1c_l%E1%BB%A5c'},
   {t:'Nội các triều Nguyễn, <i>Khâm định Đại Nam hội điển sự lệ</i>. (Trích dẫn lại ở mục 5.)'},
   {t:'Lê Trung Hoa, <i>Nhân danh học Việt Nam</i>, NXB Trẻ, 2013. (Trích dẫn lại ở mục 3.)'},
-  {t:'“Một người Nghệ, tác giả bài thơ ‘Đế hệ thi’ triều Nguyễn”, Báo Nghệ An. (Đọc thêm về tác giả bài thơ.)', u:'https://baonghean.vn/mot-nguoi-nghe-tac-gia-bai-tho-de-he-thi-trieu-nguyen-10039223.html'}
+  {t:'“Một người Nghệ, tác giả bài thơ ‘Đế hệ thi’ triều Nguyễn”, Báo Nghệ An. (Đọc thêm về tác giả bài thơ.)', u:'https://baonghean.vn/mot-nguoi-nghe-tac-gia-bai-tho-de-he-thi-trieu-nguyen-10039223.html'},
+  {t:'Tôn-Thất-Nô sao lục, <i>Phả hệ họ Tôn Thất (Truồi)</i>: Nguyễn-Phước tôn phổ, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái. Tài liệu gia tộc, bản PDF 181 trang, 2019.'}
 ];
 const gC=(...ns)=>'<sup class="cite">'+ns.map(n=>`<a href="#" data-go="ref-${n}" title="Xem tài liệu ${n}">[${n}]</a>`).join('')+'</sup>';
 const TIEN_HE=[
-  [1,'Nguyễn Kim','Triệu Tổ Tĩnh Hoàng đế',''],
-  [2,'Nguyễn Hoàng','Thái Tổ Gia Dụ Hoàng đế','Chúa Tiên, 1558–1613'],
-  [3,'Nguyễn Phúc Nguyên','Hy Tông Hiếu Văn Hoàng đế','Chúa Sãi, 1613–1635'],
-  [4,'Nguyễn Phúc Lan','Thần Tông Hiếu Chiêu Hoàng đế','Chúa Thượng, 1635–1648'],
-  [5,'Nguyễn Phúc Tần','Thái Tông Hiếu Triết Hoàng đế','Chúa Hiền, 1648–1687'],
-  [6,'Nguyễn Phúc Thái','Anh Tông Hiếu Nghĩa Hoàng đế','Chúa Nghĩa, 1687–1691'],
-  [7,'Nguyễn Phúc Chu','Hiển Tông Hiếu Minh Hoàng đế','Quốc Chúa, 1691–1725'],
-  [8,'Nguyễn Phúc Trú','Túc Tông Hiếu Ninh Hoàng đế','Ninh Vương, 1725–1738'],
-  [9,'Nguyễn Phúc Khoát','Thế Tông Hiếu Võ Hoàng đế','Võ Vương, 1738–1765'],
-  [10,'Nguyễn Phúc Thuần','Duệ Tông Hiếu Định Hoàng đế','Định Vương, 1765–1777']
+  [1,'Nguyễn Kim (Cam)','Triệu Tổ Tĩnh Hoàng đế','1468–1545','1 phòng'],
+  [2,'Nguyễn Hoàng','Thái Tổ Gia Dụ Hoàng đế','Chúa Tiên, 1558–1613','3 phòng'],
+  [3,'Nguyễn Phúc Nguyên','Hy Tông Hiếu Văn Hoàng đế','Chúa Sãi, 1613–1635','2 phòng'],
+  [4,'Nguyễn Phúc Lan','Thần Tông Hiếu Chiêu Hoàng đế','Chúa Thượng, 1635–1648','vô tự'],
+  [5,'Nguyễn Phúc Tần','Thái Tông Hiếu Triết Hoàng đế','Chúa Hiền, 1648–1687','3 phòng'],
+  [6,'Nguyễn Phúc Thái','Anh Tông Hiếu Nghĩa Hoàng đế','Chúa Nghĩa, 1687–1691','vô tự'],
+  [7,'Nguyễn Phúc Chu','Hiển Tông Hiếu Minh Hoàng đế','Quốc Chúa (Chúa Minh), 1691–1725','27 phòng'],
+  [8,'Nguyễn Phúc Thụ (Trú)','Túc Tông Hiếu Ninh Hoàng đế','Chúa Ninh, 1725–1739','2 phòng'],
+  [9,'Nguyễn Phúc Khoát','Thế Tông Hiếu Võ Hoàng đế','Chúa Vũ, 1739–1765','7 phòng']
+];
+const THE_PHO=[   // trực hệ của dòng họ, từ ông mở Phòng I đến cụ Dốc (theo thế phổ gia tộc)
+  [1,'Nguyễn Phúc Kỳ','Con trưởng của chúa Sãi, Thiếu bảo Khánh quận công; mở Phòng I','—','Vợ: Bùi Thị Phụng'],
+  [2,'Tôn Thất Trí','Con thứ 4 của ông Kỳ; mở Đệ Tứ Chi','4','Làm quan Chưởng dinh'],
+  [3,'Tôn Thất Cơ','Con thứ 2 của ông Trí; sanh xuất Đệ Nhị Phái','4-2','Mất năm 1710'],
+  [4,'Tôn Thất Tịnh','Con thứ 3 của ông Cơ','4-2-3',''],
+  [5,'Tôn Thất Bì','Con thứ 2 của ông Tịnh','4-2-3/2','1737–1809'],
+  [6,'Tôn Thất Hóa','Con thứ 2 của ông Bì','4-2-3/2-2','1783–1848'],
+  [7,'Tôn Thất Phát (Phúc)','Con thứ 2 của ông Hóa','4-2-3/2-2-2','1807–1841'],
+  [8,'Tôn Thất Lương','Trưởng nam của ông Phát','4-2-3/2-2-2/1','1838–1871'],
+  [9,'Tôn Thất Dốc','Con thứ 2 của ông Lương','4-2-3/2-2-2/1-2','1867–1934']
+];
+const CON_DOC=[   // các con của cụ Dốc
+  ['1','Việt','Tảo thương','—'],
+  ['2','Toản','1897; vô tự','—'],
+  ['3','Thú','1899–1976','Nhánh I'],
+  ['4','Vy','1903–1947','Nhánh II'],
+  ['5','Củ','1905–1975','Nhánh III'],
+  ['6','Tẩu','1909–1990','Nhánh IV'],
+  ['7','Hy','1911; tảo thương','—'],
+  ['8','Phú','Mất sớm','—'],
+  ['9','Hoành','1913–1961','Nhánh V']
 ];
 const DE_HE=[['綿洪膺寶永','Miên Hồng Ưng Bửu Vĩnh'],['保貴定隆長','Bảo Quý Định Long Trường'],['賢能堪繼述','Hiền Năng Kham Kế Thuật'],['世瑞國嘉昌','Thế Thụy Quốc Gia Xương']];
 const PHIEN_HE=[
@@ -814,8 +851,171 @@ const PHIEN_HE=[
   ['12','An Khánh','',['Khâm Hoa Xưng Ý Phạm','Nhã Chính Thủy Hoằng Qui','Khởi Để Đằng Cần Dự','Quyến Ninh Công Tập Hi'],'Về sau, do kỵ húy: Hoa đổi thành Tùng (Tòng).'],
   ['13','Từ Sơn','',['Từ Thế Dương Quỳnh Cẩm','Phu Văn Ái Diệu Hoàng','Bách Chi Giai Phụ Dực','Vạn Diệp Diệu Khuôn Tương'],'Về sau, do kỵ húy: Hoàng đổi thành Dương, Giai đổi thành Quân.']
 ];
+/* ---------- Tư liệu gia tộc: nội dung trang 1 đến 20 của "Phả hệ họ Tôn Thất (Truồi)" ---------- */
+const TL_CHUA=[
+ ['Đời thứ nhất, Hệ I','Đức Triệu Tổ Tĩnh Hoàng Đế Nguyễn Cam (Kim) (1468 - 1545)',[
+  'Cuối đời nhà Hậu Lê, Nguyễn Kim được phong tước An Thành Hầu. Khi nhà Hậu Lê bị nhà Mạc cướp ngôi, năm 1527, con cháu nhà Lê chạy trốn sang Lào. Lúc bấy giờ, hầu hết các cựu thần nhà Lê ngả về họ Mạc hoặc bỏ đi nơi khác, chỉ có Nguyễn Kim là lo chiêu tập hào kiệt bốn phương lánh lên Sầm Châu (vùng Thanh Hóa giáp Lào) lập bản doanh phò Lê diệt Mạc. Sau đó ông đã tìm được con vua Lê Chiêu Tông là Lê Duy Ninh ở Lào và đưa về tôn lên ngôi vua là Lê Trang Tông (1533-1548).',
+  'Ông giúp vua Lê tiến binh về nước, từng bước đánh chiếm các huyện ở Thanh Hóa và sau đó xây dựng hành điện ở xã Vạn Lại, huyện Thọ Xuân, tỉnh Thanh Hóa. Nguyễn Kim được vua Lê phong làm Thái sư, Hưng Quốc công, nắm giữ tất cả binh quyền.',
+  'Năm 1545, Nguyễn Kim bị một hàng tướng họ Mạc là Dương Chấp Nhất đầu độc chết. Dương Chấp Nhất mời ông ăn dưa có độc rồi bỏ trốn. Khi đó ông 77 tuổi. Vua Lê Trang Tông truy tặng cho ông tước Chiêu Huân Tĩnh Vương.',
+  'Ông có hai con trai đều là tướng giỏi được phong chức Quận công: Nguyễn Uông (bị Trịnh Kiểm giết) và Nguyễn Hoàng. Sau Nguyễn Hoàng trở thành người mở đầu cho sự nghiệp của các chúa Nguyễn ở miền nam Việt Nam.',
+  'Người con gái lớn nhất của ông là Nguyễn Thị Ngọc Bảo lấy chúa Trịnh Kiểm.',
+  'Nguyễn Kim được các vua nhà Nguyễn sau này truy tôn miếu hiệu là Triệu Tổ, thụy hiệu là Di Mưu Thùy Dụ Khâm Cung Huệ Triết Hiển Hựu Hoành Hưu Tế Thế Khải Vận Nhân Thánh Tĩnh hoàng đế.',
+  'Từ đây, dòng họ nhà Nguyễn trải qua 9 đời chúa và 13 đời vua sau này:']],
+ ['Đời thứ hai, Hệ II (Đời chúa thứ I)','Đức Thái Tổ Gia Dụ Hoàng Đế Nguyễn Hoàng (1525 - 1613)',[
+  'Nguyễn Hoàng tức Chúa Tiên (1525-1613), con út của Nguyễn Kim, xưng chúa năm 1558, có 10 con trai và 2 con gái. Một người con gái lấy chúa Trịnh Tráng. Nhà Nguyễn sau này truy tôn ông là Thái Tổ Gia Dụ hoàng đế.']],
+ ['Đời thứ ba, Hệ III (Đời chúa thứ II)','Đức Hy Tông Hiếu Văn Hoàng Đế Húy Nguyễn Phúc Nguyên, Sãi Vương (Chúa Sãi) (1563 - 1635)',[
+  'Nguyễn Phúc Nguyên tức Chúa Sãi hay Chúa Bụt (1563-1635), con trai thứ sáu của Chúa Tiên, kế nghiệp năm 1613 vì các anh đều chết sớm và một anh bị Chúa Trịnh giữ tại Đàng Ngoài, có 11 con trai và 4 con gái. Chúa Sãi là người đầu tiên trong dòng họ mang họ Nguyễn Phúc.',
+  'Tương truyền lúc mẹ ngài có thai chiêm bao thấy có vị thần đưa cho một tờ giấy trên có đề chữ "Phúc". Lúc kể lại chuyện, mọi người chúc mừng bà và đề nghị đứa bé ra đời được đặt tên là "Phúc". Nhưng bà nói rằng, nếu chỉ đặt tên Phúc cho đứa bé thì chỉ một mình nó hưởng, để cho nhiều người trong dòng họ được hưởng phúc, bà đề nghị lấy chữ này làm chữ lót. Và khi thế tử ra đời bà đặt tên là Nguyễn Phúc Nguyên. Nhà Nguyễn sau này truy tôn ông là Hi Tông Hiếu Văn hoàng đế.']],
+ ['Đời thứ tư, Hệ IV (Đời chúa thứ III)','Đức Thần Tông Hiếu Chiêu Hoàng Đế Húy Nguyễn Phúc Lan, Thượng Vương (Chúa Thượng) (1601 - 1648)',[
+  'Nguyễn Phúc Lan tức Chúa Thượng (1601-1648), con trai thứ hai của Chúa Sãi, kế nghiệp năm 1635 vì anh trưởng chết sớm, có 3 con trai và 1 con gái. Nhà Nguyễn sau này truy tôn ông là Thần Tông Hiếu Chiêu hoàng đế.']],
+ ['Đời thứ năm, Hệ V (Đời chúa thứ IV)','Đức Thái Tông Hiếu Triết Hoàng Đế Húy Nguyễn Phúc Tần, Hiền Vương (Chúa Hiền) (1620 - 1687)',[
+  'Nguyễn Phúc Tần tức Chúa Hiền (1620-1687), con trai thứ hai của Chúa Thượng, kế nghiệp năm 1648 vì cả anh lẫn em đều chết sớm, có 6 con trai và 3 con gái. Nhà Nguyễn sau này truy tôn ông là Thái Tông Hiếu Triết hoàng đế.']],
+ ['Đời thứ sáu, Hệ VI (Đời chúa thứ V)','Đức Anh Tông Hiếu Nghĩa Hoàng Đế Húy Nguyễn Phúc Thái, Nghĩa Vương (Chúa Nghĩa) (1650 - 1691)',[
+  'Nguyễn Phúc Thái tức Chúa Nghĩa (1650-1691), con trai thứ hai của Chúa Hiền, kế nghiệp năm 1687 vì anh trưởng chết sớm, có 5 con trai và 5 con gái. (Theo Nguyễn Phúc tộc thế phả thì Chúa Nghĩa là Nguyễn Phúc Thái; còn Nguyễn Phúc Trăn không có, mà chỉ có Nguyễn Phúc Trân, em kế của Chúa tức Cương quận công.) Chúa Nghĩa là người dời đô đến Huế. Nhà Nguyễn sau này truy tôn ông là Anh Tông Hiếu Nghĩa hoàng đế.']],
+ ['Đời thứ bảy, Hệ VII (Đời chúa thứ VI)','Đức Hiển Tông Hiếu Minh Hoàng Đế Húy Nguyễn Phúc Chu, Minh Vương (Quốc Chúa) (1675 - 1725)',[
+  'Nguyễn Phúc Chu tức Chúa Minh (còn gọi là Quốc Chúa) (1675-1725), con trai trưởng của Chúa Nghĩa, kế nghiệp năm 1691, có 38 con trai và 4 con gái. Chúa Minh là người đầu tiên sai sứ sang nhà Thanh để xin phong vương nhưng không được nhận vì nhà Thanh vẫn xem vua Lê của Đàng Ngoài là vua của toàn xứ Việt lúc đó. Nhà Nguyễn sau này truy tôn ông là Hiển Tông Hiếu Minh hoàng đế.']],
+ ['Đời thứ tám, Hệ VIII (Đời chúa thứ VII)','Đức Túc Tông Hiếu Ninh Hoàng Đế Húy Nguyễn Phúc Thụ, Ninh Vương (1697 - 1738)',[
+  'Nguyễn Phúc Thụ tức Chúa Ninh (1697-1738), con trai trưởng của Chúa Minh, kế nghiệp năm 1725, có 3 con trai và 6 con gái. Nhà Nguyễn sau này truy tôn ông là Túc Tông Hiếu Ninh hoàng đế.']],
+ ['Đời thứ chín, Hệ IX (Đời chúa thứ VIII)','Đức Thế Tông Hiếu Vũ Hoàng Đế Húy Nguyễn Phúc Khoát, Vũ Vương (1714 - 1765)',[
+  'Nguyễn Phúc Khoát tức Vũ Vương (còn gọi là Chúa Vũ) (1714-1765), con trai trưởng của Chúa Ninh, kế nghiệp năm 1738, có 18 con trai và 12 con gái. Đến lúc này Chúa Trịnh đã xưng vương nên Nguyễn Phúc Khoát cũng gọi mình là Vũ Vương vào năm 1744 và xem Đàng Trong như một nước độc lập. Nhà Nguyễn sau này truy tôn ông là Thế Tông Hiếu Vũ hoàng đế.']],
+ ['Đời thứ mười, Hệ X (Đời chúa thứ IX)','Đức Duệ Tông Hiếu Định Hoàng Đế Húy Nguyễn Phúc Thuần, Định Vương (1754 - 1777)',[
+  'Nguyễn Phúc Thuần tức Định Vương (còn gọi là Chúa Định) (1754-1777), con trai thứ 16 của Vũ Vương, kế nghiệp năm 1765, không có con. Khi còn sống, Vũ Vương đã có ý định cho con trai thứ chín là Nguyễn Phúc Hiệu nối ngôi. Sau khi Nguyễn Phúc Hiệu chết, và con ông hãy còn quá nhỏ, Vũ Vương định cho con trai thứ hai của mình là Nguyễn Phúc Luân (hay Nguyễn Phúc Côn, là cha của vua Gia Long sau này) nối ngôi. Khi Vũ Vương chết, một vị quan lớn trong triều là Trương Phúc Loan giết Nguyễn Phúc Luân và lập Nguyễn Phúc Thuần, lúc đó mới 12 tuổi, lên ngôi. Năm 1777 ông bị nhà Tây Sơn giết khi ở tuổi 26, chưa có con nối dõi. Nhà Nguyễn sau này truy tôn ông là Duệ Tông Hiếu Định hoàng đế.',
+  'Sau 9 đời chúa nhà Nguyễn phải đối mặt cuộc nội chiến Trịnh-Nguyễn và cuộc khởi nghĩa của 3 nhà anh em Tây Sơn. Cuộc chiến giành lại giang sơn bằng mọi giá đã khiến Nguyễn Ánh (vua Gia Long sau này) mang tiếng "cõng rắn cắn gà nhà" khi ông rước thực dân Pháp về để chống lại quân Tây Sơn và giành lại đất tổ... Triều đại nhà Nguyễn là triều đại phong kiến cuối cùng ở Việt Nam và kết thúc khi vua Bảo Đại thoái vị và bàn giao chính quyền cho Cách mạng Việt Nam.']]
+];
+const TL_CHUA_BANG=[ // [chúa, tên (hiệu), miếu hiệu, thời gian, con thứ, khai sáng, húy kỵ]
+ ['1','Nguyễn Hoàng (Chúa Tiên)','Thái Tổ Gia Dụ Hoàng Đế','1558–1613','Con thứ 2 của Triệu Tổ Nguyễn Cam (Kim)','Hệ 2, có 3 phòng','3/6 AL, cũng là ngày hiệp kỵ chung các Chúa Nguyễn'],
+ ['2','Nguyễn Phúc Nguyên (Chúa Sãi)','Hy Tông Hiếu Văn Hoàng Đế','1613–1635','Con thứ 6 của Chúa Tiên Nguyễn Hoàng','Hệ 3, có 2 phòng','19/11 AL'],
+ ['3','Nguyễn Phúc Lan (Chúa Thượng)','Thần Tông Hiếu Chiêu Hoàng Đế','1635–1648','Con thứ 2 của Chúa Sãi Nguyễn Phúc Nguyên','Hệ 4, vô tự',''],
+ ['4','Nguyễn Phúc Tần (Chúa Hiền)','Thái Tông Hiếu Triết Hoàng Đế','1648–1687','Con thứ 2 của Chúa Thượng Nguyễn Phúc Lan','Hệ 5, có 3 phòng',''],
+ ['5','Nguyễn Phúc Thái (Chúa Nghĩa)','Anh Tông Hiếu Nghĩa Hoàng Đế','1687–1691','Con thứ 2 của Chúa Hiền Nguyễn Phúc Tần','Hệ 6, vô tự',''],
+ ['6','Nguyễn Phúc Chu (Quốc Chúa, Chúa Minh)','Hiển Tông Hiếu Minh Hoàng Đế','1691–1725','Con thứ 1 của Chúa Nghĩa Nguyễn Phúc Thái','Hệ 7, có 27 phòng',''],
+ ['7','Nguyễn Phúc Thụ (Chúa Ninh)','Túc Tông Hiếu Ninh Hoàng Đế','1725–1739','Con thứ 1 của Chúa Minh Nguyễn Phúc Chu','Hệ 8, có 2 phòng',''],
+ ['8','Nguyễn Phúc Khoát (Chúa Vũ)','Thế Tông Hiếu Vũ Hoàng Đế','1739–1765','Con thứ 1 của Chúa Ninh Nguyễn Phúc Thụ','Hệ 9, có 7 phòng',''],
+ ['9','Nguyễn Phúc Thuần (Chúa Định)','Duệ Tông Hiếu Định Hoàng Đế','1765–1777','Con thứ 16 của Chúa Vũ Nguyễn Phúc Khoát','—','1/6 AL']
+];
+const TL_VUA=[ // [vua, tên húy (niên hiệu), miếu hiệu, thời gian, con thứ, khai sáng, húy kỵ]
+ ['1','Nguyễn Phúc Ánh (Gia Long)','Thế Tổ Cao Hoàng Đế','1802–1820','Con thứ 3 của Hưng Tổ Nguyễn Phúc Côn','Hệ 1, có 9 phòng','19/12 AL, cũng là ngày hiệp kỵ chung các Vua Nguyễn'],
+ ['2','Nguyễn Phúc Kiểu (Minh Mạng)','Thánh Tổ Nhân Hoàng Đế','1820–1840','Con thứ 4 của Vua Gia Long','Hệ 2, có 56 phòng',''],
+ ['3','Nguyễn Phúc Miên Tông (Thiệu Trị)','Hiển Tổ Chương Hoàng Đế','1840–1847','Con thứ 1 của Vua Minh Mạng','Hệ 3, có 15 phòng',''],
+ ['4','Nguyễn Phúc Hồng Nhậm (Tự Đức)','Dực Tông Anh Hoàng Đế','1847–1883','Con thứ 2 của Vua Thiệu Trị','Hệ 4, có 4 phòng',''],
+ ['5','Nguyễn Phúc Ưng Chân (Dục Đức)','Cung Tông Huệ Hoàng Đế','1883 (3 ngày: 20/7 đến 23/7/1883)','Con thứ 1 của Vua Tự Đức','',''],
+ ['6','Nguyễn Phúc Hồng Dật (Hiệp Hòa)','Văn Lãng Quận Vương','1883 (30/7 đến 29/11/1883, làm vua 4 tháng 10 ngày)','Con thứ 29 của Vua Thiệu Trị, em ruột Vua Tự Đức','',''],
+ ['7','Nguyễn Phúc Ưng Đăng (Kiến Phước)','Giản Tông Nghị Hoàng Đế','1883–1884','Con thứ 3 của Vua Hiệp Hòa','Hệ 5, vô tự',''],
+ ['8','Nguyễn Phúc Ưng Lịch (Hàm Nghi)','','1884–1885','Con thứ 5 của Vua Hiệp Hòa','',''],
+ ['9','Nguyễn Phúc Ưng Kỷ (Đồng Khánh)','Cảnh Tông Thuần Hoàng Đế','1885–1889','Con thứ 1 của Vua Hiệp Hòa','Hệ 6, vô tự',''],
+ ['10','Nguyễn Phúc Bửu Lân (Thành Thái)','','1889–1907','Con thứ 7 của Vua Dục Đức','',''],
+ ['11','Nguyễn Phúc Vĩnh San (Duy Tân)','','1907–1916','Con thứ 5 của Vua Thành Thái','',''],
+ ['12','Nguyễn Phúc Bửu Đảo (Khải Định)','Hoằng Tông Tuyên Hoàng Đế','1916–1925','Con thứ 1 của Vua Đồng Khánh','',''],
+ ['13','Nguyễn Phúc Vĩnh Thụy (Bảo Đại)','','1925–1945','Con thứ 1 của Vua Khải Định','','']
+];
+const TL_GIALONG=[
+ ['Thuở thiếu thời',[
+  'Khi đức Hưng Tổ mất ngài mới bốn tuổi, đức Duệ Tông rất yêu thương đem nuôi ở trong cung. Lúc 13 tuổi gặp loạn năm Giáp Ngọ (1774), quân Trịnh tấn công Thuận Hóa, ngài theo đức Duệ Tông vào Quảng Nam, năm sau đến Gia Định. Đức Duệ Tông giao cho ngài giữ chức Chưởng sứ, mỗi khi có việc quân thường được mời bàn tính và các tướng rất bái phục.',
+  'Năm Đinh Dậu (1777) Sài Côn (Sài Gòn) bị quân Tây Sơn chiếm, đức Duệ Tông phải lánh mình vào Long Xuyên, sau đó đức Duệ Tông và Tân Chính Vương (Nguyễn Phúc Dương) đều bị hại, chỉ riêng ngài trốn thoát lánh mình ở đảo Thổ Châu, rồi trở về tụ tập các tướng sĩ khởi binh ở Long Xuyên đánh lấy Sài Côn. Các tướng tôn ngài làm Đại nguyên súy Nhiếp chính quốc, lúc ấy ngài 17 tuổi.']],
+ ['Thời kỳ xưng vương',[
+  'Năm Canh Tý (1780), tướng sĩ tôn ngài lên ngôi vương ở Sài Côn, dùng ấn Đại Việt Quốc Nguyễn Chúa Vĩnh Trấn Chi Bửu. Từ năm Nhâm Dần (1782) đến năm Bính Thìn (1786) quân Tây Sơn nhiều phen đánh phá Gia Định cố tâm hại cho được ngài. Ngài thất trận nhiều lần, có lúc bị vây ở Côn Lôn, có lúc lánh mình ra Phú Quốc rồi qua Xiêm đến hai lần, phải gởi Hoàng tử Cảnh theo giám mục Bá Đa Lộc sang Pháp cầu viện.',
+  'Đến năm Đinh Mùi (1787) ngài trở về Long Xuyên, các tướng giỏi và nghĩa quân theo về rất đông nên thế lực mạnh dần. Tháng 8 năm Mậu Thân (1788) lấy thành Gia Định, năm Canh Tuất (1790) chiếm lại Bình Thuận.',
+  'Năm Nhâm Tý (1792) ngài tự thân đi đánh Qui Nhơn nhưng cũng không thành công. Từ đấy hằng năm cứ đến mùa gió nam ngài cho quân tiến ra đánh các tỉnh miền Trung, khi gió bấc nổi lên lại rút quân về Gia Định. Năm Kỷ Mùi (1799) ngài đánh Qui Nhơn lần thứ ba chiếm được thành đổi tên là Bình Định, giao cho Vũ Tính và Ngô Tùng Chu giữ. Bình Định ở vị trí lẻ loi khó tiếp viện, nên mùa thu năm đó quân Tây Sơn vây thành và chận đường tiếp viện phía nam. Nhờ Vũ Tính giỏi cố thủ nên thành không bị mất. Năm Canh Thân (1800) ngài tự thân đi cứu viện đánh nhau nhiều phen với quân Tây Sơn nhưng không giải được vây.',
+  'Năm Tân Dậu (1801) nghe theo lời khuyên của các tướng và nhất là lời tâu của Vũ Tính, qua mùa hạ ngài theo đường thủy dẫn quân đánh Thuận Hóa. Ngày mồng một tháng 5 năm Tân Dậu (1801) tiến quân vào cửa Tư Hiền, ngày mồng hai tiến đến Trường Hà, ngày mồng ba (2-6-1801) thu phục lại Kinh đô cũ. Xa giá tiến vào Kinh thành, ngài cho thu ấn tín, niêm phong kho tàng của Tây Sơn và an định dân chúng. Từ ngày giữ chức Đại nguyên súy đến lúc này trải qua 25 năm, ngài được 40 tuổi, nhiều phen vào sinh ra tử mới thu phục Kinh đô.']],
+ ['Thời kỳ xưng đế',[
+  'Đến tháng tư năm Nhâm Tuất (1802) ngài cho sửa chữa Hoàng thành, qua ngày mồng một tháng 5 cho lập đàn ở xã An Ninh (nay là Kim Long, Hương Trà, Thừa Thiên) hiệp tế trời đất về việc đặt niên hiệu, hôm sau ngày mồng hai tháng 5 (1-6-1802) vua ngự ở điện nhận lễ triều hạ, đặt niên hiệu Gia Long, ban lệnh đại xá khắp nước. Sau đó cho dựng Thái miếu ở bên trái Hoàng thành.',
+  'Qua tháng 6 ngài đưa quân ra Bắc tiễu trừ quân địch. Đến ngày 21 tháng 6 xa giá tiến vào Thăng Long thực hiện việc thống nhất sơn hà. Sau đó ngài ban dụ cho các cựu thần nhà Lê cùng kẻ sĩ Bắc Hà đến triều kiến, tùy theo tài năng mà bổ dụng. Ngài còn chu cấp cho những người trung nghĩa ở miền Bắc đã bỏ mình. Ngài đến viếng miếu thờ vua Lê Thái Tổ, sắc phong cho con cháu nhà Lê và họ Trịnh, cấp cho tự điền và mộ phu để lo việc thờ tự tổ tiên. Đến tháng 10 ngài trở về Thanh Hóa yết kiến lăng miếu ở Thiên Tôn, ngày 26 trở về Kinh bái yết Thái miếu.',
+  'Tháng 11 năm Nhâm Tuất (1802) ngài làm lễ tế trời đất, yết Thái miếu hiến phu và xử trị vua quan Tây Sơn.',
+  'Tháng giêng năm Giáp Tý (1804) ngài làm lễ nhận tuyên phong của nhà Thanh, qua tháng 2 đổi quốc hiệu là Việt Nam và mãi đến năm Bính Dần (1806) ngài mới làm lễ lên ngôi Hoàng Đế ở điện Thái Hòa.',
+  'Cuối đời Tây Sơn chính sự thối nát, phong tục hủy hoại nên việc cai trị rất khó khăn, mọi việc trong nước đều được ngài sắp đặt từ đầu. Ngài chia nước thành 23 trấn 4 dinh, trấn lại chia thành phủ, huyện, châu và xã. Trong triều thì được phân thành 6 bộ: Lại, Hộ, Binh, Hình, Công, Lễ, lại đặt Đô sát viện để lo việc can gián vua và đàn hặc các quan.',
+  'Về việc binh ngài cho giảm bớt quân, đặt phép tuyển chọn quân ở các dinh trấn, cho quân phòng thủ những nơi hiểm yếu trong nước. Về tài chánh thì đặt lại các loại thuế, thể thức miễn giảm thuế. Ngoài ra cho sửa lại hệ thống giao thông, đắp đê điều phòng ngừa thiên tai. Để bài trừ những tệ đoan xã hội ngài cho đặt ra những pháp luật nghiêm minh, sai Nguyễn Văn Thành soạn ra bộ luật gồm 22 quyển 398 điều căn cứ theo luật Hồng Đức và luật nhà Thanh.',
+  'Tuy nhờ vũ công mà lấy lại cơ nghiệp, nhưng ngài rõ việc giữ nước cần phải có những quan văn giỏi, cho nên rất chú trọng đến việc học hành. Ngài cho dựng Văn miếu thờ đức Khổng Tử tại Kinh đô và các dinh trấn, lại đặt Quốc tử giám, mở khoa thi đào tạo kén chọn nhân tài, soạn quốc sử và sách địa dư, sai soạn bộ Cương Mục tiền biên, sai Binh bộ Thượng thư Lê Quang Định nghiên cứu các vùng trong nước từ Lạng Sơn đến Hà Tiên về địa thế, phong tục, thổ sản... để soạn bộ Nhất Thống Địa Dư Chí gồm 10 quyển, lại sai tìm những sách sử đời trước để sửa chữa và soạn quốc sử.',
+  'Với tổ tiên ngài lo sửa lại các lăng tẩm, đem về Kinh an táng những người thân trong họ đã bỏ mình vì nước, với họ tộc ngài giao cho Phúc Logn trông coi và dụ rằng: "Xưa nay các bậc đế vương đều lấy sự thuận hòa và hậu đãi người trong gia tộc làm trọng, nhưng phải có phép tắc ràng buộc mới giữ vẹn được tình thân và cùng chung hưởng phú quý. Trước đây khi vận nước điêu linh các thân tộc phải chịu nhiều nỗi cay đắng. Nay ta nhờ ân trạch của liệt Thánh lấy lại giang sơn, muốn thân tộc giữ phép tắc để cùng hưởng phúc chung, nhưng gần đây nghe nói có kẻ chiếm đoạt nhà đất của dân, có kẻ say sưa dọa nạt dân, làm nhiều điều phi pháp thực là đáng ghét. Việc trị nước trước hết phải tề gia, xem như họ hàng Tây Sơn cậy thế hung hãn khiến mọi người đều than thán mà đến bại vong, gương ấy trước mắt. Nay nên họp lại mà răn dạy không được kiêu ngạo ngang ngược mà mắc tội. Pháp luật thi hành từ gần trước, phải thận trọng."',
+  'Việc giao thiệp với các nước ngoài ngài lấy chủ trương hòa làm chính. Sau khi thống nhất, ngài cho người sang cầu phong ở Trung Hoa và chịu việc triều cống. Với Xiêm La thì cho giảng hòa để đưa Nặc Ông Chân về cai trị Chân Lạp. Với Tây phương và nhất là người Pháp, tuy có nhiều người giúp đỡ ngài trong lúc còn trong cảnh gian truân và vẫn còn nhận chức tại triều đình, ngài tránh không muốn cho họ xâm lấn vào quyền hạn của mình. Ngài vẫn để cho tàu của Pháp ghé bến Đà Nẵng để buôn bán. Nhờ sự ngoại giao khéo léo và không biệt đãi một nước nào nên rất được lòng các lân bang và các nước Tây phương.']],
+ ['Thời kỳ cuối đời',[
+  'Năm Giáp Tuất (1814) ngài cho xây lăng Thiên Thụ ở làng Định Môn (Hương Thủy, Thừa Thiên). Năm Bính Tý (1816) ngài được 55 tuổi cho ban dụ về việc lập Thái Tử và cho lập Hoàng tử thứ tư Nguyễn Phúc Đảm làm Thái Tử, chế áo mũ và ban kim sách, kim bửu. Ngày 11 tháng chạp năm Kỷ Mão (1819) ngài đau nặng cho triệu Thái tử, các thân công cùng đại thần vào nhận di chiếu. Ngày 19 tháng chạp (3-2-1820) giờ Tị ngài băng thọ 58 tuổi.',
+  'Hoàng Đế Gia Long đã dựng lên triều đại nhà Nguyễn vào năm 1802. Ngài có tổng cộng 31 người con: 13 nam và 18 nữ.']]
+];
+const TL_DEHE_Y=[['Miên','trường cửu, phước duyên trên hết'],['Hường','oai hùng kết đúc thế gia'],['Ưng','nên danh xây dựng sơn hà'],['Bửu','bối báu lợi tha quần chúng'],['Vĩnh','bền chí hùng anh ca tụng'],['Bảo','ôm lòng khí dũng bình sanh'],['Quý','cao sang vinh hạnh công thành'],['Định','tiên quyết thi hành oanh liệt'],['Long','vương tướng rồng tiên nối nghiệp'],['Trường','vĩnh cửu nối tiếp giống nòi'],['Hiền','tài đức phúc ấm sáng soi'],['Năng','gương nơi khuôn phép bờ cõi'],['Kham','đảm đương mọi cơ cấu giỏi'],['Kế','hoạch sách mây khói cân phân'],['Thuật','biên chép lời đúng ý dân'],['Thế','mãi thọ cận thân gia tộc'],['Thoại','ngọc quý tha hồ phước lộc'],['Quốc','dân phục nắm gốc giang sơn'],['Gia','muôn nhà Nguyễn vẫn huy hoàng'],['Xương','phồn thịnh bình an thiên hạ']];
+const TL_PHIEN_HOANGTU=['Tăng Duệ Hoàng Thái Tử (Hoàng tử Cảnh), hoàng trưởng tử của vua Gia Long','Kiến An Vương, hoàng tử thứ 5','Định Viễn Quận Vương, hoàng tử thứ 6','Diên Khánh Vương, hoàng tử thứ 7','Điện Bàn Công, hoàng tử thứ 8','Thiệu Hóa Quận Vương, hoàng tử thứ 9','Quảng Oai Công, hoàng tử thứ 10','Thường Tín Quận Vương, hoàng tử thứ 11','An Khánh Vương, hoàng tử thứ 12','Từ Sơn Công, hoàng tử thứ 13'];
+const TL_SOPHA=[ // đời -> các vị theo sơ đồ (trang 20)
+ ['1','Hoàng trưởng Nguyễn Phúc Kỳ'],
+ ['2','Duệ (đệ 1 chi), Xuân (đệ 2 chi), Tài (đệ 3 chi), Trí (đệ 4 chi)'],
+ ['3','Vinh, Mỹ, Hùng; Chi; Khương; Lưu; Cơ (2)'],
+ ['4','Thắng, Nghiêm, Sinh, Lộc, Hoành, Tô, Doãn, Chân, Tịnh (3)'],
+ ['5','Đạt, Nhiệm, Lượng, Sung, Hâm, Thái, Đức, Thắng, Trọng, Tự; Thận, Hoán, Đăng, Thuận, Pháp, Chữ, Lý, Cần, Tâm, Bì (2), Nghị'],
+ ['6','Đạo, Hậu, Ngữ, Cẩn, Tồn, Bửu, Liêm, Thảo, Phò, Trì, Huấn, Hóa (2)'],
+ ['7','Vũ, Cúc, Bảo, Tố, Phúc (Phát) (2); cô Phong, cô Đặng, cô Niệm'],
+ ['8','Cấp (Ẩn), Kiên, cô Tình, Lương (1)'],
+ ['9','Sa, Tú, Đường, cô Thân, cô Thìn, cô Vỹ, cô Dần, cô Sương; Dốc (2), Đống, Dương; Thôi'],
+ ['10','Sắc, Vọng, Mân, Luyện, Kết, cô Giảng, cô Sâm, cô Dung; Siêu, Triệu, Xu, Phó, Chỉ, cô Ân, cô Hợi']
+];
+
+function tulieuHTML(){
+  const P=a=>a.map(t=>`<p>${esc(t)}</p>`).join('');
+  const fig=(src,cap)=>`<figure class="tl-fig"><a href="${src}" target="_blank" rel="noopener"><img src="${src}" loading="lazy" alt="${esc(cap)}"></a><figcaption>${esc(cap)}. Bấm vào ảnh để xem cỡ lớn.</figcaption></figure>`;
+  const tbl=(head,rows,cls)=>`<div class="gt-wrap"><table class="gt"><tr>${head.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map(r=>`<tr${cls?` class="${cls(r)}"`:''}>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+  const SUB=[['g-t1','1. Thủy tổ Nguyễn Bặc'],['g-t2','2. Thế phổ các chúa Nguyễn'],['g-t3','3. Bảng các chúa Nguyễn'],['g-t4','4. Thế phổ các vua Nguyễn'],['g-t5','5. Vua Gia Long'],['g-t6','6. Đế hệ thi: ý nghĩa và cách đặt tên'],['g-t7','7. Phiên hệ thi và mười hoàng tử'],['g-t8','8. Tôn phổ Đệ Tam Hệ'],['g-t9','9. Thế phổ theo đời']];
+  const det=(id,title,body)=>`<details class="ph tl" id="${id}"><summary><b>${title}</b></summary><div class="ph-body">${body}</div></details>`;
+  return `<section class="gsec" id="g-tai-lieu"><h3>Tư liệu gia tộc: Phả hệ họ Tôn Thất (trang 1 đến 20)</h3>
+    <p>Nội dung dưới đây chép lại từ tài liệu <b>“Phả hệ họ Tôn Thất (Truồi)”</b> của gia tộc (Tôn-Thất-Nô sao lục), từ trang 1 đến trang 20, chia thành các mục nhỏ. Bấm vào tên mục để mở. Một số lỗi chính tả hiển nhiên của bản gốc đã được sửa.${gC(13)}</p>
+    <nav class="goc-toc" aria-label="Các mục nhỏ">${SUB.map(([id,t])=>`<a href="#" data-go="${id}">${t}</a>`).join('')}</nav>
+
+    ${det('g-t1','1. Thủy tổ Nguyễn Bặc và các đời đến Nguyễn Văn Lựu',P([
+      'Đức Định Quốc Công húy là Nguyễn Bặc (924 - 979) được xem như Thủy Tổ của dòng họ Nguyễn. Ở thiếu thời, ngài chăn trâu tập trận cờ lau ở động Hoa Lư, kết nghĩa đào viên với Đinh Bộ Lĩnh (là Đinh Tiên Hoàng sau này) và Đinh Điền, cùng lớn lên bên dòng sông quê hương Đại Hoàng (Gia Viễn, Ninh Bình).',
+      'Sau khi ngài Nguyễn Bặc mất, con cháu dòng dõi họ Nguyễn tiếp tục duy trì huyết thống, tính đến đời ngài Nguyễn Văn Lựu thời vua Lê Hiến Tông (1497-1504) là đời thứ 15. Ngài Nguyễn Văn Lựu sinh ra 2 người con trai, trong đó có ngài Nguyễn Kim (1468 - 1545) là cha của chúa đầu tiên, Nguyễn Hoàng (1525 - 1613) sau này.']))}
+
+    ${det('g-t2','2. Thế phổ các chúa Nguyễn: Tôn Thất Tiền hệ, 9 vị chúa',TL_CHUA.map(([he,t,ps])=>`<div class="tl-card"><div class="tl-h"><span class="tl-he">${esc(he)}</span><b>${esc(t)}</b></div>${P(ps)}</div>`).join(''))}
+
+    ${det('g-t3','3. Bảng thế phổ các chúa Nguyễn (hệ, phòng, húy kỵ)',
+      `<p>Triều Nguyễn 1558 - 1945. Thế phổ các chúa Nguyễn (Tôn Thất Tiền hệ, có 9 vị chúa), theo tài liệu gia tộc:</p>`+
+      tbl(['Chúa','Tên (hiệu)','Miếu hiệu','Thời gian','Là con thứ mấy','Khai sáng','Húy kỵ'],TL_CHUA_BANG,r=>r[0]==='2'?'me':'')+
+      `<p>Triệu Tổ Nguyễn Kim (Cam) mở Hệ 1, có 1 phòng. Đức Hưng Tổ Hiếu Khương Hoàng Đế Nguyễn Phúc Côn, con thứ 2 của Chúa Vũ, sinh hạ Nguyễn Phúc Ánh (Gia Long), mở đầu thế phổ các vua Nguyễn.</p>`)}
+
+    ${det('g-t4','4. Thế phổ các vua Nguyễn: Tôn Thất Chánh hệ, 13 vị vua',
+      tbl(['Vua','Tên húy (niên hiệu)','Miếu hiệu','Thời gian','Là con thứ mấy','Khai sáng','Húy kỵ'],TL_VUA)+
+      fig('hinh/so-do-chua-nguyen-vua-nguyen-1.jpg','Sơ đồ thế phổ các chúa Nguyễn và các vua Nguyễn (bản gốc, trang 10)')+
+      fig('hinh/so-do-chua-nguyen-vua-nguyen-2.jpg','Sơ đồ thế phổ các chúa Nguyễn và các vua Nguyễn (bản gốc, trang 18)'))}
+
+    ${det('g-t5','5. Đức Thế Tổ Cao Hoàng Đế Nguyễn Phúc Ánh (Gia Long, 1762 - 1820)',
+      `<p>Thế Tổ Cao Hoàng Đế húy là Nguyễn Phúc Ánh, là con thứ ba của đức Hưng Tổ Hiếu Khang Hoàng Đế Nguyễn Phúc Côn và Hoàng Hậu Nguyễn Thị Hoàn. Ngài sinh ngày 15 tháng giêng năm Nhâm Ngọ (8-2-1762).</p>`+
+      TL_GIALONG.map(([t,ps],i)=>`<h4>${i+1}. ${esc(t)}</h4>${P(ps)}`).join(''))}
+
+    ${det('g-t6','6. Đế hệ thi: ý nghĩa 20 chữ lót và cách đặt tên',
+      `<p>Khi Hoàng Đế Minh Mạng lên nối ngôi cha, ngài soạn một bài thơ để dùng vào việc đặt tên cho con cháu. Mỗi chữ trong bài thơ được dùng làm chữ lót cho mỗi thế hệ nối tiếp nhau. Đây là bài <b>Đế Hệ Thi</b>, dùng cho con cháu vua Minh Mạng trở về sau:</p>
+       <blockquote class="dich">MIÊN HƯỜNG ƯNG BỬU VĨNH<br>BẢO QUÝ ĐỊNH LONG TRƯỜNG<br>HIỀN NĂNG KHAM KẾ THUẬT<br>THẾ THOẠI QUỐC GIA XƯƠNG</blockquote>
+       <p>Bài thơ giúp dòng họ Nguyễn Phước Tộc dễ dàng nhận ra ngôi thứ trong họ hàng. Con cháu của vua Minh Mạng được đặt tên theo khuôn mẫu: <b>Họ</b>: Nguyễn Phước (hoặc Phúc); <b>Chữ lót</b>: Miên, Hường, Ưng, Bửu, Vĩnh, Bảo, Quý… (dùng theo thứ tự từng chữ trong bài thơ); <b>Tên</b>. Mỗi chữ trong bài thơ được dùng làm chữ lót cho mỗi thế hệ. Có nhiều gia đình vì nhận thấy nếu đặt tên đúng cách thì dài quá nên đã bỏ bớt chữ “Nguyễn Phước” và chỉ dùng chữ Bửu, Vĩnh… mà thôi.</p>
+       <h4>Ý nghĩa của 20 chữ lót</h4>`+
+      tbl(['Thứ tự','Chữ','Ý nghĩa'],TL_DEHE_Y.map(([c,y],i)=>[String(i+1),c.toUpperCase(),y]))+
+      `<h4>Nữ giới hậu duệ của vua Minh Mạng</h4><p>Nữ giới hậu duệ của vua Minh Mạng dùng các cách gọi sau đây, thay đổi theo thứ tự thế hệ:</p>`+
+      tbl(['Danh xưng','Chỉ ai'],[['Công Chúa','Chị em vua Minh Mạng'],['Công Nữ','Con của vua'],['Công Tôn Nữ','Cháu của vua'],['Công Tằng Tôn Nữ','Chắt của vua'],['Công Huyền Tôn Nữ','Chít của vua'],['Huyền Tôn Nữ','Dùng chung cho thế hệ này trở về sau']]))}
+
+    ${det('g-t7','7. Phiên hệ thi và mười hoàng tử của vua Gia Long',
+      `<p>Vua Gia Long Nguyễn Phúc Ánh sinh hạ được 13 vị hoàng tử; trừ 3 vị bị tảo thương, còn lại 10 vị: mỗi vị đều có một bài thơ riêng, dùng lót kế vào họ Nguyễn Phúc, để phân biệt tôn ty, gọi là <b>Phiên hệ thi</b>. Mười vị hoàng tử, theo tài liệu gia tộc:</p>
+       <ol class="refs">${TL_PHIEN_HOANGTU.map(t=>`<li>${esc(t)}</li>`).join('')}</ol>
+       <p class="sub">Nội dung từng bài thơ xem ở mục “Mười bài Phiên hệ thi” phía trên. Trong tài liệu gia tộc có chép đầy đủ bài của phòng Hoàng tử Cảnh (Anh Duệ): Mỹ Duệ Tăng Cường Tráng, Liên Huy Phát Bội Hương, Linh Nghi Hàm Tốn Thuật, Vỹ Vọng Biểu Khôn Quang. Lưu ý một vài chữ khác nhau giữa các bản chép: bản đăng báo ghi “Mỹ Lệ” và “Tốn Thuận”.${gC(3)}</p>`)}
+
+    ${det('g-t8','8. Cung lục Tiên Nguyên phổ Tiền biên: Nguyễn Phước tôn phổ, Đệ Tam Hệ',
+      `<p><b>Đệ nhất phòng, đệ nhất chi, đệ nhất phái thế phổ</b> (tức dòng Tôn Thất tiền biên, nhà Nguyễn). Quán tại làng Gia Miêu Ngoại Trang (Quý Hương, Quý Huyện), tổng Thượng Bạn, huyện Tống Sơn, phủ Hà Trung, tỉnh Thanh Hóa.</p>`+
+      P([
+       'Triệu Tổ Tĩnh Hoàng Đế, húy Nguyễn Kim (Cam), sinh 1468. Mất 1545, thờ tại Triệu miếu, Nội thành, lăng Trường Nguyên, tại núi Triệu Tường, Quý Hương, Quý Huyện, Thanh Hóa. Ngài là con của Trừng Quốc Công, húy Nguyễn Văn Lưu, và bà Hoàng Dũ.',
+       'Hoàng trưởng tử Nguyễn Uông, tả tướng Lãng Quận Công, con thứ 1 của ông Nguyễn Kim, thờ tại Dương Xuân Thượng, Long Thọ. Sanh xuất Hệ 1, có 1 phòng.',
+       'Hoàng nhị Nguyễn Hoàng, Chúa Tiên, tức Thái Tổ Gia Dụ Hoàng Đế, con thứ 2 của ông Nguyễn Kim (1525-1613), lăng Trường Cơ, La Khê, Hương Trà, Thừa Thiên. Thờ tại Chánh án, Thái miếu, Nội thành. Sanh xuất Hệ 2, có 3 phòng.',
+       'Hoàng nữ Ngọc Bửu, con thứ 3 của ông Nguyễn Kim, hạ giá cho Trịnh Kiểm, sanh con là Trịnh Tùng.'])+
+      `<h4>Mười hoàng tử của ngài Nguyễn Hoàng</h4><p>Ngài Nguyễn Hoàng năm 1558 vào trấn thủ Thuận Hóa, có 10 vị hoàng tử:</p>`+
+      tbl(['Thứ','Hoàng tử','Ghi chú'],[['1','Hoàng cả Hà','Thái bảo Hòa quận công, Hệ 2'],['2','Hoàng tử Hán','Hệ 2'],['3','Hoàng tử Thành','Hệ 2'],['4','Hoàng tử Diễn','Hào quận công, Hệ 2'],['5','Hoàng tử Hải','Hệ 2'],['6','Hoàng tử Nguyên','Hy Tông Hiếu Văn Hoàng Đế, Chúa Sãi (1563-1635). Sanh xuất Hệ 3, có 2 phòng'],['7','Hoàng tử Hiệp','Hệ 2'],['8','Hoàng tử Trạch','Hệ 2'],['9','Hoàng tử Dương','Hệ 2'],['10','Hoàng tử Khê','Nghĩa Hưng quận vương, Hệ 2']],r=>r[0]==='6'?'me':'')+
+      `<p>Và 2 công chúa: Ngọc Tiên và Ngọc Tú (Ngọc Nữ). Lăng Trường Diễn (của ông) ở làng Hải Các, Hương Trà, Thừa Thiên; lăng Vĩnh Diễn (của bà) ở làng Chiêm Sơn, Duy Xuyên, Quảng Nam. Hai ông bà thờ tại Thái miếu, An tả nhất; sinh hạ 11 hoàng nam và 4 hoàng nữ.</p>
+       <h4>Đệ Tam Hệ: Chúa Sãi Nguyễn Phúc Nguyên (1563 - 1635), sinh xuất Hệ 3, có 2 phòng</h4><p>Hiệu là Hy Tông Hiếu Văn Hoàng Đế. Sinh hạ 11 hoàng nam:</p>`+
+      tbl(['Thứ','Hoàng nam','Ghi chú'],[['1','Khánh Quận Công','Phòng 1'],['2','Thần Tông Hiếu Chiêu Hoàng Đế',''],['3','Hoàng tử Anh',''],['4','Hoàng tử Trung',''],['5','Hoàng tử An',''],['6','Hoàng tử Vĩnh',''],['7','Hoàng tử Lộc',''],['8','Hoàng tử Tứ',''],['9','Hoàng tử Thiệu',''],['10','Vinh Quận Công','Phòng 2'],['11','Hoàng tử Đôn','']],r=>r[0]==='1'?'me':'')+
+      `<p class="sub">Phòng 1 là phòng của Khánh Quận Công, tức ông Nguyễn Phúc Kỳ, đời 1 của dòng họ ta (theo trang 30 của tài liệu).</p>
+       <h4>Bốn hoàng nữ của Chúa Sãi</h4>`+
+      tbl(['Thứ','Hoàng nữ','Ghi chú'],[['1','Ngọc Liên','Chồng là Nguyễn Phước Vinh, con của Mạc Cảnh Uông; lập ra họ Nguyễn Hữu'],['2','Ngọc Vạn',''],['3','Ngọc Khoa',''],['4','Ngọc Đĩnh','Chồng là Nguyễn Cửu Kiều; lập ra họ Nguyễn Cửu']])+
+      fig('hinh/so-do-de-tam-he.jpg','Sơ đồ Cung lục Tiên Nguyên phổ Tiền biên, Nguyễn Phước tôn phổ, Đệ Tam Hệ (bản gốc, trang 19)')+
+      fig('hinh/hoang-nu-chua-sai.jpg','Bốn hoàng nữ của Chúa Sãi (bản gốc, trang 17)'))}
+
+    ${det('g-t9','9. Đệ nhất phòng, đệ tứ chi, đệ nhị phái: thế phổ theo đời',
+      `<p>Thế phổ <b>Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái Tôn Phổ</b>, bắt đầu từ Hoàng trưởng Nguyễn Phúc Kỳ, theo sơ đồ trong tài liệu gia tộc. Con số trong ngoặc là thứ tự con; chữ “cô” là phái nữ; mã số của cụ Dốc là Ms. 4-2-3/2-2-2/1-2.</p>`+
+      tbl(['Đời','Các vị theo sơ đồ'],TL_SOPHA,r=>r[0]==='9'?'me':'')+
+      fig('hinh/so-do-de-tu-chi-de-nhi-phai.jpg','Sơ đồ thế phổ theo đời, từ Hoàng trưởng Nguyễn Phúc Kỳ đến đời 10 (bản gốc, trang 20)'))}
+  </section>`;
+}
 function renderGoc(){
-  const TOC=[['g-tong-quan','Tổng quan'],['g-thoi-gian','Dòng thời gian'],['g-phan-he','Tiền hệ, Phiên hệ, Đế hệ'],['g-dat-ten','Cách đặt tên'],['g-thi','Đế hệ thi'],['g-phien','Phiên hệ thi'],['g-vi-tri','Vị trí của dòng họ'],['g-tham-khao','Tài liệu tham khảo']];
+  const TOC=[['g-tong-quan','Tổng quan'],['g-thoi-gian','Dòng thời gian'],['g-phan-he','Tiền hệ, Phiên hệ, Đế hệ'],['g-dat-ten','Cách đặt tên'],['g-thi','Đế hệ thi'],['g-phien','Phiên hệ thi'],['g-tai-lieu','Tư liệu gia tộc'],['g-vi-tri','Thế phổ dòng họ ta'],['g-tham-khao','Tài liệu tham khảo']];
   const tlItem=(y,t)=>`<li><span class="tl-y">${y}</span>${t}</li>`;
   return `<div class="goc">
     <h2>Nguồn gốc dòng họ</h2>
@@ -829,9 +1029,10 @@ function renderGoc(){
 
     <section class="gsec" id="g-thoi-gian"><h3>Dòng thời gian</h3>
       <ol class="tl">
-        ${tlItem('Thế kỷ XVI',`<b>Nguyễn Kim</b>, con ông Nguyễn Hoằng Dụ, sinh hai con là Nguyễn Uông và Nguyễn Hoàng.${gC(1,7)}`)}
+        ${tlItem('924–979',`<b>Nguyễn Bặc</b> (Đức Định Quốc Công), được xem là thủy tổ của dòng họ Nguyễn; kết nghĩa với Đinh Bộ Lĩnh (Đinh Tiên Hoàng), quê Đại Hoàng, Gia Viễn, Ninh Bình. Đến ông Nguyễn Văn Lựu thời vua Lê Hiến Tông (1497–1504) là đời thứ 15.${gC(13)}`)}
+        ${tlItem('1468–1545',`<b>Nguyễn Kim</b> (Cam), con ông Nguyễn Văn Lựu, được phong An Thành Hầu, phò vua Lê diệt nhà Mạc, làm Thái sư Hưng Quốc công. Ông có hai con trai là Nguyễn Uông và Nguyễn Hoàng, mất năm 1545; về sau được vua nhà Nguyễn truy tôn là Triệu Tổ Tĩnh Hoàng đế (Hệ 1).${gC(13)}`)}
         ${tlItem('1558',`<b>Nguyễn Hoàng</b> (Đoan Quận Công) vào làm Trấn thủ Thuận Hóa, sau kiêm Quảng Nam; sử gọi là <b>Chúa Tiên</b>. Đây là điểm khởi đầu cơ nghiệp của các chúa Nguyễn ở phương Nam.${gC(1,3)}`)}
-        ${tlItem('1613',`Nguyễn Phúc Nguyên (Chúa Sãi) nối ngôi. Từ thời các chúa, con cháu mang họ <b>Nguyễn Phúc (Phước)</b>; một số tài liệu ghi việc ghép chữ Phúc vào họ Nguyễn bắt đầu từ đời Chúa Sãi.${gC(3)}`)}
+        ${tlItem('1613',`Nguyễn Phúc Nguyên (Chúa Sãi, 1563–1635), con thứ 6 của Chúa Tiên, nối ngôi vì các anh mất sớm; ngài mở Hệ 3. Chúa Sãi là người đầu tiên mang họ <b>Nguyễn Phúc (Phước)</b>: tương truyền khi mang thai, mẹ ngài mộng thấy thần đưa tờ giấy đề chữ “Phúc”, bà bảo nên lấy chữ này làm chữ lót để nhiều người trong dòng họ cùng hưởng phúc.${gC(3,13)}`)}
         ${tlItem('1802',`<b>Gia Long</b> lên ngôi, thống nhất đất nước và lập nhà Nguyễn. Vua quy định cách chép tộc phả: con cháu Nguyễn Hoàng ở phía Nam chép theo họ <b>Tôn Thất Nguyễn Phúc</b>; con cháu ở phía Bắc và các chi từ Thanh Hóa trở ra thuộc họ <b>Nguyễn Hựu</b>.${gC(1,4,8)}`)}
         ${tlItem('1822–1825',`Vua <b>Minh Mạng</b> ban <b>Đế hệ thi</b> và <b>10 bài Phiên hệ thi</b> (mỗi bài bốn câu năm chữ, 20 chữ) để đặt chữ lót cho con cháu, phân biệt thân sơ và thứ bậc các đời. Tài liệu ghi năm khác nhau (1822, 1823 hoặc 1825).${gC(3,5,8)}`)}
         ${tlItem('1829',`Minh Mạng thứ 10: vua xuống chiếu quy định con cháu dòng Phiên hệ và Tiền hệ không xưng quốc tính Nguyễn Phước nữa mà gọi chung là <b>Tôn Thất</b>. Từ đó có cách gọi <b>Tôn Thất viễn chi</b> (Tiền hệ) và <b>Tôn Thất cận chi</b> (Phiên hệ).${gC(2,4,5)}`)}
@@ -843,18 +1044,14 @@ function renderGoc(){
     <section class="gsec" id="g-phan-he"><h3>Tiền hệ, Phiên hệ và Đế hệ</h3>
       <div class="gt-wrap"><table class="gt">
         <tr><th>Dòng</th><th>Gồm</th><th>Họ của nam</th><th>Chữ lót</th></tr>
-        <tr><td><b>Tiền hệ</b><br><span class="sub">(Tiền biên)</span></td><td>Con cháu các chúa Nguyễn, từ trước Gia Long. Tính từ Nguyễn Kim đến Nguyễn Phúc Thuần là 10 hệ (9 hệ nếu tính từ Nguyễn Hoàng).</td><td>Tôn Thất</td><td>Không có bài thơ chung; tên đứng ngay sau họ</td></tr>
+        <tr><td><b>Tiền hệ</b><br><span class="sub">(Tiền biên)</span></td><td>Con cháu các chúa Nguyễn, từ trước Gia Long: 9 hệ, từ Nguyễn Kim (Hệ 1) đến Nguyễn Phúc Khoát (Hệ 9).</td><td>Tôn Thất</td><td>Không có bài thơ chung; tên đứng ngay sau họ</td></tr>
         <tr><td><b>Phiên hệ</b><br><span class="sub">(Chánh biên)</span></td><td>Con cháu các hoàng tử, anh em của vua Minh Mạng (con vua Gia Long).</td><td>Tôn Thất</td><td>Theo <a href="#" data-go="g-phien">10 bài Phiên hệ thi</a>, tùy phòng</td></tr>
         <tr><td><b>Đế hệ</b><br><span class="sub">(Chánh biên)</span></td><td>Con cháu vua Minh Mạng. Chỉ dòng đế mới được nối ngôi.</td><td>Nguyễn Phúc (Phước)</td><td>Theo <a href="#" data-go="g-thi">Đế hệ thi</a></td></tr>
       </table></div>
       <p>Phiên là “phên dậu”: dòng phiên bảo vệ dòng đế. Vua Gia Long có 13 hoàng tử, 3 người mất sớm, 10 người có con cháu nên có 10 bài Phiên hệ thi.${gC(6,8)}</p>
 
-      <h4>Mười hệ của Tiền hệ</h4>
-      <div class="gt-wrap"><table class="gt">
-        <tr><th>Hệ</th><th>Người mở hệ</th><th>Miếu hiệu</th><th>Thời gian</th></tr>
-        ${TIEN_HE.map(([n,t,m,y])=>`<tr class="${n===3?'me':''}"><td>${n}</td><td>${esc(t)}${n===3?' <span class="badge-me">hệ của dòng họ ta</span>':''}</td><td>${esc(m)}</td><td>${esc(y||'—')}</td></tr>`).join('')}
-      </table></div>
-      <p class="sub">Nguồn: cách đánh số hệ theo Nguyễn Phúc tộc thế phả.${gC(2,7)} Các ghi chép nói “9 hệ” thường tính từ Nguyễn Hoàng (hệ 2) đến Nguyễn Phúc Thuần (hệ 10).</p>
+      <p>Bảng đầy đủ 9 vị chúa, miếu hiệu, thời gian, số phòng và ngày húy kỵ nằm ở mục nhỏ “Bảng thế phổ các chúa Nguyễn” trong phần <a href="#" data-go="g-tai-lieu">Tư liệu gia tộc</a>.</p>
+      <p class="sub">Theo phả hệ gia tộc, Tiền hệ có 9 hệ, từ Hệ 1 (Triệu Tổ Nguyễn Kim) đến Hệ 9 (Nguyễn Phúc Khoát); chúa thứ 9 là Nguyễn Phúc Thuần (Chúa Định, 1765–1777) không có con nối dõi nên không mở hệ.${gC(13)} Một số tài liệu tính thêm Hệ 10 cho chúa Thuần.${gC(2,7)} Hưng Tổ Nguyễn Phúc Côn, con thứ 2 của Chúa Vũ, là cha của vua Gia Long và mở đầu thế phổ các vua Nguyễn.${gC(13)}</p>
     </section>
 
     <section class="gsec" id="g-dat-ten"><h3>Cách đặt tên: tên 3 chữ, 4 chữ</h3>
@@ -871,7 +1068,7 @@ function renderGoc(){
         <tr><td>Tôn Thất Nguyễn Phước + lót + tên</td><td>Cách ghi đầy đủ họ, trang trọng</td><td>Tôn Thất Nguyễn Phước Miên Đông</td></tr>
         <tr><td>Nguyễn Phúc (Phước) + lót + tên</td><td>Đế hệ, con cháu vua Minh Mạng</td><td>Nguyễn Phúc Hồng Nhậm (Tự Đức), Nguyễn Phúc Bửu Lân (Thành Thái)</td></tr>
         <tr><td>Tôn Nữ + (lót) + tên</td><td>Nữ thuộc Tiền hệ, Phiên hệ</td><td>Tôn Nữ Ngọc Lan</td></tr>
-        <tr><td>Công Chúa, Công Tôn Nữ, Công Tằng Tôn Nữ, Công Huyền Tôn Nữ</td><td>Nữ dòng vua, theo đời: con vua (đời 2), cháu nội (đời 3), chắt (đời 4), chút (đời 5)</td><td>Công Tằng Tôn Nữ + tên</td></tr>
+        <tr><td>Công Chúa, Công Nữ, Công Tôn Nữ, Công Tằng Tôn Nữ, Công Huyền Tôn Nữ, Huyền Tôn Nữ</td><td>Nữ dòng vua Minh Mạng, theo đời: chị em vua (Công Chúa), con vua (Công Nữ), cháu (Công Tôn Nữ), chắt (Công Tằng Tôn Nữ), chít (Công Huyền Tôn Nữ), từ đó về sau chung là Huyền Tôn Nữ</td><td>Công Tằng Tôn Nữ + tên</td></tr>
       </table></div>
       <div class="note"><b>Lưu ý khi áp dụng.</b> Đây là quy tắc kinh nghiệm. Tên 4 chữ chưa chắc là Phiên hệ: nhiều người đặt tên đôi (ví dụ tên đôi như Minh Anh) hoặc dùng chữ lót riêng của gia đình. Chỉ coi là Phiên hệ khi chữ lót trùng bài thơ của một phòng và đúng thứ tự đời. Sau năm 1945, nhiều người còn khai họ Nguyễn mà không kèm chữ lót.${gC(3,4)}</div>
     </section>
@@ -892,40 +1089,63 @@ function renderGoc(){
     <section class="gsec" id="g-phien"><h3>Mười bài Phiên hệ thi</h3>
       <p>Mỗi bài dành cho hậu duệ của một hoàng tử (một “phòng”), phân biệt Tôn Thất thuộc dòng em ruột vua Minh Mạng với Tôn Thất là con cháu các chúa. Số thứ tự phòng là thứ tự các hoàng nam của vua Gia Long, anh trước em sau.${gC(3,6)}</p>
       <div class="phien">
-      ${PHIEN_HE.map(([no,ten,ghi,cau,note])=>`<details class="ph"><summary><b>Phòng ${no}: ${esc(ten)}</b>${ghi?` <span class="sub">${esc(ghi)}</span>`:''}</summary>
+      ${PHIEN_HE.map(([no,ten,ghi,cau,note],ix)=>`<details class="ph"><summary><b>Phòng ${no}: ${esc(ten)}</b> <span class="sub">${esc(TL_PHIEN_HOANGTU[ix]||ghi||'')}</span></summary>
         <div class="ph-body"><div class="ph-lines">${cau.map((l,i)=>`<div class="ph-line">${l.split(' ').map((w,j)=>`<span class="chip"><i>${i*5+j+1}</i>${esc(w)}</span>`).join('')}</div>`).join('')}</div>${note?`<div class="sub">${esc(note)}</div>`:''}</div></details>`).join('')}
       </div>
       <p class="sub">Phiên âm theo Nguyễn Phúc tộc thế phả (1995).${gC(2,3)} Số trong ô nhỏ là thứ tự đời, từ con trai của vị hoàng tử mở phòng.</p>
     </section>
 
-    <section class="gsec" id="g-vi-tri"><h3>Vị trí của dòng họ</h3>
-      <p>Cách xác định vị trí trong tộc phả đi từ lớn đến nhỏ: hệ, phòng, rồi chi. Mỗi vị chúa mở một <b>hệ</b>; mỗi con trai của vị chúa mở một <b>phòng</b>; mỗi con trai của người mở phòng mở một <b>chi</b>.${gC(7)}</p>
+    ${tulieuHTML()}
+
+    <section class="gsec" id="g-vi-tri"><h3>Thế phổ dòng họ ta</h3>
+      <p>Dòng họ thuộc <b>${esc(CLAN.he)}, ${esc(CLAN.phong)}, ${esc(CLAN.chi)}, ${esc(CLAN.phai)}</b>, nguyên quán ${esc(CLAN.quequan)}. Mỗi vị chúa mở một <b>hệ</b>; mỗi con trai của vị chúa mở một <b>phòng</b>; mỗi con trai của người mở phòng mở một <b>chi</b>; trong chi lại có các <b>phái</b>.${gC(7,13)}</p>
       <div class="step">
         <h3>${esc(CLAN.toc)}</h3>
         <p>Họ của hoàng tộc nhà Nguyễn, bắt đầu từ chúa Nguyễn Hoàng. Con cháu các chúa Nguyễn đời trước vua Gia Long (Tiền hệ) mang danh xưng Tôn Thất với nam và Tôn Nữ với nữ.</p>
       </div>
       <div class="step">
         <h3>${esc(CLAN.he)}</h3>
-        <span class="who">Hậu duệ chúa Nguyễn Phúc Nguyên</span>
-        <p>Hệ 3 của Tiền hệ: con cháu của chúa Nguyễn Phúc Nguyên (Hy Tông Hiếu Văn Hoàng đế, thường gọi là chúa Sãi).</p>
+        <span class="who">Hậu duệ chúa Nguyễn Phúc Nguyên (Chúa Sãi)</span>
+        <p>Hệ 3 của Tiền hệ, gồm 2 phòng.${gC(13)}</p>
       </div>
       <div class="step">
         <h3>${esc(CLAN.phong)}</h3>
-        <span class="who">Dòng của con trai thứ nhất</span>
-        <p>Phòng thứ nhất của hệ, mở ra bởi người con trai đầu của vị chúa mở hệ.</p>
+        <span class="who">Dòng của ông Nguyễn Phúc Kỳ</span>
+        <p>Ông Kỳ là con trưởng của chúa Sãi, Thiếu bảo Khánh quận công, mở Phòng I. Nhà thờ ông ở Dương Nổ (Phú Vang), lăng ở Thanh Quít (Điện Bàn, Quảng Nam).${gC(13)}</p>
       </div>
       <div class="step">
         <h3>${esc(CLAN.chi)}</h3>
-        <span class="who">Dòng của người con trai thứ tư</span>
-        <p>Chi thứ tư của phòng, mở ra bởi người con trai thứ tư của vị mở phòng.</p>
+        <span class="who">Dòng của ông Tôn Thất Trí</span>
+        <p>Ông Trí là con thứ 4 của ông Kỳ, mở Đệ Tứ Chi. Ba chi còn lại do các ông Duệ, Xuân, Tài mở.${gC(13)}</p>
+      </div>
+      <div class="step">
+        <h3>${esc(CLAN.phai)}</h3>
+        <span class="who">Dòng của ông Tôn Thất Cơ</span>
+        <p>Ông Cơ là con thứ 2 của ông Trí (mất năm 1710), sanh xuất Đệ Nhị Phái. Từ ông Cơ, dòng họ đi qua các ông Tịnh, Bì, Hóa, Phát, Lương đến cụ Dốc.${gC(13)}</p>
       </div>
       <div class="step end">
-        <h3>Nhánh gia đình</h3>
+        <h3>Nhánh gia đình, vùng Truồi</h3>
         <span class="who">${esc(CLAN.quequan)}</span>
-        <p>${CLAN.thuyTo ? 'Vị tổ của chi: '+esc(CLAN.thuyTo)+'.' : 'Vị tổ của chi: đang đối chiếu thế phả.'} Các cụ đầu tiên ghi nhớ trong gia phả này là Tôn Thất Dốc, Tôn Thất Tẩu, Tôn Thất Thị; tên 3 chữ, phù hợp với dòng Tiền hệ.${gC(1)}</p>
+        <p>Cụ Dốc (đời 9) có 9 người con trai, trong đó 5 người có hậu duệ, hợp thành 5 nhánh. Ngày chạp họ được ghi ở Truồi; mỗi nhánh có từ đường riêng tại Xuân An, Lộc Điền (ghi năm trên bìa: nhánh I 2010, nhánh II 2000, nhánh III 2000, nhánh IV 2002, nhánh V 2000).${gC(13)}</p>
       </div>
-      <div class="read"><b>Cách đọc:</b> ${esc(CLAN.ho)}, ${esc(CLAN.he)}, ${esc(CLAN.phong)}, ${esc(CLAN.chi)} nghĩa là con cháu chúa Nguyễn Phúc Nguyên, qua phòng thứ nhất, chi thứ tư.</div>
-      <div class="note">Cách đánh số phòng và chi có thể khác nhau giữa các bản tộc phả. Thông tin dòng họ ghi theo lời cha để lại, nên đối chiếu với Nguyễn Phúc tộc thế phả hoặc các bậc cao niên trong họ trước khi ghi tên vị tổ.</div>
+
+      <h4>Trực hệ từ ông mở Phòng I đến cụ Dốc</h4>
+      <p class="sub">Từ đời 1 đến đời 8 chỉ ghi ở đây. Cây trong tab Phả hệ bắt đầu từ cụ Tôn Thất Dốc (đời 9).</p>
+      <div class="gt-wrap"><table class="gt">
+        <tr><th>Đời</th><th>Họ tên</th><th>Quan hệ</th><th>Mã số (MS)</th><th>Ghi chú</th></tr>
+        ${THE_PHO.map(([d,n,q,ms,gc])=>`<tr class="${d===9?'me':''}"><td>${d}</td><td>${esc(n)}</td><td>${esc(q)}</td><td>${esc(ms)}</td><td>${esc(gc)}</td></tr>`).join('')}
+      </table></div>
+      <p class="sub">Mã số (MS) ghi thứ tự con trai qua từng đời. Ví dụ <b>4-2-3/2-2-2/1-2</b> đọc là: con thứ 4 của ông Kỳ (Trí), con thứ 2 của Trí (Cơ), con thứ 3 (Tịnh), con thứ 2 (Bì), thứ 2 (Hóa), thứ 2 (Phát), thứ nhất (Lương), thứ 2 (Dốc).${gC(13)} Đời được tính từ ông Kỳ là đời 1.</p>
+
+      <h4>Các con của cụ Dốc và năm nhánh</h4>
+      <div class="gt-wrap"><table class="gt">
+        <tr><th>Thứ</th><th>Tên</th><th>Năm</th><th>Nhánh</th></tr>
+        ${CON_DOC.map(([o,n,y,nh])=>`<tr class="${n==='Tẩu'?'me':''}"><td>${o}</td><td>Tôn Thất ${esc(n)}</td><td>${esc(y)}</td><td>${esc(nh)}${n==='Tẩu'?' <span class="badge-me">nhánh của gia đình</span>':''}</td></tr>`).join('')}
+      </table></div>
+      <p class="sub">Cụ Dốc còn có các con gái: bà Aí (1901–1984), bà Mang (1907) và bà Quý (mất sớm). Thế phổ chi tiết của năm nhánh nằm trong tab Phả hệ.${gC(13)}</p>
+
+      <div class="read"><b>Cách đọc:</b> ${esc(CLAN.ho)}, ${esc(CLAN.he)}, ${esc(CLAN.phong)}, ${esc(CLAN.chi)}, ${esc(CLAN.phai)} nghĩa là con cháu chúa Nguyễn Phúc Nguyên, qua phòng của ông Kỳ, chi của ông Trí, phái của ông Cơ.</div>
+      <div class="note">Cách đánh số phòng, chi và phái theo thế phổ của gia tộc. Khi dùng cho nghi lễ hoặc giấy tờ, nên đối chiếu Nguyễn Phúc tộc thế phả và hỏi các bậc cao niên trong họ.</div>
     </section>
 
     <section class="gsec" id="g-tham-khao"><h3>Tài liệu tham khảo</h3>
@@ -1019,7 +1239,7 @@ function depthOf(id){
 
 /* ---------- Sự kiện ---------- */
 $('#view').addEventListener('click', e=>{
-  const go=e.target.closest('[data-go]'); if(go){ e.preventDefault(); const el=document.getElementById(go.dataset.go); if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } return; }
+  const go=e.target.closest('[data-go]'); if(go){ e.preventDefault(); const el=document.getElementById(go.dataset.go); if(el){ if(el.tagName==='DETAILS') el.open=true; else { const d=el.closest('details'); if(d) d.open=true; } el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } return; }
   const dgf=e.target.closest('[data-dgf]'); if(dgf){ dgFilter=dgf.dataset.dgf; render(); return; }
   const ci=e.target.closest('[data-cid]'); if(ci){ reviewContrib(ci.dataset.cid); return; }
   const tg = e.target.closest('[data-tog]');
@@ -1528,6 +1748,111 @@ function bindKin(){
   $('#kinSwap').onclick=()=>{ const t=kinA; kinA=kinB; kinB=t; render(); };
   show();
 }
+/* ---------- Nhập phả hệ Truồi (từ tệp phaphe-truoi.json) vào cơ sở dữ liệu ---------- */
+const vnKey=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase().replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim();
+const lastWord=s=>vnKey(s).split(' ').pop();
+function planImport(nodes){
+  // ghép từng người trong tệp với người đã có (theo tên và cha mẹ), người chưa có sẽ được thêm mới
+  const used=new Set(), map=new Map(), match=[], add=[];
+  nodes.forEach(nd=>{
+    let found=null; const par=nd.p?map.get(nd.p):null;
+    if(nd.s){
+      const hus=map.get(nd.s);
+      if(hus && !hus.isNew){
+        const c=persons.filter(p=>p.spouse_of===hus.id && !used.has(p.id));
+        found=c.find(p=>vnKey(p.full_name)===vnKey(nd.n)) || c.find(p=>lastWord(p.full_name)===lastWord(nd.n)) || null;
+      }
+    } else {
+      const parentOK=p=>{ const c=clanParent(p)||null; return par ? (par.isNew ? c===null : c===par.id) : c===null; };
+      const c=persons.filter(p=>!p.spouse_of && !used.has(p.id) && p.gender===nd.g);
+      found=c.find(p=>vnKey(p.full_name)===vnKey(nd.n) && parentOK(p)) || null;
+      if(!found && nd.mh) found=c.find(p=>vnKey(p.full_name)===vnKey(nd.mh) && parentOK(p)) || null;
+      if(!found && par && !par.isNew){
+        const sib=c.filter(p=>clanParent(p)===par.id && lastWord(p.full_name)===lastWord(nd.n));
+        if(sib.length===1) found=sib[0];
+      }
+    }
+    if(found){ used.add(found.id); map.set(nd.k,{id:found.id,isNew:false}); match.push({nd,p:found}); }
+    else { const id=newUUID(); map.set(nd.k,{id,isNew:true}); add.push({nd,id}); }
+  });
+  return {map,match,add};
+}
+function importPatch(nd,p,map){
+  const patch={}, par=nd.p?map.get(nd.p):null, mom=nd.m?map.get(nd.m):null, sp=nd.s?map.get(nd.s):null;
+  if(nd.s){ if(!p.spouse_of && sp) patch.spouse_of=sp.id; }
+  else { if(!p.father_id && par) patch.father_id=par.id; if(!p.mother_id && mom) patch.mother_id=mom.id; }
+  if(!p.birth_year && !p.birth_date && nd.by) patch.birth_year=nd.by;
+  if(!p.death_year && !p.death_date && nd.dy){ patch.death_year=nd.dy; if(p.is_alive!==false) patch.is_alive=false; }
+  if(!p.alias && nd.al) patch.alias=nd.al;
+  if(!p.notes && nd.nt) patch.notes=nd.nt;
+  if(!p.sort_order && nd.o) patch.sort_order=nd.o;
+  if(nd.h){ const hn=p.hometown||''; if(!hn.trim() || /Phú Lộc/i.test(hn)) patch.hometown=nd.h; }
+  return patch;
+}
+
+function staleAncestors(){   // các cụ đời 1 đến đời 8 (Kỳ đến Lương) đã được nhập trước đây phía trên cụ Dốc
+  const doc=persons.find(p=>!p.spouse_of && vnKey(p.full_name)==='ton that doc'); if(!doc) return [];
+  const names=['nguyen phuc ky','ton that tri','ton that co','ton that tinh','ton that bi','ton that hoa','ton that phat','ton that luong'];
+  const out=[]; let cur=doc;
+  while(cur && cur.father_id){ const up=byId.get(cur.father_id); if(up && names.includes(vnKey(up.full_name))){ out.push(up); cur=up; } else break; }
+  return out;
+}
+async function openImportTruoi(){
+  if(!isAdmin) return;
+  let data;
+  try{ const r=await fetch('phaphe-truoi.json?v='+Date.now()); if(!r.ok) throw new Error('HTTP '+r.status); data=await r.json(); }
+  catch(e){ openModal(`<h3>Nhập phả hệ Truồi</h3><p>Không đọc được tệp <b>phaphe-truoi.json</b> (${esc(e.message)}). Hãy đưa tệp này lên GitHub cùng chỗ với index.html rồi thử lại.</p><div class="actions"><button class="btn" id="imX">Đóng</button></div>`); $('#imX').onclick=closeModal; return; }
+  const nodes=data.nodes||[]; let {map,match,add}=planImport(nodes);
+  const stale=staleAncestors();
+  const clan=add.filter(x=>!x.nd.s).length, sp=add.length-clan;
+  const phu=persons.filter(p=>/Phú Lộc/i.test(p.hometown||'')).length;
+  openModal(`<h3>Nhập phả hệ Truồi</h3>
+    <p class="sub">Nguồn: ${esc(data.nguon||'')}</p>
+    <div class="whobox">
+      Tệp có <b>${nodes.length}</b> người (${nodes.filter(n=>!n.s).length} người trong họ, ${nodes.filter(n=>n.s).length} vợ hoặc chồng).<br>
+      Khớp với người <b>đã có</b> trong gia phả: <b>${match.length}</b> (chỉ điền chỗ còn trống, không ghi đè).<br>
+      Sẽ <b>thêm mới</b>: <b>${add.length}</b> (${clan} người trong họ, ${sp} vợ hoặc chồng).<br>
+      ${phu?`Sẽ đổi “Phú Lộc” thành “Truồi” ở quê quán của <b>${phu}</b> người.`:'Không có quê quán nào ghi “Phú Lộc” cần đổi.'}
+      ${stale.length?`<br>Sẽ <b>gỡ ${stale.length}</b> cụ đời 1 đến đời 8 đã nhập trước đó (nội dung này nay nằm ở tab Nguồn gốc).`:''}
+    </div>
+    <details class="ph"><summary><b>Xem ${Math.min(match.length,40)} người được khớp</b> <span class="sub">(để kiểm tra trước khi nhập)</span></summary>
+      <div class="ph-body">${match.slice(0,40).map(m=>`<div class="sub">${esc(m.p.full_name)} ← ${esc(m.nd.n)}</div>`).join('')||'<div class="sub">Chưa có người nào khớp.</div>'}</div></details>
+    <p class="sub">Nên bấm “Xuất JSON” để sao lưu trước khi nhập. Chỉ nhập một lần là đủ; nhập lại sẽ không tạo trùng.</p>
+    <div class="err" id="imErr"></div>
+    <div class="actions"><button class="btn primary" id="imGo">Nhập vào gia phả</button><button class="btn" id="imNo">Hủy</button></div>`);
+  $('#imNo').onclick=closeModal;
+  $('#imGo').onclick=async ()=>{
+    $('#imGo').disabled=true; const say=m=>{ $('#imErr').style.color='var(--lam)'; $('#imErr').textContent=m; };
+    try{
+      if(stale.length){
+        say('Đang gỡ các cụ đời 1 đến đời 8…');
+        const ids=stale.map(p=>p.id), sp=persons.filter(p=>ids.includes(p.spouse_of)).map(p=>p.id);
+        const {error:e0}=await sb.from('persons').delete().in('id',ids.concat(sp)); if(e0) throw e0;
+        await refresh(); ({map,match,add}=planImport(nodes));
+      }
+      const rows=add.map(({nd,id})=>{
+        const par=nd.p?map.get(nd.p):null, mom=nd.m?map.get(nd.m):null, sp=nd.s?map.get(nd.s):null;
+        const row={id, full_name:nd.n, gender:nd.g, sort_order:nd.o||0, is_alive:!!nd.a};
+        if(nd.s){ row.spouse_of=sp.id; } else { if(par) row.father_id=par.id; if(mom) row.mother_id=mom.id; }
+        if(nd.by) row.birth_year=nd.by; if(nd.dy) row.death_year=nd.dy;
+        if(nd.al) row.alias=nd.al; if(nd.nt) row.notes=nd.nt; if(nd.h) row.hometown=nd.h;
+        return row;
+      });
+      for(let i=0;i<rows.length;i+=100){
+        say(`Đang thêm người mới… ${Math.min(i+100,rows.length)}/${rows.length}`);
+        const {error}=await sb.from('persons').insert(rows.slice(i,i+100)); if(error) throw error;
+      }
+      let k=0; const todo=match.map(m=>({m,patch:importPatch(m.nd,m.p,map)})).filter(x=>Object.keys(x.patch).length);
+      for(const x of todo){ say(`Đang bổ sung thông tin… ${++k}/${todo.length}`); const {error}=await sb.from('persons').update(x.patch).eq('id',x.m.p.id); if(error) throw error; }
+      const fix=persons.filter(p=>/Phú Lộc/i.test(p.hometown||'') && !match.some(m=>m.p.id===p.id && 'hometown' in importPatch(m.nd,m.p,map)));
+      for(const p of fix){ const {error}=await sb.from('persons').update({hometown:p.hometown.replace(/Phú Lộc/gi,'Truồi')}).eq('id',p.id); if(error) throw error; }
+      await refresh(); closeModal();
+      toast(`Đã nhập ${add.length} người mới, bổ sung ${todo.length} người có sẵn`);
+    }catch(e){ $('#imGo').disabled=false; $('#imErr').style.color=''; $('#imErr').textContent='Lỗi: '+(e.message||e)+'. Dữ liệu đã nhập dở vẫn còn; bấm nhập lại để tiếp tục, trang sẽ không tạo trùng.'; }
+  };
+}
+$('#btnImport').onclick=openImportTruoi;
+
 function sortOpts(cur){   // danh sách chọn số thứ tự thay cho ô gõ
   const c=Math.max(0,parseInt(cur,10)||0), max=Math.max(20,c);
   let s=`<option value="0" ${c===0?'selected':''}>Chưa xếp thứ tự</option>`;
@@ -1557,7 +1882,7 @@ function openForm(p={}, preset={}, hook=null){
         ${dateGroup('death','Ngày mất (ngày giỗ sẽ tự tính)',v.death_date, gioFallback(v), v.death_year)}
       </div>
       <label>Phần mộ<input id="f_burial_place" value="${val('burial_place')}"></label>
-      <label>Quê quán / nơi ở<input id="f_hometown" value="${val('hometown')}" placeholder="Phú Lộc, Thừa Thiên Huế"></label>
+      <label>Quê quán / nơi ở<input id="f_hometown" value="${val('hometown')}" placeholder="Truồi, Thừa Thiên Huế"></label>
       <label>Nghề nghiệp<input id="f_occupation" value="${val('occupation')}"></label>
       <div class="phbox">
         <div class="phrow">
@@ -2010,8 +2335,11 @@ function posterSVG(opts){
   }
   const mk = (p,d)=>({p, depth:d, lines:pLines(p, opts.text==='h2'), kids:(kids.get(p.id)||[]).map(c=>mk(c,d+1))});
   let forest = roots().map(r=>mk(r,0));
-  const from=Math.max(1,opts.from||1), off=from-1;
-  if(off>0){   // chỉ lấy những người từ đời N trở xuống, các nhánh xếp cạnh nhau
+  let from=Math.max(1,opts.from||1), off=from-1;
+  const bp=opts.branch ? byId.get(opts.branch) : null;
+  if(bp){   // chỉ in người được chọn và toàn bộ con cháu của người đó
+    forest=[mk(bp,0)]; off=depthOf(bp.id)-1; from=1;
+  } else if(off>0){   // chỉ lấy những người từ đời N trở xuống, các nhánh xếp cạnh nhau
     const pick=(ns,d)=> d===off ? ns : ns.flatMap(n=>pick(n.kids,d+1));
     forest=pick(forest,0);
     (function rd(ns,d){ ns.forEach(n=>{ n.depth=d; rd(n.kids,d+1); }); })(forest,0);
@@ -2063,7 +2391,7 @@ function posterSVG(opts){
     const pat=(art && IMG.baked!==false)?patchSVG(Wd,Hd):{defs:'',body:''};   // chỉ che khi ảnh nền còn chữ in sẵn
     let o=`<image href="${esc(IMG.url)}" x="0" y="0" width="${Wd}" height="${Hd}" preserveAspectRatio="none"/>`+pat.body;
     // dòng hệ, phòng, chi dưới tấm biển tiêu đề (tiêu đề đã có sẵn trong ảnh)
-    const lin=['Họ '+CLAN.ho,CLAN.he,CLAN.phong,CLAN.chi].join(', ');   // tên Nguyễn Phước Tộc đã có sẵn trên tấm biển trong ảnh
+    const lin=['Họ '+CLAN.ho,CLAN.he,CLAN.phong,CLAN.chi,CLAN.phai].join(', ');   // tên Nguyễn Phước Tộc đã có sẵn trên tấm biển trong ảnh
     let lsz=19; while(pTW(lin,true,lsz)>Wd*0.46 && lsz>11) lsz-=1;
     o+=`<text x="${Wd/2}" y="${(Hd*0.236).toFixed(1)}" text-anchor="middle" font-size="${lsz}" font-weight="700" fill="#7A1F1F">${esc(lin)}</text>`;
     // cây phả hệ (gồm nhãn Đời n) thu phóng vào khung
@@ -2072,7 +2400,7 @@ function posterSVG(opts){
     const defsI=`<defs>${pat.defs}<marker id="parr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="${PO_RED}"/></marker><filter id="bsh" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.6" flood-color="#5A3A10" flood-opacity=".35"/></filter></defs>`;
     if(art) o+=bannerSVG(Wd,Hd,isAdmin);
     const svgI=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Wd} ${Hd}" font-family='${PO_FONT}'>${defsI}${o}</svg>`;
-    return {svg:svgI, W:Wd, H:Hd, ori:'landscape', imgUrl:IMG.url, scale:sc, editable:art};
+    return {svg:svgI, W:Wd, H:Hd, ori:'landscape', imgUrl:IMG.url, scale:sc, editable:art, count:all.length};
   }
 
   // khổ trang (tỉ lệ giấy A: 1 / √2)
@@ -2136,7 +2464,7 @@ function posterSVG(opts){
 
 let lastPoster=null, bgAvail=undefined;
 /* ---------- Chữ trên hai tấm biển của bảng in (sửa được, lưu trong bảng site_settings) ---------- */
-const BANNER_DEF={small:'GIA PHẢ DÒNG HỌ', main:'NGUYỄN PHƯỚC TỘC', branch:'CHI NHÁNH PHÚ LỘC - THỪA THIÊN HUẾ', motto1:'UỐNG NƯỚC NHỚ NGUỒN - TÔN TỔ TÔN TÔNG', motto2:'ĐOÀN KẾT - HIẾU NGHĨA - TRƯỜNG TỒN'};
+const BANNER_DEF={small:'GIA PHẢ DÒNG HỌ', main:'NGUYỄN PHƯỚC TỘC', branch:'CHI NHÁNH TRUỒI - THỪA THIÊN HUẾ', motto1:'UỐNG NƯỚC NHỚ NGUỒN - TÔN TỔ TÔN TÔNG', motto2:'ĐOÀN KẾT - HIẾU NGHĨA - TRƯỜNG TỒN'};
 const BANNER_KEYS={small:'banner_small', main:'banner_main', branch:'banner_branch', motto1:'motto_1', motto2:'motto_2'};
 const BANNER_LOCAL='gp_banner_local';
 let BANNER={...BANNER_DEF};
@@ -2238,7 +2566,7 @@ async function ensureBg(){
 async function renderPoster(){
   const useImg = $('#pBg').value==='img';
   const avail = useImg ? await ensureBg() : null;
-  const r = posterSVG({text:$('#pText').value, ori:$('#pOri').value, img:avail, from:+$('#pFrom').value||1, link:$('#pLink').value});
+  const r = posterSVG({text:$('#pText').value, ori:$('#pOri').value, img:avail, from:+$('#pFrom').value||1, link:$('#pLink').value, branch:$('#pBranch').value||null});
   if(!r){ $('#posterSvgWrap').innerHTML='<div class="empty" style="padding:60px">Chưa có dữ liệu để in.</div>'; return; }
   lastPoster=r;
   $('#posterSvgWrap').innerHTML=r.svg;
@@ -2248,24 +2576,42 @@ async function renderPoster(){
   if(r.imgUrl){
     const L={A4:297,A3:420,A2:594,A1:841}[size];
     $('#pageCss').textContent=`@page{size:${L}mm ${(L*r.H/r.W).toFixed(1)}mm;margin:0}`;
-    $('#pInfo').textContent=`${size}, khổ ngang, nền ${r.imgUrl}` + (r.editable ? '' : ' (ảnh nền khác bố cục nên không sửa được chữ trên biển)');
+    const mm=r.scale?15*r.scale*L/1536:null;   // cỡ chữ in ra, tính bằng mm
+    const br=$('#pBranch').value?` | nhánh ${byId.get($('#pBranch').value)?.full_name||''}: ${r.count||''} người`:'';
+    $('#pInfo').textContent=`${size}, khổ ngang, nền ${r.imgUrl}${br}` + (mm?` | chữ khoảng ${mm.toFixed(1)} mm`:'') + (mm&&mm<2.2?'. Chữ hơi nhỏ, hãy chọn nhánh nhỏ hơn hoặc khổ giấy lớn hơn':'') + (r.editable ? '' : ' (ảnh nền khác bố cục nên không sửa được chữ trên biển)');
   } else {
     $('#pageCss').textContent=`@page{size:${size} ${r.ori};margin:0}`;
     const note = useImg ? ` (chưa thấy file ${BG_FILE} cạnh index.html, đang dùng nền vẽ đơn giản)` : '';
     $('#pInfo').textContent=`${size}, ${r.ori==='portrait'?'giấy dọc':'giấy ngang'}${note}`;
   }
 }
+function descCount(id){ let n=0; (kids.get(id)||[]).forEach(c=>{ n+=1+descCount(c.id); }); return n; }
+function fillBranch(){
+  const sel=$('#pBranch'); const prev=sel.value;
+  const list=persons.filter(p=>!p.spouse_of && (kids.get(p.id)||[]).length)
+    .map(p=>({p,g:depthOf(p.id)+genOff(),n:descCount(p.id)+1}))
+    .sort((a,b)=>a.g-b.g || (a.p.sort_order||0)-(b.p.sort_order||0));
+  sel.innerHTML='<option value="">Toàn bộ cây</option>'+list.map(x=>{
+    const par=byId.get(clanParent(x.p)); const y=pYears(x.p);
+    return `<option value="${x.p.id}">${esc(x.p.full_name)}${y?' '+esc(y):''} — đời ${x.g}, ${x.n} người${par?` — con ông ${esc(par.full_name)}`:''}</option>`;
+  }).join('');
+  sel.value=list.some(x=>x.p.id===prev)?prev:'';
+  sel.closest('label').querySelectorAll('.pk').forEach(e=>e.remove()); delete sel.dataset.pk; sel.hidden=false;
+  enhancePicker(sel,'Gõ tên người đầu nhánh…');
+}
+function syncBranchUi(){ const b=$('#pBranch').value; $('#pFrom').disabled=!!b; $('#pFrom').parentElement.style.opacity=b?'.5':''; }
 function fillFrom(){
   const sel=$('#pFrom'), n=Math.max(1,maxDepth());
   sel.innerHTML='';
   for(let g=1; g<=n; g++){ const o=document.createElement('option'); o.value=g; o.textContent = g===1 ? 'Tất cả các đời' : `Từ đời ${g+genOff()} trở xuống`; sel.appendChild(o); }
   sel.value=1;   // mặc định in hết
 }
-function openPoster(){ document.body.classList.add('poster-open'); $('#poster').hidden=false; fillFrom(); renderPoster(); }
+function openPoster(){ document.body.classList.add('poster-open'); $('#poster').hidden=false; fillFrom(); fillBranch(); syncBranchUi(); renderPoster(); }
 function closePoster(){ $('#poster').hidden=true; document.body.classList.remove('poster-open'); }
 try{ const l=localStorage.getItem('gp_poster_link'); if(l) $('#pLink').value=l; }catch(e){}
 $('#pLink').addEventListener('change',()=>{ try{ localStorage.setItem('gp_poster_link',$('#pLink').value); }catch(e){} });
 ['pSize','pOri','pText','pBg','pFrom','pLink'].forEach(id=>$('#'+id).addEventListener('change',renderPoster));
+$('#pBranch').addEventListener('change',()=>{ syncBranchUi(); renderPoster(); });
 $('#pPrint').onclick=()=>window.print();
 $('#pEditText').onclick=()=>openBannerEditor('main');
 $('#pClose').onclick=closePoster;
@@ -2577,6 +2923,7 @@ function setAdmin(on){
   $('#btnAuth').textContent = on ? 'Đăng xuất' : 'Quản trị';
   $('#btnAddRoot').style.display = on ? '' : 'none';
   $('#btnExport').style.display = on ? '' : 'none';
+  $('#btnImport').style.display = on ? '' : 'none';
   $('#tabDg').hidden = !on;
   if(!on && tab==='dg'){ pendingTab='dg'; tab='tree'; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab==='tree')); }
   if(on && pendingTab && tab!==pendingTab){ tab=pendingTab; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab===tab)); }
