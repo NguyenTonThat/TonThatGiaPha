@@ -214,12 +214,40 @@ details.ph[open]>summary{border-bottom:1px solid var(--line)}
 details.tl>summary{padding:11px 14px}
 details.tl .ph-body{padding:10px 16px 14px}
 details.tl .ph-body h4{margin:16px 0 6px}
+.cung{position:relative}
+.about-ic{position:absolute;top:10px;right:12px;width:34px;height:34px;border-radius:50%;border:1.5px solid #e8c46f;background:rgba(0,0,0,.2);color:#f5e2b0;display:grid;place-items:center;cursor:pointer;padding:0}
+.about-ic:hover,.about-ic:focus-visible{background:rgba(232,196,111,.28);color:#fff}
+@media print{.about-ic{display:none}}
+.about{line-height:1.75}
+.about>h3{margin-top:0}
+.about-head{display:flex;align-items:center;gap:16px;padding-bottom:14px;margin-bottom:14px;border-bottom:2px solid var(--hoang)}
+.about-av{flex:none;width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--thep);outline:1px solid var(--dong);outline-offset:2px;background:var(--accent,#1F4E8C);color:#fff;display:grid;place-items:center;font:700 38px var(--serif)}
+img.about-av{cursor:zoom-in}
+.about-name{font:700 22px/1.25 var(--serif);color:var(--son-dam)}
+.about-sub{margin-top:4px;color:var(--muted);font-size:14.5px;line-height:1.5}
+.about-hi{font:italic 600 16.5px var(--serif);color:var(--son-dam);margin:0 0 10px}
+.about-go{color:var(--son);font-weight:600}
+.about-h{font:700 17px var(--serif);color:var(--son-dam);margin:20px 0 6px;padding-top:12px;border-top:1px solid var(--line)}
+.about-actions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 6px}
+.about-actions .btn{display:inline-flex;align-items:center;text-decoration:none}
+.about-url{margin:2px 0 4px;word-break:break-all}
+.thanks-list{list-style:none;margin:10px 0 12px;padding:0;display:grid;gap:6px}
+.thanks-list li{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#fffdf7}
+.thanks-list li.top{background:#fff6dc;border-color:#e8c46f}
+.thanks-list .rk{flex:none;width:26px;height:26px;border-radius:50%;background:#f0e6c8;color:var(--son-dam);font:700 13px var(--sans,system-ui);display:grid;place-items:center}
+.thanks-list li.top .rk{background:var(--son);color:#fff}
+.thanks-list .nm{flex:1;font-weight:600;color:var(--ink)}
+.thanks-list .ct{color:var(--muted);font-size:13.5px;white-space:nowrap}
+.about-close{margin:12px 0 6px}
+.about-sign{margin:8px 0 0;text-align:right;font-family:var(--serif)}
+@media(max-width:520px){.about-head{flex-direction:column;text-align:center}.about-sign{text-align:center}}
 .sdc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:8px 0}
 .sdc-key{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
 .sdc-key i{display:inline-block;width:22px;height:12px;border-radius:3px}
 .k-path{background:#fff;border:3px solid #1F4E8C}.k-m{background:#DCEFF0;border:1.5px solid #3C7F86}.k-f{background:#FBE9F0;border:1.5px solid #B05A7A}
-.sdc-wrap{overflow:auto;max-height:80vh;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#fffdf5,#fbf4de);padding:4px;-webkit-overflow-scrolling:touch}
+.sdc-wrap{overflow:auto;max-height:80vh;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#fffdf5,#fbf4de);padding:0 4px 4px;-webkit-overflow-scrolling:touch}
 .sdc-wrap svg{display:block}
+.sdc-wrap .sdc-head{position:sticky;top:0;z-index:3;background:#fdf6e0;border-bottom:1px solid #ecdcae;box-shadow:0 2px 4px rgba(120,90,30,.12)}
 .tl-fig{margin:14px 0;text-align:center}
 .tl-fig img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
 .tl-fig figcaption{font-size:12.5px;color:var(--muted);margin-top:4px}
@@ -465,6 +493,7 @@ body.poster-open .toast{z-index:130}
     <p class="sub2">Nguyên quán Truồi, Thừa Thiên Huế</p>
     <div class="stats" id="stats"></div>
   </div>
+  <button type="button" class="about-ic" id="btnAbout" aria-label="Giới thiệu" title="Giới thiệu về người thực hiện"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.8" r=".7" fill="currentColor"/></svg></button>
   <div class="hv"></div>
 </header>
 
@@ -1153,7 +1182,7 @@ const TL_SOPHA=[ // đời -> các vị theo sơ đồ (trang 20)
 const SDC_DATA=[{"id":"ky","n":"Nguyễn Phúc Kỳ","g":1,"p":null,"l":"Hoàng trưởng · Khánh quận công","o":null,"f":0,"pa":1},{"id":"due","n":"Duệ","g":2,"p":"ky","l":"Đệ 1 chi","o":null,"f":0,"pa":0},{"id":"xuan","n":"Xuân","g":2,"p":"ky","l":"Đệ 2 chi","o":null,"f":0,"pa":0},{"id":"tai","n":"Tài","g":2,"p":"ky","l":"Đệ 3 chi","o":null,"f":0,"pa":0},{"id":"tri","n":"Trí","g":2,"p":"ky","l":"Đệ 4 chi","o":null,"f":0,"pa":1},{"id":"vinh","n":"Vinh","g":3,"p":"due","l":"","o":null,"f":0,"pa":0},{"id":"my","n":"Mỹ","g":3,"p":"due","l":"","o":null,"f":0,"pa":0},{"id":"hung","n":"Hùng","g":3,"p":"due","l":"","o":null,"f":0,"pa":0},{"id":"chi","n":"Chi","g":3,"p":"xuan","l":"","o":null,"f":0,"pa":0},{"id":"khuong","n":"Khương","g":3,"p":"tai","l":"","o":null,"f":0,"pa":0},{"id":"luu","n":"Lưu","g":3,"p":"tri","l":"Đệ nhất phái","o":null,"f":0,"pa":0},{"id":"co","n":"Cơ","g":3,"p":"tri","l":"Đệ nhị phái","o":2,"f":0,"pa":1},{"id":"thang4","n":"Thắng","g":4,"p":"vinh","l":"","o":null,"f":0,"pa":0},{"id":"nghiem","n":"Nghiêm","g":4,"p":"chi","l":"","o":null,"f":0,"pa":0},{"id":"sinh","n":"Sinh","g":4,"p":"chi","l":"","o":null,"f":0,"pa":0},{"id":"loc","n":"Lộc","g":4,"p":"khuong","l":"","o":null,"f":0,"pa":0},{"id":"hoanh4","n":"Hoành","g":4,"p":"khuong","l":"","o":null,"f":0,"pa":0},{"id":"to","n":"Tô","g":4,"p":"luu","l":"","o":null,"f":0,"pa":0},{"id":"doan","n":"Doãn","g":4,"p":"co","l":"","o":null,"f":0,"pa":0},{"id":"chan","n":"Chân","g":4,"p":"co","l":"","o":null,"f":0,"pa":0},{"id":"tinh","n":"Tịnh","g":4,"p":"co","l":"","o":3,"f":0,"pa":1},{"id":"dat","n":"Đạt","g":5,"p":"thang4","l":"","o":null,"f":0,"pa":0},{"id":"nhiem","n":"Nhiệm","g":5,"p":"thang4","l":"","o":null,"f":0,"pa":0},{"id":"luong5","n":"Lượng","g":5,"p":"nghiem","l":"","o":null,"f":0,"pa":0},{"id":"sung","n":"Sung","g":5,"p":"nghiem","l":"","o":null,"f":0,"pa":0},{"id":"ham","n":"Hâm","g":5,"p":"sinh","l":"","o":null,"f":0,"pa":0},{"id":"thai","n":"Thái","g":5,"p":"sinh","l":"","o":null,"f":0,"pa":0},{"id":"duc","n":"Đức","g":5,"p":"sinh","l":"","o":null,"f":0,"pa":0},{"id":"thang5","n":"Thắng","g":5,"p":"hoanh4","l":"","o":null,"f":0,"pa":0},{"id":"trong","n":"Trọng","g":5,"p":"hoanh4","l":"","o":null,"f":0,"pa":0},{"id":"tu5","n":"Ô. Tự","g":5,"p":"hoanh4","l":"","o":null,"f":0,"pa":0},{"id":"than","n":"Thận","g":5,"p":"to","l":"","o":null,"f":0,"pa":0},{"id":"hoan","n":"Hoán","g":5,"p":"to","l":"","o":null,"f":0,"pa":0},{"id":"dang","n":"Đăng","g":5,"p":"to","l":"","o":null,"f":0,"pa":0},{"id":"thuan","n":"Thuận","g":5,"p":"to","l":"","o":null,"f":0,"pa":0},{"id":"phap","n":"Pháp","g":5,"p":"doan","l":"","o":null,"f":0,"pa":0},{"id":"chu","n":"Chữ","g":5,"p":"doan","l":"","o":null,"f":0,"pa":0},{"id":"ly","n":"Lý","g":5,"p":"doan","l":"","o":null,"f":0,"pa":0},{"id":"can5","n":"Cần","g":5,"p":"chan","l":"","o":null,"f":0,"pa":0},{"id":"tam","n":"Tâm","g":5,"p":"tinh","l":"","o":null,"f":0,"pa":0},{"id":"bi","n":"Bì","g":5,"p":"tinh","l":"","o":2,"f":0,"pa":1},{"id":"nghi","n":"Nghị","g":5,"p":"tinh","l":"","o":null,"f":0,"pa":0},{"id":"dao","n":"Đạo","g":6,"p":"than","l":"","o":null,"f":0,"pa":0},{"id":"hau","n":"Hậu","g":6,"p":"than","l":"","o":null,"f":0,"pa":0},{"id":"ngu","n":"Ngữ","g":6,"p":"hoan","l":"","o":null,"f":0,"pa":0},{"id":"can6","n":"Cẩn","g":6,"p":"dang","l":"","o":null,"f":0,"pa":0},{"id":"ton","n":"Tồn","g":6,"p":"thuan","l":"","o":null,"f":0,"pa":0},{"id":"buu","n":"Bửu","g":6,"p":"thuan","l":"","o":null,"f":0,"pa":0},{"id":"liem","n":"Liêm","g":6,"p":"phap","l":"","o":null,"f":0,"pa":0},{"id":"thao","n":"Thảo","g":6,"p":"chu","l":"","o":null,"f":0,"pa":0},{"id":"pho","n":"Phò","g":6,"p":"can5","l":"","o":null,"f":0,"pa":0},{"id":"tri6","n":"Trì","g":6,"p":"can5","l":"","o":null,"f":0,"pa":0},{"id":"huan","n":"Huấn","g":6,"p":"bi","l":"","o":null,"f":0,"pa":0},{"id":"hoa","n":"Hóa","g":6,"p":"bi","l":"","o":2,"f":0,"pa":1},{"id":"vu","n":"Vũ","g":7,"p":"huan","l":"","o":null,"f":0,"pa":0},{"id":"cuc","n":"Cúc","g":7,"p":"huan","l":"","o":null,"f":0,"pa":0},{"id":"bao","n":"Bảo","g":7,"p":"huan","l":"","o":null,"f":0,"pa":0},{"id":"to7","n":"Tố","g":7,"p":"hoa","l":"","o":null,"f":0,"pa":0},{"id":"phat","n":"Phúc (Phát)","g":7,"p":"hoa","l":"","o":2,"f":0,"pa":1},{"id":"c_phong","n":"C. Phong","g":7,"p":"hoa","l":"","o":null,"f":1,"pa":0},{"id":"c_dang","n":"C. Đặng","g":7,"p":"hoa","l":"","o":null,"f":1,"pa":0},{"id":"c_niem","n":"C. Niệm","g":7,"p":"hoa","l":"","o":null,"f":1,"pa":0},{"id":"cap","n":"Cấp (Ẩn)","g":8,"p":"to7","l":"","o":null,"f":0,"pa":0},{"id":"kien","n":"Kiên","g":8,"p":"to7","l":"","o":null,"f":0,"pa":0},{"id":"c_tinh","n":"C. Tình","g":8,"p":"to7","l":"","o":null,"f":1,"pa":0},{"id":"luong8","n":"Lương","g":8,"p":"phat","l":"","o":1,"f":0,"pa":1},{"id":"sa","n":"Sa","g":9,"p":"cap","l":"","o":null,"f":0,"pa":0},{"id":"tu9","n":"Tú","g":9,"p":"cap","l":"","o":null,"f":0,"pa":0},{"id":"duong","n":"Đường","g":9,"p":"cap","l":"","o":null,"f":0,"pa":0},{"id":"c_than","n":"C. Thân","g":9,"p":"cap","l":"","o":null,"f":1,"pa":0},{"id":"c_thin","n":"C. Thìn","g":9,"p":"cap","l":"","o":null,"f":1,"pa":0},{"id":"c_vy","n":"C. Vỹ","g":9,"p":"cap","l":"","o":null,"f":1,"pa":0},{"id":"c_dan","n":"C. Dần","g":9,"p":"cap","l":"","o":null,"f":1,"pa":0},{"id":"c_suong","n":"C. Sương","g":9,"p":"kien","l":"","o":null,"f":1,"pa":0},{"id":"thoi","n":"Thôi","g":9,"p":"luong8","l":"","o":null,"f":0,"pa":0},{"id":"doc","n":"Tôn Thất Dốc","g":9,"p":"luong8","l":"Ms. 4-2-3/2-2-2/1-2","o":2,"f":0,"pa":1},{"id":"dong","n":"Đống","g":9,"p":"luong8","l":"","o":null,"f":0,"pa":0},{"id":"duong4","n":"Dương","g":9,"p":"luong8","l":"","o":null,"f":0,"pa":0},{"id":"sac","n":"Sắc","g":10,"p":"tu9","l":"","o":null,"f":0,"pa":0},{"id":"vong","n":"Vọng","g":10,"p":"tu9","l":"","o":null,"f":0,"pa":0},{"id":"man","n":"Mân","g":10,"p":"tu9","l":"","o":null,"f":0,"pa":0},{"id":"luyen","n":"Luyện","g":10,"p":"tu9","l":"","o":null,"f":0,"pa":0},{"id":"ket","n":"Kết","g":10,"p":"tu9","l":"","o":null,"f":0,"pa":0},{"id":"c_giang","n":"C. Giảng","g":10,"p":"tu9","l":"","o":null,"f":1,"pa":0},{"id":"c_sam","n":"C. Sâm","g":10,"p":"tu9","l":"","o":null,"f":1,"pa":0},{"id":"c_dung","n":"C. Dung","g":10,"p":"tu9","l":"","o":null,"f":1,"pa":0},{"id":"sieu","n":"Siêu","g":10,"p":"thoi","l":"","o":null,"f":0,"pa":0},{"id":"trieu","n":"Triệu","g":10,"p":"thoi","l":"","o":null,"f":0,"pa":0},{"id":"xu","n":"Xu","g":10,"p":"thoi","l":"","o":null,"f":0,"pa":0},{"id":"pho10","n":"Phó","g":10,"p":"thoi","l":"","o":null,"f":0,"pa":0},{"id":"chi10","n":"Chỉ","g":10,"p":"thoi","l":"","o":null,"f":0,"pa":0},{"id":"c_an","n":"C. Ân","g":10,"p":"thoi","l":"","o":null,"f":1,"pa":0},{"id":"c_hoi","n":"C. Hợi","g":10,"p":"thoi","l":"","o":null,"f":1,"pa":0},{"id":"viet","n":"Việt","g":10,"p":"doc","l":"","o":null,"f":0,"pa":0},{"id":"toan","n":"Toản","g":10,"p":"doc","l":"","o":null,"f":0,"pa":0},{"id":"thu","n":"Thú","g":10,"p":"doc","l":"Nhánh I","o":null,"f":0,"pa":0},{"id":"vy","n":"Vy","g":10,"p":"doc","l":"Nhánh II","o":null,"f":0,"pa":0},{"id":"cu","n":"Củ","g":10,"p":"doc","l":"Nhánh III","o":null,"f":0,"pa":0},{"id":"tau","n":"Tẩu","g":10,"p":"doc","l":"Nhánh IV","o":null,"f":0,"pa":1},{"id":"hy","n":"Hy","g":10,"p":"doc","l":"","o":null,"f":0,"pa":0},{"id":"phu","n":"Phú","g":10,"p":"doc","l":"","o":null,"f":0,"pa":0},{"id":"hoanh10","n":"Hoành","g":10,"p":"doc","l":"Nhánh V","o":null,"f":0,"pa":0},{"id":"c_quy","n":"C. Quý","g":10,"p":"doc","l":"","o":null,"f":1,"pa":0},{"id":"c_ai","n":"C. Aí","g":10,"p":"doc","l":"","o":null,"f":1,"pa":0},{"id":"c_mang","n":"C. Mang","g":10,"p":"doc","l":"","o":null,"f":1,"pa":0}];
 let sdcZoom=0.9, sdcBase=null;
 function sdcSVG(){   // cây nằm ngang: Đời 1 ở bên trái, các đời sau sang phải; người cùng đời nằm thẳng một cột
-  const GAPX=30, SLOT=6, TOP=40, PAD=10, byId2=new Map(SDC_DATA.map(n=>[n.id,{...n,kids:[]}]));
+  const GAPX=30, SLOT=6, TOP=12, PAD=10, HEADH=38, byId2=new Map(SDC_DATA.map(n=>[n.id,{...n,kids:[]}]));
   const roots=[]; byId2.forEach(n=>{ if(n.p) byId2.get(n.p).kids.push(n); else roots.push(n); });
   const all=[...byId2.values()], maxG=Math.max(...all.map(n=>n.g));
   all.forEach(n=>{ n.t=n.n+(n.o?` (${n.o})`:''); n.h=n.l?40:28; n.w=Math.max(46, Math.ceil(pTW(n.t,true,13))+16, n.l?Math.ceil(pTW(n.l,false,9.5))+14:0); });
@@ -1182,14 +1211,16 @@ function sdcSVG(){   // cây nằm ngang: Đời 1 ở bên trái, các đời s
        `<text x="${n.x+n.w/2}" y="${n.y+(n.l?17:19)}" text-anchor="middle" font-size="13" font-weight="700" fill="#1D1B16">${esc(n.t)}</text>`+
        (n.l?`<text x="${n.x+n.w/2}" y="${n.y+32}" text-anchor="middle" font-size="9.5" fill="${/^(Đệ|Nhánh)/.test(n.l)?'#A4161A':'#5A5A5A'}">${esc(n.l)}</text>`:'')+`</g>`;
   });
-  for(let g=1; g<=maxG; g++){ const cx=colX[g]+colW[g]/2; s+=`<rect x="${cx-25}" y="8" width="50" height="22" rx="4" fill="#FFF8DC" stroke="#A4161A" stroke-width="1.1"/><text x="${cx}" y="23" text-anchor="middle" font-size="12" font-weight="700" fill="#A4161A">Đời ${g}</text>`; }
-  sdcBase={W,H};
-  return `<svg id="sdcSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Math.round(W)} ${Math.round(H)}" width="${Math.round(W*sdcZoom)}" height="${Math.round(H*sdcZoom)}" font-family='${PO_FONT}' role="img" aria-label="Sơ đồ Đệ Tứ Chi, Đệ Nhị Phái từ Hoàng trưởng Nguyễn Phúc Kỳ đến cụ Tôn Thất Dốc">${s}</svg>`;
+  let hs=''; for(let g=1; g<=maxG; g++){ const cx=colX[g]+colW[g]/2; hs+=`<rect x="${cx-25}" y="8" width="50" height="22" rx="4" fill="#FFF8DC" stroke="#A4161A" stroke-width="1.1"/><text x="${cx}" y="23" text-anchor="middle" font-size="12" font-weight="700" fill="#A4161A">Đời ${g}</text>`; }
+  sdcBase={W,H,HEADH};
+  const head=`<svg id="sdcHead" class="sdc-head" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Math.round(W)} ${HEADH}" width="${Math.round(W*sdcZoom)}" height="${Math.round(HEADH*sdcZoom)}" font-family='${PO_FONT}' aria-hidden="true">${hs}</svg>`;
+  return head+`<svg id="sdcSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Math.round(W)} ${Math.round(H)}" width="${Math.round(W*sdcZoom)}" height="${Math.round(H*sdcZoom)}" font-family='${PO_FONT}' role="img" aria-label="Sơ đồ Đệ Tứ Chi, Đệ Nhị Phái từ Hoàng trưởng Nguyễn Phúc Kỳ đến cụ Tôn Thất Dốc">${s}</svg>`;
 }
 function sdcSetZoom(z){
   sdcZoom=Math.min(2.2,Math.max(0.3,z)); const svg=$('#sdcSvg'), wrap=$('#sdcWrap'); if(!svg||!sdcBase) return;
   const cx=(wrap.scrollLeft+wrap.clientWidth/2)/(parseFloat(svg.getAttribute('width'))/sdcBase.W);
   svg.setAttribute('width',Math.round(sdcBase.W*sdcZoom)); svg.setAttribute('height',Math.round(sdcBase.H*sdcZoom));
+  const hd=$('#sdcHead'); if(hd){ hd.setAttribute('width',Math.round(sdcBase.W*sdcZoom)); hd.setAttribute('height',Math.round(sdcBase.HEADH*sdcZoom)); }
   wrap.scrollLeft=cx*sdcZoom-wrap.clientWidth/2; const v=$('#sdcZv'); if(v) v.textContent=Math.round(sdcZoom*100)+'%';
 }
 async function checkOrigLinks(){   // hiện nút "Mở ảnh gốc" chỉ khi tệp ảnh có trong thư mục gốc của GitHub Pages
@@ -1263,6 +1294,58 @@ function tulieuHTML(){
       tbl(['Đời','Các vị theo sơ đồ'],TL_SOPHA,r=>r[0]==='9'?'me':''))}
   </section>`;
 }
+/* ---------- Giới thiệu (hộp thoại mở từ biểu tượng ở đầu trang) và lời cảm ơn ---------- */
+const ABOUT_FB='https://www.facebook.com/nguyentonuno/';
+function aboutHTML(){
+  const me=persons.find(p=>!p.spouse_of && vnKey(p.full_name)==='ton that cao nguyen');
+  const doi=me?depthOf(me.id)+genOff():13;
+  const av=me&&me.photo_url
+    ? `<img class="about-av" src="${esc(me.photo_url)}" alt="Tôn Thất Cao Nguyên" id="aboutPhoto" title="Bấm để xem ảnh đầy đủ">`
+    : `<span class="about-av" aria-hidden="true">N</span>`;
+  const dong=`${CLAN.he}, ${CLAN.phong}, ${CLAN.chi}, ${CLAN.phai}`;
+  return `<div class="about">
+    <h3>Giới thiệu</h3>
+    <div class="about-head">${av}<div><div class="about-name">Tôn Thất Cao Nguyên</div><div class="about-sub">Hậu duệ Đời ${doi} · ${esc(CLAN.phai)}<br>Nguyên quán ${esc(CLAN.quequan)}</div></div></div>
+    <p class="about-hi">Kính thưa các bậc cô bác, quý anh chị em trong dòng tộc Tôn Thất,</p>
+    <p>Tôi là <b>Tôn Thất Cao Nguyên</b>, hậu duệ Đời ${doi} thuộc ${esc(dong)}, nguyên quán ${esc(CLAN.quequan)}. Trang gia phả điện tử này do tôi thực hiện, với tấm lòng thành kính hướng về tổ tiên và dòng tộc.</p>
+    <p>Nội dung được biên soạn trên nền tảng bản phả hệ do <b>bác Tôn Thất Nô</b> sao lục, đồng thời tham khảo thêm các tài liệu, sách vở và nguồn tư liệu đáng tin cậy. Danh mục các tài liệu đã được ghi rõ để quý vị tiện tra cứu và đối chiếu. <a href="#" class="about-go" data-aboutgo="refs">Xem tài liệu tham khảo</a></p>
+    <p>Tôi chỉ mong được góp một chút công sức nhỏ bé vào việc lưu giữ gia phả, ghi nhớ công đức tiền nhân, để con cháu hôm nay và mai sau biết tri ân cội nguồn, giữ gìn nếp nhà và gắn bó với nhau.</p>
+    <p>Tư liệu còn có nhiều chỗ chưa đầy đủ nên trong quá trình thực hiện khó tránh khỏi thiếu sót. Kính mong quý cô bác và anh chị em niệm tình chỉ giáo, bổ sung và hiệu chỉnh để gia phả ngày càng đầy đủ, chính xác.</p>
+    <h4 class="about-h">Liên hệ và đóng góp</h4>
+    <p>Mọi ý kiến đóng góp, bổ sung hoặc hiệu chỉnh thông tin, kính mời quý vị liên hệ với tôi theo một trong hai cách sau:</p>
+    <div class="about-actions">
+      <a class="btn primary" href="${ABOUT_FB}" target="_blank" rel="noopener noreferrer">Liên hệ qua Facebook</a>
+      <button type="button" class="btn" data-aboutgo="contrib">Gửi đóng góp trên trang này</button>
+    </div>
+    <p class="sub about-url">${esc(ABOUT_FB.replace('https://www.',''))}</p>
+    <h4 class="about-h">Lời cảm ơn</h4>
+    <p>Gia phả chỉ có thể ngày một đầy đủ nhờ sự chung tay của quý cô bác và anh chị em. Tôi xin chân thành tri ân những người đã dành thời gian, tâm huyết để bổ sung và hiệu chỉnh thông tin. Danh sách dưới đây ghi nhận những vị có nhiều đóng góp được duyệt nhất:</p>
+    <ol class="thanks-list" id="thanksList"><li class="sub">Đang tải danh sách…</li></ol>
+    <p class="about-close">Xin kính chúc quý vị và gia đình luôn mạnh khỏe, bình an, gia đạo hưng thịnh.</p>
+    <p class="about-sign">Trân trọng,<br><b>Tôn Thất Cao Nguyên</b></p>
+  </div>`;
+}
+async function loadThanks(){
+  const ul=$('#thanksList'); if(!ul) return;
+  let rows=null, err=null;
+  try{ const r=await sb.rpc('top_contributors',{p_limit:10}); if(r.error) err=r.error; else rows=r.data||[]; }catch(e){ err=e; }
+  const box=$('#thanksList'); if(!box) return;   // hộp thoại có thể đã đóng
+  if(err){ box.outerHTML=isAdmin?'<p class="sub">Chưa tải được danh sách người đóng góp. Quản trị: hãy chạy file loi_cam_on.sql trong Supabase.</p>':''; return; }
+  if(!rows.length){ box.outerHTML='<p class="sub">Hiện chưa có đóng góp nào được duyệt. Rất mong nhận được sự chung tay của quý vị.</p>'; return; }
+  box.innerHTML=rows.map((r,i)=>`<li class="${i<3?'top':''}"><span class="rk">${i+1}</span><span class="nm">${esc(r.contributor_name)}</span><span class="ct">${r.total} đóng góp</span></li>`).join('');
+}
+function openAbout(){
+  openModal(aboutHTML());
+  const ph=$('#aboutPhoto'); if(ph){ const me=persons.find(p=>!p.spouse_of && vnKey(p.full_name)==='ton that cao nguyen'); ph.onclick=()=>me&&openLightbox(me.id); }
+  document.querySelectorAll('#modal [data-aboutgo]').forEach(a=>a.addEventListener('click',e=>{
+    e.preventDefault();
+    if(a.dataset.aboutgo==='contrib'){ closeModal(); openContribMenu(); return; }
+    closeModal(); tab='goc'; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab==='goc')); render();
+    const el=document.getElementById('g-tham-khao'); if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  }));
+  loadThanks();
+}
+$('#btnAbout').onclick=openAbout;
 function renderGoc(){
   const TOC=[['g-tong-quan','Tổng quan'],['g-thoi-gian','Dòng thời gian'],['g-so-do','Sơ đồ Đệ Tứ Chi'],['g-phan-he','Tiền hệ, Phiên hệ, Đế hệ'],['g-dat-ten','Cách đặt tên'],['g-thi','Đế hệ thi'],['g-phien','Phiên hệ thi'],['g-tai-lieu','Tư liệu gia tộc'],['g-vi-tri','Thế phổ dòng họ ta'],['g-tham-khao','Tài liệu tham khảo']];
   const tlItem=(y,t)=>`<li><span class="tl-y">${y}</span>${t}</li>`;
@@ -3088,7 +3171,7 @@ function requireProfile(next){ if(getProfile()) next(); else openContribLogin(ne
 function openContribLogin(next, change){
   const cur=getProfile()||{};
   openModal(`<h3>${change?'Đổi thông tin người đóng góp':'Đăng nhập người đóng góp'}</h3>
-    <p class="sub">Nhập tên của bạn một lần. Trang ghi nhớ ngay trên máy của bạn, lần sau gửi đóng góp không phải nhập lại. Số điện thoại hoặc email giúp quản trị viên liên hệ khi cần, chỉ quản trị viên thấy.</p>
+    <p class="sub">Nhập tên của bạn một lần. Trang ghi nhớ ngay trên máy của bạn, lần sau gửi đóng góp không phải nhập lại. Số điện thoại hoặc email giúp quản trị viên liên hệ khi cần, chỉ quản trị viên thấy. Họ tên của bạn có thể được ghi nhận trong mục Giới thiệu (biểu tượng ⓘ ở đầu trang) để cảm ơn khi đóng góp của bạn được duyệt.</p>
     <div class="fgrid">
       <label class="full">Họ tên của bạn *<input id="pf_name" maxlength="80" value="${esc(cur.name||'')}" autocomplete="name"></label>
       <label class="full">Số điện thoại hoặc email (không bắt buộc)<input id="pf_contact" maxlength="120" value="${esc(cur.contact||'')}" autocomplete="off"></label>
