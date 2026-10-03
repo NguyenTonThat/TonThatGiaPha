@@ -225,7 +225,9 @@ details.tl .ph-body h4{margin:16px 0 6px}
 img.about-av{cursor:zoom-in}
 .about-name{font:700 22px/1.25 var(--serif);color:var(--son-dam)}
 .about-sub{margin-top:4px;color:var(--muted);font-size:14.5px;line-height:1.5}
-.about-hi{font:italic 600 16.5px var(--serif);color:var(--son-dam);margin:0 0 10px}
+.about-hi{font:italic 600 16.5px/1.7 var(--serif);color:var(--son-dam);margin:0 0 14px;padding:10px 14px;border-left:4px solid var(--hoang);background:linear-gradient(90deg,#fff6dc,rgba(255,246,220,0))}
+.about-hi span{display:block}
+.about-hi span:first-child{font-size:17px}
 .about-go{color:var(--son);font-weight:600}
 .about-h{font:700 17px var(--serif);color:var(--son-dam);margin:20px 0 6px;padding-top:12px;border-top:1px solid var(--line)}
 .about-actions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 6px}
@@ -241,12 +243,21 @@ img.about-av{cursor:zoom-in}
 .about-close{margin:12px 0 6px}
 .about-sign{margin:8px 0 0;text-align:right;font-family:var(--serif)}
 @media(max-width:520px){.about-head{flex-direction:column;text-align:center}.about-sign{text-align:center}}
+.diag{list-style:none;margin:10px 0;padding:0;display:grid;gap:8px}
+.diag li{padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fffdf7}
+.diag li.ok{border-left:4px solid #2e7d32}
+.diag li.bad{border-left:4px solid var(--son);background:#fff5f2}
+.diag .fix{margin-top:4px;color:var(--son-dam);font-weight:600;font-size:14px}
 .sdc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:8px 0}
 .sdc-key{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
 .sdc-key i{display:inline-block;width:22px;height:12px;border-radius:3px}
 .k-path{background:#fff;border:3px solid #1F4E8C}.k-m{background:#DCEFF0;border:1.5px solid #3C7F86}.k-f{background:#FBE9F0;border:1.5px solid #B05A7A}
 .sdc-wrap{overflow:auto;max-height:80vh;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#fffdf5,#fbf4de);padding:0 4px 4px;-webkit-overflow-scrolling:touch}
 .sdc-wrap svg{display:block}
+.kin-ph,.sdc-ph{cursor:zoom-in}
+.kin-n,.kin-x{cursor:pointer;outline:none}
+.kin-n:focus-visible>rect:first-of-type,.kin-x:hover>rect,.kin-x:focus-visible>rect{stroke-width:2.6}
+.kin-hint{margin:8px 2px 0;color:var(--muted);font-size:13px}
 .sdc-per{cursor:pointer;outline:none}
 .sdc-per:hover>rect,.sdc-per:focus-visible>rect{stroke-width:3;filter:drop-shadow(0 2px 3px rgba(80,55,10,.3))}
 .sdc-ph{cursor:zoom-in}
@@ -1316,8 +1327,13 @@ function aboutHTML(){
   return `<div class="about">
     <h3>Giới thiệu</h3>
     <div class="about-head">${av}<div><div class="about-name">Tôn Thất Cao Nguyên</div><div class="about-sub">Hậu duệ Đời ${doi} · ${esc(CLAN.phai)}<br>Nguyên quán ${esc(CLAN.quequan)}</div></div></div>
-    <p class="about-hi">Kính thưa các bậc cô bác, quý anh chị em trong dòng tộc Tôn Thất,</p>
-    <p>Tôi là <b>Tôn Thất Cao Nguyên</b>, hậu duệ Đời ${doi} thuộc ${esc(dong)}, nguyên quán ${esc(CLAN.quequan)}. Trang gia phả điện tử này do tôi thực hiện, với tấm lòng thành kính hướng về tổ tiên và dòng tộc.</p>
+    <div class="about-hi" role="group" aria-label="Lời kính thưa">
+      <span>Dạ, kính thưa chư vị tôn trưởng trong dòng tộc,</span>
+      <span>Kính thưa quý ông, quý bà, quý mệ, quý mụ cùng quý bậc cao niên,</span>
+      <span>Kính thưa quý bác, quý chú, quý dượng, quý o, quý dì, quý cậu, quý mợ,</span>
+      <span>Kính thưa toàn thể anh chị em, con cháu trong họ Tôn Thất, Nguyễn Phước Tộc, dù ở gần hay ở xa.</span>
+    </div>
+    <p>Dạ, tôi xin phép được thưa đôi lời. Tôi là <b>Tôn Thất Cao Nguyên</b>, hậu duệ Đời ${doi} thuộc ${esc(dong)}, nguyên quán ${esc(CLAN.quequan)}. Trang gia phả điện tử này do tôi thực hiện, với tấm lòng thành kính hướng về tổ tiên và dòng tộc.</p>
     <p>Nội dung được biên soạn trên nền tảng bản phả hệ do <b>bác Tôn Thất Nô</b> sao lục, đồng thời tham khảo thêm các tài liệu, sách vở và nguồn tư liệu đáng tin cậy. Danh mục các tài liệu đã được ghi rõ để quý vị tiện tra cứu và đối chiếu. <a href="#" class="about-go" data-aboutgo="refs">Xem tài liệu tham khảo</a></p>
     <p>Tôi chỉ mong được góp một chút công sức nhỏ bé vào việc lưu giữ gia phả, ghi nhớ công đức tiền nhân, để con cháu hôm nay và mai sau biết tri ân cội nguồn, giữ gìn nếp nhà và gắn bó với nhau.</p>
     <p>Tư liệu còn có nhiều chỗ chưa đầy đủ nên trong quá trình thực hiện khó tránh khỏi thiếu sót. Kính mong quý cô bác và anh chị em niệm tình chỉ giáo, bổ sung và hiệu chỉnh để gia phả ngày càng đầy đủ, chính xác.</p>
@@ -1357,7 +1373,7 @@ function openAbout(){
 }
 $('#btnAbout').onclick=openAbout;
 function renderGoc(){
-  const TOC=[['g-tong-quan','Tổng quan'],['g-thoi-gian','Dòng thời gian'],['g-so-do','Sơ đồ Đệ Tứ Chi'],['g-phan-he','Tiền hệ, Phiên hệ, Đế hệ'],['g-dat-ten','Cách đặt tên'],['g-thi','Đế hệ thi'],['g-phien','Phiên hệ thi'],['g-tai-lieu','Tư liệu gia tộc'],['g-vi-tri','Thế phổ dòng họ ta'],['g-tham-khao','Tài liệu tham khảo']];
+  const TOC=[['g-tong-quan','Tổng quan'],['g-thoi-gian','Dòng thời gian'],['g-phan-he','Tiền hệ, Phiên hệ, Đế hệ'],['g-dat-ten','Cách đặt tên'],['g-thi','Đế hệ thi'],['g-phien','Phiên hệ thi'],['g-tai-lieu','Tư liệu gia tộc'],['g-so-do','Sơ đồ Đệ Tứ Chi'],['g-vi-tri','Thế phổ dòng họ ta'],['g-tham-khao','Tài liệu tham khảo']];
   const tlItem=(y,t)=>`<li><span class="tl-y">${y}</span>${t}</li>`;
   return `<div class="goc">
     <h2>Nguồn gốc dòng họ</h2>
@@ -1381,14 +1397,6 @@ function renderGoc(){
         ${tlItem('Sau 1945',`Chế độ quân chủ chấm dứt, việc phân biệt dòng đế và dòng phiên không còn ý nghĩa pháp lý. Nhiều người Tôn Thất dùng lại họ gốc <b>Nguyễn Phúc (Phước)</b>.${gC(1,5)}`)}
       </ol>
       <div class="note">Ghi chép gia đình ghi việc đổi sang danh xưng Tôn Thất vào năm Minh Mạng thứ 3 (1823). Các tài liệu đối chiếu (Nguyễn Phúc tộc thế phả, Khâm định Đại Nam hội điển sự lệ) ghi quy định này vào năm 1829; năm 1823 là thời điểm ban các bài thơ chữ lót.${gC(4,5)}</div>
-    </section>
-
-    <section class="gsec" id="g-so-do"><h3>Sơ đồ Đệ Tứ Chi, Đệ Nhị Phái</h3>
-      <p>Sơ đồ dưới đây vẽ lại từ trang 20 của tài liệu gia tộc: từ <b>Hoàng trưởng Nguyễn Phúc Kỳ</b> (Đời 1, Khánh quận công, mở Phòng I) qua bốn chi, đến <b>Đệ Tứ Chi</b> (ông Trí), <b>Đệ Nhị Phái</b> (ông Cơ) và đến <b>cụ Tôn Thất Dốc</b> (Đời 9), rồi các con của cụ (Đời 10, theo trang 21). Sơ đồ đọc từ trái sang phải, mỗi cột là một đời; kéo hoặc cuộn để xem hết.${gC(13)}</p>
-      <div class="sdc-bar"><div class="czoom"><button type="button" class="btn small" data-sdc="-" aria-label="Thu nhỏ">−</button><span id="sdcZv">${Math.round(sdcZoom*100)}%</span><button type="button" class="btn small" data-sdc="+" aria-label="Phóng to">+</button><button type="button" class="btn small" data-sdc="fit">Vừa khung</button></div>
-        <span class="sdc-key"><i class="k-path"></i> đường từ ông Kỳ đến cụ Dốc</span><span class="sdc-key"><i class="k-m"></i> nam</span><span class="sdc-key"><i class="k-f"></i> nữ (C. = cô)</span></div>
-      <div class="sdc-wrap" id="sdcWrap">${sdcSVG()}</div>
-      <p class="sub">Số trong ngoặc là thứ tự con trai trong nhà (ví dụ ông Cơ là con thứ 2 của ông Trí). Khung viền xanh đậm và đường tô đậm là dòng trực hệ của gia đình; cụ Dốc có mã số <b>4-2-3/2-2-2/1-2</b>. Nhãn đỏ là tên chi, tên nhánh. Trong sơ đồ, ông Tẩu (Nhánh IV) là nhánh của gia đình. Những vị đã có trong gia phả điện tử (cụ Dốc và các con của cụ) hiện kèm <b>ảnh tròn</b> nếu đã có ảnh: bấm vào ảnh để xem ảnh đầy đủ, bấm vào ô để xem thông tin chi tiết.${gC(13)}</p>
     </section>
 
     <section class="gsec" id="g-phan-he"><h3>Tiền hệ, Phiên hệ và Đế hệ</h3>
@@ -1446,6 +1454,14 @@ function renderGoc(){
     </section>
 
     ${tulieuHTML()}
+
+    <section class="gsec" id="g-so-do"><h3>Sơ đồ Đệ Tứ Chi, Đệ Nhị Phái</h3>
+      <p>Sơ đồ dưới đây vẽ lại từ trang 20 của tài liệu gia tộc: từ <b>Hoàng trưởng Nguyễn Phúc Kỳ</b> (Đời 1, Khánh quận công, mở Phòng I) qua bốn chi, đến <b>Đệ Tứ Chi</b> (ông Trí), <b>Đệ Nhị Phái</b> (ông Cơ) và đến <b>cụ Tôn Thất Dốc</b> (Đời 9), rồi các con của cụ (Đời 10, theo trang 21). Sơ đồ đọc từ trái sang phải, mỗi cột là một đời; kéo hoặc cuộn để xem hết.${gC(13)}</p>
+      <div class="sdc-bar"><div class="czoom"><button type="button" class="btn small" data-sdc="-" aria-label="Thu nhỏ">−</button><span id="sdcZv">${Math.round(sdcZoom*100)}%</span><button type="button" class="btn small" data-sdc="+" aria-label="Phóng to">+</button><button type="button" class="btn small" data-sdc="fit">Vừa khung</button></div>
+        <span class="sdc-key"><i class="k-path"></i> đường từ ông Kỳ đến cụ Dốc</span><span class="sdc-key"><i class="k-m"></i> nam</span><span class="sdc-key"><i class="k-f"></i> nữ (C. = cô)</span></div>
+      <div class="sdc-wrap" id="sdcWrap">${sdcSVG()}</div>
+      <p class="sub">Số trong ngoặc là thứ tự con trai trong nhà (ví dụ ông Cơ là con thứ 2 của ông Trí). Khung viền xanh đậm và đường tô đậm là dòng trực hệ của gia đình; cụ Dốc có mã số <b>4-2-3/2-2-2/1-2</b>. Nhãn đỏ là tên chi, tên nhánh. Trong sơ đồ, ông Tẩu (Nhánh IV) là nhánh của gia đình. Những vị đã có trong gia phả điện tử (cụ Dốc và các con của cụ) hiện kèm <b>ảnh tròn</b> nếu đã có ảnh: bấm vào ảnh để xem ảnh đầy đủ, bấm vào ô để xem thông tin chi tiết.${gC(13)}</p>
+    </section>
 
     <section class="gsec" id="g-vi-tri"><h3>Thế phổ dòng họ ta</h3>
       <p>Dòng họ thuộc <b>${esc(CLAN.he)}, ${esc(CLAN.phong)}, ${esc(CLAN.chi)}, ${esc(CLAN.phai)}</b>, nguyên quán ${esc(CLAN.quequan)}. Mỗi vị chúa mở một <b>hệ</b>; mỗi con trai của vị chúa mở một <b>phòng</b>; mỗi con trai của người mở phòng mở một <b>chi</b>; trong chi lại có các <b>phái</b>.${gC(7,13)}</p>
@@ -1598,6 +1614,8 @@ $('#view').addEventListener('click', e=>{
   const ci=e.target.closest('[data-cid]'); if(ci){ reviewContrib(ci.dataset.cid); return; }
   const tm=e.target.closest('[data-tmode]'); if(tm){ treeMode=tm.dataset.tmode; chartFirst=true; render(); return; }
   const zm=e.target.closest('[data-zoom]'); if(zm){ const k=zm.dataset.zoom; if(k==='fit'){ const wrap=$('#chartWrap'); if(wrap&&chartLast) setZoom((wrap.clientWidth-8)/chartLast.W); } else setZoom(chartZoom*(k==='+'?1.2:1/1.2)); return; }
+  const kx=e.target.closest('[data-kx]'); if(kx){ kinExp=null; showDetail(kx.dataset.kx); return; }
+  const kn=e.target.closest('[data-kn]'); if(kn){ kinToggle(kn.dataset.kn); return; }
   const sp=e.target.closest('[data-sdcpid]'); if(sp){ showDetail(sp.dataset.sdcpid); return; }
   const sz=e.target.closest('[data-sdc]'); if(sz){ const k=sz.dataset.sdc; if(k==='fit'){ const w=$('#sdcWrap'); if(w&&sdcBase) sdcSetZoom((w.clientWidth-10)/sdcBase.W); } else sdcSetZoom(sdcZoom*(k==='+'?1.2:1/1.2)); return; }
   const ci2=e.target.closest('[data-cinfo]'); if(ci2){ e.stopPropagation(); chartSel=ci2.dataset.cinfo; chartHighlight(); showDetail(ci2.dataset.cinfo); return; }
@@ -1608,10 +1626,12 @@ $('#view').addEventListener('click', e=>{
   const c = e.target.closest('[data-id]');
   if(c) showDetail(c.dataset.id);
 });
-$('#view').addEventListener('keydown', e=>{ if((e.key==='Enter'||e.key===' ') && e.target.matches && e.target.matches('[data-sdcpid]')){ e.preventDefault(); showDetail(e.target.dataset.sdcpid); return; }
+$('#view').addEventListener('keydown', e=>{ if((e.key==='Enter'||e.key===' ') && e.target.matches){ if(e.target.matches('[data-kn]')){ e.preventDefault(); kinToggle(e.target.dataset.kn); return; } if(e.target.matches('[data-kx]')){ e.preventDefault(); kinExp=null; showDetail(e.target.dataset.kx); return; } }
+  if((e.key==='Enter'||e.key===' ') && e.target.matches && e.target.matches('[data-sdcpid]')){ e.preventDefault(); showDetail(e.target.dataset.sdcpid); return; }
   if((e.key==='Enter'||e.key===' ') && e.target.matches && e.target.matches('img[data-lbsrc]')){ e.preventDefault(); const of=e.target.closest('figure')&&e.target.closest('figure').querySelector('a.tl-orig:not([hidden])'); openLightboxSrc(e.target.getAttribute('src'), e.target.alt||'Sơ đồ', '', true, of?of.getAttribute('href'):null); return; }
   if(e.key==='Enter'||e.key===' '){ const n=e.target.closest('[data-cn]'); if(n){ e.preventDefault(); chartSelect(n.dataset.cn,true); return; } } if(e.key==='Enter'){ const c=e.target.closest('.card[data-id]'); if(c) showDetail(c.dataset.id);} });
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
+  kinExp=null;
   if(b.dataset.tab!==tab && query){ query=''; $('#q').value=''; }   // đổi trang thì xóa chữ trong ô tìm kiếm, để trang mới hiện đủ thông tin
   tab=b.dataset.tab; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b)); render(); if(tab==='dg') loadContribs().then(render);
 }));
@@ -1902,6 +1922,7 @@ function enhancePicker(sel, placeholder){
 
 /* ---------- Tra quan hệ họ hàng giữa hai người ---------- */
 let kinA=null, kinB=null;
+let kinExp=null, kinExtraN=0;   // người đang được bấm để xem thêm các con trong sơ đồ quan hệ
 const kSex=p=>p.gender==='F'?'F':'M';
 const kName=id=>byId.get(id)?.full_name||'?';
 function ancUp(id){   // đi ngược lên cha mẹ (cha trước, mẹ sau), trả về mọi tổ tiên kèm khoảng cách và đường đi ngắn nhất
@@ -2074,7 +2095,7 @@ function kinLookup(A,B){
 
 // ---- Sơ đồ cây theo đời: người thứ nhất đi từ nhánh lên gốc chung gần nhất rồi xuống người thứ hai ----
 function kinTreeSVG(A,B,R){
-  const NW=172, NH=54, GY=56, PAD=14, LABW=70, FONT=PO_FONT;
+  const NW=214, NH=56, GY=56, PAD=14, LABW=70, FONT=PO_FONT, AVW=50;   // AVW: phần bên trái ô dành cho ảnh tròn
   const nodes=[], all=[];   // nodes: mọi ô vẽ; all: các ô tạo thành cây để vẽ cành
   const gOf=id=>depthOf(id)+genOff();
   const mkNode=(id,depth,cx,role,extra)=>{ const n={id,depth,cx,y:depth*(NH+GY),h:NH,kids:[],p:{id},role:role||new Set(),extra:extra||''}; nodes.push(n); return n; };
@@ -2104,8 +2125,27 @@ function kinTreeSVG(A,B,R){
   }
   const maxD=Math.max(...nodes.map(n=>n.depth));
   const rowY=[]; for(let d=0;d<=maxD+1;d++) rowY[d]=d*(NH+GY);
-  const minX=Math.min(...nodes.map(n=>n.cx-NW/2)), maxX=Math.max(...nodes.map(n=>n.cx+NW/2));
-  const ox=PAD+LABW-minX, vbW=(maxX-minX)+LABW+2*PAD, vbH=(maxD+1)*(NH+GY)-GY+2*PAD;
+  // ----- bấm vào một người: hiện thêm các người con chưa có trong sơ đồ (cột ô nhỏ, bên cạnh) -----
+  const CWX=158, CHX=32, extras=[]; let trunkD='', extraBottom=0; kinExtraN=0;
+  const en=kinExp&&nodes.find(n=>n.id===kinExp);
+  if(en){
+    const drawn=new Set(nodes.map(n=>n.id));
+    const ks=(kids.get(en.id)||[]).filter(k=>!drawn.has(k.id));
+    kinExtraN=ks.length;
+    if(ks.length){
+      const side=en.cx<-1?'L':en.cx>1?'R':'C';
+      if(side==='C') nodes.forEach(n=>{ if(n.cx<-1) n.cx-=CWX+46; else if(n.cx>1) n.cx+=CWX+46; });   // nhường cột giữa cho các ô con
+      const colCx=side==='L'?en.cx-(NW/2+CWX/2+30):side==='R'?en.cx+(NW/2+CWX/2+30):0;
+      const y0=(en.depth+1)*(NH+GY);
+      ks.forEach((k,i)=>{ extras.push({p:k,cx:colCx,y:y0+i*(CHX+8)}); });
+      const lastCy=extras[extras.length-1].y+CHX/2; extraBottom=extras[extras.length-1].y+CHX;
+      if(side==='C'){ const tx=-CWX/2-16; trunkD=`M0 ${en.y+NH}V${y0-12}H${tx}V${lastCy}`+extras.map(e=>`M${tx} ${e.y+CHX/2}H${-CWX/2}`).join(''); }
+      else if(side==='L'){ const tx=colCx+CWX/2+16; trunkD=`M${en.cx-NW/2} ${en.y+NH/2}H${tx}V${lastCy}`+extras.map(e=>`M${tx} ${e.y+CHX/2}H${colCx+CWX/2}`).join(''); }
+      else { const tx=colCx-CWX/2-16; trunkD=`M${en.cx+NW/2} ${en.y+NH/2}H${tx}V${lastCy}`+extras.map(e=>`M${tx} ${e.y+CHX/2}H${colCx-CWX/2}`).join(''); }
+    }
+  }
+  const minX=Math.min(...nodes.map(n=>n.cx-NW/2),...extras.map(e=>e.cx-CWX/2)), maxX=Math.max(...nodes.map(n=>n.cx+NW/2),...extras.map(e=>e.cx+CWX/2));
+  const ox=PAD+LABW-minX, vbW=(maxX-minX)+LABW+2*PAD, vbH=Math.max((maxD+1)*(NH+GY)-GY, extraBottom)+2*PAD;
   let s='';
   // nhãn Đời n
   for(let d=0;d<=maxD;d++){
@@ -2115,7 +2155,8 @@ function kinTreeSVG(A,B,R){
   // cành cây nối các đời
   const g0=`<g transform="translate(${ox} ${PAD})">`;
   s+=g0;
-  if(all.length>1) s+=pBranchSVG(all,rowY,0,0,true);   // sơ đồ tra quan hệ vẫn giữ hoa lá
+  if(all.length>1) s+=pBranchSVG(all,rowY,0,0,false);   // cành cây thuần, không hoa lá
+  if(trunkD) s+=`<path d="${trunkD}" fill="none" stroke="#6B4222" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 0" opacity=".85"/>`;
   // mũi tên chiều đi: bên người thứ nhất đi LÊN, bên người thứ hai đi XUỐNG
   const arrow=(px,py,qx,qy,dir)=>{ const mx=px+(qx-px)*0.3, my=py+(qy-py)*0.3, t=dir==='up'?`${mx},${my-7} ${mx-6},${my+4} ${mx+6},${my+4}`:`${mx},${my+7} ${mx-6},${my-4} ${mx+6},${my-4}`; return `<polygon points="${t}" fill="${PO_RED}" stroke="#fff" stroke-width="1.2"/>`; };
   const lcaN=all[0];
@@ -2128,7 +2169,7 @@ function kinTreeSVG(A,B,R){
     s+=`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#C88A1A" stroke-width="2" stroke-dasharray="4 3"/><circle cx="${mx-4}" cy="${y}" r="6" fill="#fff" stroke="#C88A1A" stroke-width="1.8"/><circle cx="${mx+4}" cy="${y}" r="6" fill="#fff" stroke="#C88A1A" stroke-width="1.8"/>`; });
   // các ô tên
   const fit=(t,bold,max)=>{ let sz=13.5; while(pTW(t,bold,sz)>max && sz>9.5) sz-=0.5; if(pTW(t,bold,sz)>max){ while(t.length>4 && pTW(t+'…',bold,sz)>max) t=t.slice(0,-1); t+='…'; } return [t,sz]; };
-  nodes.forEach(n=>{
+  nodes.forEach((n,ni)=>{
     const P=byId.get(n.id), isA=n.role.has('A'), isB=n.role.has('B'), isL=n.role.has('LCA');
     const fill=isA?'#FFE9E6':isB?'#E4EEF9':isL?'#FFF1C2':'#FFFFFF';
     const stroke=isA?PO_RED:isB?'#1F4E8C':isL?'#D9A93F':(kSex(P)==='F'?'#6A3F8F':'#1F4E8C');
@@ -2141,12 +2182,24 @@ function kinTreeSVG(A,B,R){
     else if(n.role.has('end')) cap=(kSex(P)==='M'?'chồng':'vợ')+' của '+(n.cx<=0&&links.some(l=>l[1]===n)?'người thứ nhất':'người thứ hai');
     const yr = P.birth_year?`(${P.birth_year})`:'';
     const sub = cap || yr;
-    const [nm,sz]=fit(P.full_name,true,NW-16);
-    s+=`<g><rect x="${x}" y="${y}" width="${NW}" height="${NH}" rx="9" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
-    s+=`<text x="${n.cx}" y="${y+(sub||n.extra?21:NH/2+5)}" text-anchor="middle" font-size="${sz}" font-weight="700" fill="#2A0F08">${esc(nm)}</text>`;
-    if(n.extra){ const [e2,sz2]=fit(n.extra,false,NW-16); s+=`<text x="${n.cx}" y="${y+36}" text-anchor="middle" font-size="${Math.min(sz2,12)}" fill="#4A1D0F">${esc(e2)}</text>`; }
-    if(sub) s+=`<text x="${n.cx}" y="${y+(n.extra?48:38)}" text-anchor="middle" font-size="11" ${cap?`font-weight="700" fill="${isA?PO_RED:isB?'#1F4E8C':'#8A5E0E'}"`:'fill="#6F6556"'}>${esc(sub)}</text>`;
+    const TW=NW-AVW-10, tcx=x+AVW+TW/2+2;
+    const [nm,sz]=fit(P.full_name,true,TW);
+    const col=kSex(P)==='F'?'#6A3F8F':'#1F4E8C', R0=19, ax=x+AVW/2+2, ay=y+NH/2, ini=(String(P.full_name||'?').trim().split(/\s+/).pop()||'?').charAt(0).toUpperCase();
+    const isEn=en&&en.id===n.id;
+    s+=`<g class="kin-n" data-kn="${P.id}" tabindex="0" role="button" aria-expanded="${isEn?'true':'false'}" aria-label="${esc(P.full_name)}: bấm để xem thêm các con"><rect x="${x}" y="${y}" width="${NW}" height="${NH}" rx="9" fill="${fill}" stroke="${stroke}" stroke-width="${isEn?sw+1.6:sw}"${isEn?' style="filter:drop-shadow(0 2px 4px rgba(80,55,10,.35))"':''}/>`;
+    if(P.photo_url){ const cid='kp'+ni; s+=`<clipPath id="${cid}"><circle cx="${ax}" cy="${ay}" r="${R0}"/></clipPath><g class="kin-ph" data-photo="${P.id}"><title>Bấm để xem ảnh đầy đủ</title><circle cx="${ax}" cy="${ay}" r="${R0+2}" fill="${col}"/><image href="${esc(P.photo_url)}" x="${ax-R0}" y="${ay-R0}" width="${R0*2}" height="${R0*2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${cid})"/></g>`; }
+    else s+=`<circle cx="${ax}" cy="${ay}" r="${R0}" fill="${col}"/><text x="${ax}" y="${ay+7}" text-anchor="middle" font-size="19" font-weight="700" fill="#fff">${esc(ini)}</text>`;
+    s+=`<text x="${tcx}" y="${y+(sub||n.extra?21:NH/2+5)}" text-anchor="middle" font-size="${sz}" font-weight="700" fill="#2A0F08">${esc(nm)}</text>`;
+    if(n.extra){ const [e2,sz2]=fit(n.extra,false,TW); s+=`<text x="${tcx}" y="${y+36}" text-anchor="middle" font-size="${Math.min(sz2,12)}" fill="#4A1D0F">${esc(e2)}</text>`; }
+    if(sub){ let ss=11; while(pTW(sub,!!cap,ss)>TW && ss>8) ss-=0.5; s+=`<text x="${tcx}" y="${y+(n.extra?48:39)}" text-anchor="middle" font-size="${ss}" ${cap?`font-weight="700" fill="${isA?PO_RED:isB?'#1F4E8C':'#8A5E0E'}"`:'fill="#6F6556"'}>${esc(sub)}</text>`; }
     s+='</g>';
+  });
+  extras.forEach((e,xi)=>{
+    const P2=e.p, F2=kSex(P2)==='F', col2=F2?'#6A3F8F':'#1F4E8C', x=e.cx-CWX/2, ay=e.y+CHX/2, R2=11, ax=x+17, cid='kx'+xi;
+    const [t2,z2]=fit(P2.full_name,true,CWX-44); const ini=(String(P2.full_name||'?').trim().split(/\s+/).pop()||'?').charAt(0).toUpperCase();
+    s+=`<g class="kin-x" data-kx="${P2.id}" tabindex="0" role="button"><title>${esc(P2.full_name)}${P2.birth_year?' ('+P2.birth_year+')':''} · bấm để xem thông tin</title><rect x="${x}" y="${e.y}" width="${CWX}" height="${CHX}" rx="8" fill="#FFFDF7" stroke="${col2}" stroke-width="1.3"/>`+
+      (P2.photo_url?`<clipPath id="${cid}"><circle cx="${ax}" cy="${ay}" r="${R2}"/></clipPath><circle cx="${ax}" cy="${ay}" r="${R2+1.5}" fill="${col2}"/><image href="${esc(P2.photo_url)}" x="${ax-R2}" y="${ay-R2}" width="${R2*2}" height="${R2*2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${cid})"/>`:`<circle cx="${ax}" cy="${ay}" r="${R2}" fill="${col2}"/><text x="${ax}" y="${ay+4.5}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${esc(ini)}</text>`)+
+      `<text x="${x+32}" y="${ay+4.5}" font-size="${Math.min(z2,12.5)}" font-weight="700" fill="#2A0F08">${esc(t2)}</text></g>`;
   });
   s+='</g>';
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${vbW.toFixed(0)} ${vbH.toFixed(0)}" font-family='${FONT}' style="display:block;margin:0 auto;width:100%;min-width:${Math.min(Math.round(vbW),560)}px;max-width:${Math.round(vbW*1.15)}px;height:auto" role="img" aria-label="Sơ đồ cây theo đời từ người thứ nhất lên tổ chung rồi xuống người thứ hai">${s}</svg>`;
@@ -2158,7 +2211,7 @@ function kinResultHTML(A,B){
   if(R.kind==='none') return `<div class="kin-card"><p class="kin-title">Chưa tìm thấy quan hệ trong gia phả</p><p class="kin-sub">${an} và ${bn} chưa nối được với nhau qua cha mẹ hoặc hôn nhân đã nhập. Có thể còn thiếu các đời trên chung. Bạn có thể bổ sung bằng nút Đóng góp thông tin.</p></div>`;
   let why='';
   const legend=`<div class="kin-legend"><span><i class="la"></i>Người thứ nhất</span><span><i class="lb"></i>Người thứ hai</span>${R.kind==='spouse'?'':'<span><i class="ll"></i>Gốc chung gần nhất</span><span><i class="ar">▲</i>đi lên</span><span><i class="ar">▼</i>đi xuống</span>'}</div>`;
-  const tree=`<div class="kin-why"><h4>Sơ đồ cây theo đời</h4><div class="kin-tree">${kinTreeSVG(A,B,R)}</div>${legend}</div>`;
+  const tree=`<div class="kin-why"><h4>Sơ đồ cây theo đời</h4><div class="kin-tree">${kinTreeSVG(A,B,R)}</div>${legend}<p class="kin-hint">Bấm vào một người trong sơ đồ để xem thêm các con của người đó; bấm ra ngoài để thu lại.</p></div>`;
   if(R.kind==='blood'){
     const lc=R.r.commons.length>1 ? esc(R.r.commons.map(kName).join(' và ')) : esc(kName(R.r.id));
     why=tree+`<div class="kin-why"><div>Gốc chung gần nhất: <b>${lc}</b> (đời ${depthOf(R.r.id)+genOff()}). ${an} cách gốc ${R.r.a} đời, ${bn} cách gốc ${R.r.b} đời.</div></div>`;
@@ -2184,18 +2237,36 @@ function renderKin(){
     </div>
     <div id="kinRes"></div></div>`;
 }
+function kinRerender(){
+  const res=$('#kinRes'); if(!res||!kinA||!kinB) return;
+  const y=window.scrollY; res.innerHTML=kinResultHTML(byId.get(kinA),byId.get(kinB)); window.scrollTo(0,y);
+}
+function kinToggle(id){
+  kinExp = kinExp===id ? null : id; kinRerender();
+  if(kinExp && !kinExtraN) toast('Người này không có thêm người con nào khác trong gia phả.');
+}
+document.addEventListener('click',e=>{ if(tab==='kin' && kinExp && !e.target.closest('[data-kn],[data-kx],.kin-ph,#bd,#lb')){ kinExp=null; kinRerender(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && tab==='kin' && kinExp && !document.querySelector('#bd.open') && !document.getElementById('lb')){ kinExp=null; kinRerender(); } });
 function bindKin(){
   const sa=$('#kinA'), sb=$('#kinB'); if(!sa||!sb) return;
-  const show=()=>{ kinA=sa.value||null; kinB=sb.value||null; $('#kinRes').innerHTML = (kinA&&kinB) ? kinResultHTML(byId.get(kinA),byId.get(kinB)) : '<div class="empty" style="padding:28px 8px">Chọn người thứ nhất và người thứ hai.</div>'; };
+  const show=()=>{ kinExp=null; kinA=sa.value||null; kinB=sb.value||null; $('#kinRes').innerHTML = (kinA&&kinB) ? kinResultHTML(byId.get(kinA),byId.get(kinB)) : '<div class="empty" style="padding:28px 8px">Chọn người thứ nhất và người thứ hai.</div>'; };
   enhancePicker(sa,'Gõ tên người thứ nhất…'); enhancePicker(sb,'Gõ tên người thứ hai…');
   sa.addEventListener('change',show); sb.addEventListener('change',show);
   $('#kinSwap').onclick=()=>{ const t=kinA; kinA=kinB; kinB=t; render(); };
   show();
 }
 /* ---------- Ảnh từng người: thêm, đổi, xóa; gửi ảnh (khách); tải hàng loạt (quản trị) ---------- */
+const rawErr=e=>{ const c=e&&(e.statusCode||e.status||e.code); return ((c?c+' ':'')+String((e&&(e.message||e.error_description||e.error))||e||'')).trim(); };
 function photoErr(e){
-  const m=String(e&&e.message||e);
-  return /bucket/i.test(m) ? 'Chưa có kho ảnh. Hãy chạy file anh.sql trong Supabase (SQL Editor).' : /row-level|policy|unauthor/i.test(m) ? 'Không có quyền tải ảnh lên. Hãy chạy lại file anh.sql.' : 'Không tải được ảnh: '+m;
+  const m=rawErr(e);
+  if(/bucket[^.]*not found|not found[^.]*bucket/i.test(m)) return 'Chưa có kho ảnh "photos". Hãy chạy file anh.sql trong Supabase (SQL Editor).';
+  if(/jwt|expired|invalid.*token|not authenticated|\b401\b/i.test(m)) return 'Phiên đăng nhập quản trị đã hết hạn hoặc chưa đăng nhập. Hãy bấm Đăng xuất rồi đăng nhập lại.';
+  if(/row-level|violates|policy|forbidden|not allowed|\b403\b/i.test(m)) return 'Chưa có quyền ghi vào kho ảnh. Hãy đăng nhập quản trị, và chạy lại file anh.sql trong Supabase.';
+  if(/too large|exceeded|payload|maximum|\b413\b/i.test(m)) return 'Ảnh vượt giới hạn dung lượng của kho ảnh (150 KB). Hãy chạy lại anh.sql hoặc chọn ảnh khác.';
+  if(/mime|content.?type|unsupported|not supported/i.test(m)) return 'Kho ảnh chỉ nhận ảnh JPEG. Hãy chạy lại file anh.sql.';
+  if(/failed to fetch|networkerror|network|load failed|timeout/i.test(m)) return 'Mất kết nối mạng hoặc không tới được Supabase. Hãy kiểm tra mạng rồi thử lại.';
+  if(/không đọc được ảnh|decode|heic|heif/i.test(m)) return m+'. Hãy chọn ảnh JPEG hoặc PNG (ảnh iPhone định dạng HEIC: vào Cài đặt > Camera > Định dạng > Tương thích nhất).';
+  return 'Không tải được ảnh: '+m;
 }
 async function uploadPhotoFile(file, folder, prefix){
   const {blob,w,h}=await shrinkImage(file);
@@ -2240,17 +2311,18 @@ async function sendPhotoContribution(p, file, say){
 function bindDetailPhoto(p){
   const st=$('#phSt'); const say=(m,bad)=>{ if(st){ st.textContent=m; st.style.color=bad?'var(--son)':'var(--lam)'; } };
   const busy=b=>document.querySelectorAll('#modal .ph-act input,#modal .ph-act button').forEach(x=>x.disabled=b);
+  const showFail=err=>{ say(photoErr(err),true); busy(false); if(isAdmin&&st){ st.insertAdjacentHTML('beforeend',' <a href="#" id="phDiag">Kiểm tra nguyên nhân</a>'); const a=$('#phDiag'); if(a) a.onclick=ev=>{ ev.preventDefault(); runPhotoDiag(); }; } };
   const pick=(id,fn)=>{ const el=$('#'+id); if(!el) return; el.addEventListener('change',async e=>{
     const f=e.target.files[0]; e.target.value=''; if(!f) return;
     if(!isImageFile(f)){ say('Hãy chọn một file ảnh.',true); return; }
     busy(true);
     try{ const r=await fn(f); showDetail(p.id); toast(r.msg); }
-    catch(err){ say(photoErr(err),true); busy(false); }
+    catch(err){ showFail(err); }
   }); };
   if(isAdmin){
     const go=async f=>{ const up=await setPersonPhoto(p,f,say); return {msg:`Đã lưu ảnh (${up.kb} KB)`}; };
     pick('dPhFile',go); pick('dPhCam',go);
-    const del=$('#dPhDel'); if(del) del.onclick=async ()=>{ if(!confirm('Xóa ảnh của '+p.full_name+'?')) return; busy(true); try{ await removePersonPhoto(p); showDetail(p.id); toast('Đã xóa ảnh'); }catch(err){ say(photoErr(err),true); busy(false); } };
+    const del=$('#dPhDel'); if(del) del.onclick=async ()=>{ if(!confirm('Xóa ảnh của '+p.full_name+'?')) return; busy(true); try{ await removePersonPhoto(p); showDetail(p.id); toast('Đã xóa ảnh'); }catch(err){ showFail(err); } };
   } else {
     const go=f=>new Promise((res,rej)=>{
       const run=async()=>{ try{ const up=await sendPhotoContribution(p,f,say); res({msg:'Đã gửi ảnh, quản trị viên sẽ xem và duyệt'}); }catch(e){ rej(e); } };
@@ -2275,14 +2347,43 @@ function matchPhotoName(name){
   return {cands:c,year};
 }
 const personLabel=p=>`${p.full_name}${pYears(p)?' '+pYears(p):''} — đời ${depthOf(p.id)+genOff()}${p.photo_url?' (đã có ảnh)':''}`;
+async function runPhotoDiag(){
+  openModal(`<h3>Kiểm tra tải ảnh</h3><p class="sub">Trang thử từng bước: đăng nhập, tải một ảnh nhỏ lên kho ảnh, xem công khai, xóa ảnh thử và ghi vào hồ sơ. Bước nào ✗ thì làm theo dòng hướng dẫn bên dưới.</p><ul class="diag" id="dgList"></ul><div class="actions"><button class="btn" id="dgClose">Đóng</button></div>`);
+  $('#dgClose').onclick=closeModal;
+  const ul=$('#dgList'); let bad=0;
+  const add=(ok,title,detail,fix)=>{ if(!ok) bad++; if(!$('#dgList')) return; ul.insertAdjacentHTML('beforeend',`<li class="${ok?'ok':'bad'}"><b>${ok?'✓':'✗'} ${esc(title)}</b>${detail?`<div class="sub">${esc(detail)}</div>`:''}${fix&&!ok?`<div class="fix">${esc(fix)}</div>`:''}</li>`); };
+  let session=null; try{ session=(await sb.auth.getSession()).data.session; }catch(e){}
+  add(!!session,'Đã đăng nhập quản trị',session?('Tài khoản: '+((session.user&&session.user.email)||'(không rõ)')):'Chưa có phiên đăng nhập','Bấm nút Quản trị rồi đăng nhập bằng tài khoản quản trị. Nếu vừa đăng nhập mà vẫn báo thiếu, hãy Đăng xuất rồi đăng nhập lại.');
+  let path=null;
+  try{
+    const cv=document.createElement('canvas'); cv.width=cv.height=16; const cx=cv.getContext('2d'); cx.fillStyle='#888'; cx.fillRect(0,0,16,16);
+    const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',0.8));
+    path=`persons/_kiemtra/${Date.now().toString(36)}.jpg`;
+    const up=await sb.storage.from('photos').upload(path,blob,{contentType:'image/jpeg'});
+    if(up.error){ add(false,'Tải ảnh thử lên kho "photos"',rawErr(up.error),photoErr(up.error)); path=null; }
+    else add(true,'Tải ảnh thử lên kho "photos"','Đã lên: '+path);
+  }catch(e){ add(false,'Tải ảnh thử lên kho "photos"',rawErr(e),photoErr(e)); path=null; }
+  if(path){
+    try{ const url=sb.storage.from('photos').getPublicUrl(path).data.publicUrl; const r=await fetch(url,{cache:'no-store'}); add(r.ok,'Xem ảnh ở chế độ công khai','HTTP '+r.status,'Kho ảnh chưa ở chế độ công khai nên người xem không thấy ảnh. Hãy chạy lại file anh.sql.'); }
+    catch(e){ add(false,'Xem ảnh ở chế độ công khai',rawErr(e),'Không mở được địa chỉ ảnh. Kiểm tra mạng, hoặc chạy lại file anh.sql.'); }
+    try{ const rm=await sb.storage.from('photos').remove([path]); add(!rm.error,'Xóa ảnh thử',rm.error?rawErr(rm.error):'','Thiếu quyền xóa trong kho ảnh (ảnh cũ sẽ không tự dọn). Hãy chạy lại file anh.sql.'); }
+    catch(e){ add(false,'Xóa ảnh thử',rawErr(e),'Thiếu quyền xóa. Hãy chạy lại file anh.sql.'); }
+  }
+  try{
+    const p0=persons[0];
+    if(p0){ const r=await sb.from('persons').update({photo_url:p0.photo_url||null}).eq('id',p0.id).select('id'); const ok=!r.error&&(r.data||[]).length>0;
+      add(ok,'Ghi đường dẫn ảnh vào hồ sơ người',r.error?rawErr(r.error):(ok?'':'Lệnh chạy nhưng không có dòng nào được sửa'),'Chưa có quyền sửa bảng persons: hãy đăng nhập quản trị, và kiểm tra lại chính sách (policy) của bảng persons trong schema.sql.'); }
+  }catch(e){ add(false,'Ghi đường dẫn ảnh vào hồ sơ người',rawErr(e),'Chưa có quyền sửa bảng persons.'); }
+  if($('#dgList')) ul.insertAdjacentHTML('afterend',`<p class="${bad?'err':'sub'}" style="margin-top:10px">${bad?`Có ${bad} bước chưa đạt. Sửa theo hướng dẫn ở từng bước rồi bấm lại “Kiểm tra tải ảnh”.`:'Mọi bước đều đạt. Việc tải ảnh lên đang hoạt động bình thường. Nếu ảnh nào vẫn lỗi, hãy chụp lại dòng thông báo lỗi màu đỏ hiện ngay khi tải để mình xem.'}</p>`);
+}
 function openBulkPhotos(){
   if(!isAdmin) return;
   openModal(`<h3>Tải ảnh hàng loạt</h3>
     <p class="sub">Chọn nhiều ảnh cùng lúc, hoặc chọn thẳng <b>file .zip</b> chứa ảnh. Đặt tên file theo họ tên người trong ảnh, ví dụ <b>Tôn Thất Anh Tú.jpg</b> (không dấu cũng được: <b>Ton That Anh Tu.jpg</b>). Nếu có hai người trùng tên, thêm năm sinh (<b>Tôn Thất Tuấn 1956.jpg</b>) hoặc tên cha (<b>Tôn Thất Hợp con Vui.jpg</b>). Trang tự ghép tên file với người trong gia phả, bạn xem lại rồi mới tải lên. Mỗi ảnh được giảm còn khoảng 30 KB.</p>
     <label class="btn small ph-btn" style="display:inline-block">Chọn ảnh…<input type="file" id="bpFiles" class="vh" accept=".zip,application/zip,image/*" multiple></label>
     <div id="bpList"></div><div class="err" id="bpErr"></div>
-    <div class="actions"><button class="btn primary" id="bpGo" disabled>Tải lên</button><button class="btn" id="bpClose">Đóng</button></div>`);
-  $('#bpClose').onclick=closeModal;
+    <div class="actions"><button class="btn primary" id="bpGo" disabled>Tải lên</button><button class="btn" id="bpDiag" type="button">Kiểm tra tải ảnh</button><button class="btn" id="bpClose">Đóng</button></div>`);
+  $('#bpClose').onclick=closeModal; $('#bpDiag').onclick=runPhotoDiag;
   const everyone=[...persons].sort((a,b)=>vnKey(a.full_name).localeCompare(vnKey(b.full_name)));
   let items=[];
   $('#bpFiles').addEventListener('change',async e=>{
@@ -2320,11 +2421,11 @@ function openBulkPhotos(){
         const {error}=await sb.from('persons').update({photo_url:up.url}).eq('id',p.id); if(error) throw error;
         const old=p.photo_url; p.photo_url=up.url; if(old) await dropOldPhoto(old,p.id);
         done++;
-      }catch(e){ fail.push(`${j.x.f.name}: ${photoErr(e)}`); if(/bucket|quyền/i.test(photoErr(e))) break; }
+      }catch(e){ fail.push(`${j.x.f.name}: ${photoErr(e)}`); if(/kho ảnh|quyền|đăng nhập/i.test(photoErr(e))) break; }
     }
     await refresh();
     err.style.color=fail.length?'var(--son)':'var(--lam)';
-    err.innerHTML=`Đã tải lên <b>${done}</b>/${jobs.length} ảnh.${fail.length?'<br>'+fail.slice(0,6).map(esc).join('<br>'):''}`;
+    err.innerHTML=`Đã tải lên <b>${done}</b>/${jobs.length} ảnh.${fail.length?'<br>'+fail.slice(0,6).map(esc).join('<br>')+'<br><b>Bấm “Kiểm tra tải ảnh” bên dưới để biết nguyên nhân.</b>':''}`;
     toast(`Đã tải lên ${done} ảnh`);
     $('#bpGo').textContent='Xong'; $('#bpGo').disabled=false; $('#bpGo').onclick=closeModal;
   };
@@ -2435,7 +2536,7 @@ function openForm(p={}, preset={}, hook=null){
 async function shrinkImage(file, maxSide=320, maxKB=35){
   let bmp;
   try{ bmp=await createImageBitmap(file,{imageOrientation:'from-image'}); }
-  catch(e){ bmp=await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=()=>rej(new Error('Không đọc được ảnh này')); i.src=URL.createObjectURL(file); }); }
+  catch(e){ bmp=await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=()=>rej(new Error('Không đọc được ảnh này (trình duyệt không mở được định dạng này)')); i.src=URL.createObjectURL(file); }); }
   const w0=bmp.width||bmp.naturalWidth, h0=bmp.height||bmp.naturalHeight;
   let side=maxSide, q=0.8, out=null, w=w0, h=h0;
   for(let i=0;i<10;i++){
@@ -2476,8 +2577,7 @@ function bindPhoto(){
       url.value=sb.storage.from('photos').getPublicUrl(name).data.publicUrl; showPrev();
       msg.textContent=`Đã tải lên: ${kb} KB, ${w}×${h}.`;
     }catch(e){
-      const m=String(e&&e.message||e);
-      msg.textContent = /bucket/i.test(m) ? 'Chưa có kho ảnh. Hãy chạy file anh.sql trong Supabase (SQL Editor).' : /row-level|policy|unauthor/i.test(m) ? 'Không có quyền tải ảnh lên. Hãy chạy lại file anh.sql.' : 'Không tải được ảnh: '+m;
+      msg.textContent = photoErr(e);
     }
     busy(false);
   };
