@@ -70,7 +70,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .cung{background:linear-gradient(180deg,var(--son-dam) 0%,#7d1014 55%,var(--son) 100%);color:var(--thep);text-align:center}
 .hv{height:14px;background:var(--hv) repeat-x center/28px 14px;opacity:.85}
 .cung .hv:first-child{margin-top:8px}
-.cung-in{padding:46px 16px 10px}   /* chừa chỗ phía trên cho nút VI/EN và nút Giới thiệu, để không đè lên bảng tên */
+.cung-in{padding:16px 16px 10px}
 .plaque{display:inline-block;max-width:100%;padding:14px clamp(16px,5vw,50px);border:2px solid var(--thep);outline:1px solid var(--thep);outline-offset:5px;background:linear-gradient(180deg,#2b0709,#3b0b0e);box-shadow:0 8px 24px rgba(0,0,0,.35)}
 .plaque h1{margin:0;font:700 clamp(22px,5.4vw,46px)/1.2 var(--serif);letter-spacing:.1em;color:var(--thep);text-shadow:0 1px 0 #000,0 0 18px rgba(232,196,111,.25)}
 .cung .sub1{margin:18px 0 0;color:#f5e2b0;font-size:15px}
@@ -229,14 +229,21 @@ details.ph[open]>summary{border-bottom:1px solid var(--line)}
 details.tl>summary{padding:11px 14px}
 details.tl .ph-body{padding:10px 16px 14px}
 details.tl .ph-body h4{margin:16px 0 6px}
-.cung{position:relative}
-.cung{--edge:max(12px,calc((100% - 960px)/2 + 14px))}
-.lang-sw{position:absolute;top:10px;right:calc(var(--edge) + 44px);display:flex;border:1.5px solid #e8c46f;border-radius:999px;overflow:hidden;background:rgba(0,0,0,.2);height:34px}
+.hdr-tools{max-width:960px;margin:0 auto;padding:10px 14px 0;display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;text-align:left}
+.ht-left,.ht-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ht-right{margin-left:auto}
+.hdr-tools .btn{height:34px;padding:0 14px;border-radius:999px;font-size:13px;background:rgba(0,0,0,.2);color:#f5e2b0;border:1.5px solid #e8c46f;white-space:nowrap}
+.hdr-tools .btn:hover,.hdr-tools .btn:focus-visible{background:rgba(232,196,111,.28);color:#fff}
+.hdr-tools .btn.primary{background:#E8C46F;color:#3a1308;border-color:#E8C46F;font-weight:600}
+.hdr-tools .btn.primary:hover{background:#f3d78e}
+@media print{.hdr-tools{display:none}}
+@media(max-width:430px){.hdr-tools{padding:8px 10px 0;gap:6px}.ht-left,.ht-right{gap:6px}.hdr-tools .btn{padding:0 10px;font-size:12px}.lang-sw button{padding:0 9px}}
+.lang-sw{display:flex;border:1.5px solid #e8c46f;border-radius:999px;overflow:hidden;background:rgba(0,0,0,.2);height:34px}
 .lang-sw button{border:0;background:transparent;color:#f5e2b0;font:700 12.5px var(--sans,system-ui);padding:0 11px;cursor:pointer;letter-spacing:.04em}
 .lang-sw button[aria-pressed=true]{background:#E8C46F;color:#3a1308}
 .lang-sw button:not([aria-pressed=true]):hover{background:rgba(232,196,111,.28);color:#fff}
 @media print{.lang-sw{display:none}}
-.about-ic{position:absolute;top:10px;right:var(--edge);width:34px;height:34px;border-radius:50%;border:1.5px solid #e8c46f;background:rgba(0,0,0,.2);color:#f5e2b0;display:grid;place-items:center;cursor:pointer;padding:0}
+.about-ic{flex:none;width:34px;height:34px;border-radius:50%;border:1.5px solid #e8c46f;background:rgba(0,0,0,.2);color:#f5e2b0;display:grid;place-items:center;cursor:pointer;padding:0}
 .about-ic:hover,.about-ic:focus-visible{background:rgba(232,196,111,.28);color:#fff}
 @media print{.about-ic{display:none}}
 .about{line-height:1.75}
@@ -363,13 +370,6 @@ dd{margin:0}
 .foot{background:var(--son-dam);color:#e7cf93;text-align:center;font-size:13px;padding-bottom:20px}
 .foot .hv{margin-bottom:16px}
 .foot p{margin:0 12px}
-.foot-tools{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:0 12px 16px}
-.foot-tools .btn{background:transparent;color:#f5e2b0;border:1.5px solid #e8c46f}
-.foot-tools .btn:hover,.foot-tools .btn:focus-visible{background:rgba(232,196,111,.25);color:#fff}
-.foot-tools .btn.primary{background:#E8C46F;color:#3a1308;border-color:#E8C46F}
-.foot-tools .btn.primary:hover{background:#f3d78e}
-@media print{.foot-tools{display:none}}
-
 @media (max-width:560px){
   .tabs{margin-right:0;width:100%;justify-content:space-between}
   .tab{padding:10px 6px 8px;font-size:14px}
@@ -550,14 +550,24 @@ body.poster-open .toast{z-index:130}
 
 <header class="cung">
   <div class="hv"></div>
+  <div class="hdr-tools">
+    <div class="ht-left">
+      <button class="btn small primary" id="btnContrib">Đóng góp thông tin</button>
+      <button class="btn small" id="btnAuth">Quản trị</button>
+      <button class="btn small" id="btnExport" style="display:none">Xuất JSON</button>
+      <button class="btn small" id="btnPhotos" style="display:none">Tải ảnh hàng loạt</button>
+    </div>
+    <div class="ht-right">
+      <div class="lang-sw" role="group" aria-label="Ngôn ngữ"><button type="button" data-lang="vi" aria-pressed="true" title="Tiếng Việt">VI</button><button type="button" data-lang="en" aria-pressed="false" title="English">EN</button></div>
+      <button type="button" class="about-ic" id="btnAbout" aria-label="Giới thiệu" title="Giới thiệu về người thực hiện"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.8" r=".7" fill="currentColor"/></svg></button>
+    </div>
+  </div>
   <div class="cung-in">
     <div class="plaque"><h1>NGUYỄN PHƯỚC TỘC</h1></div>
     <p class="sub1">Họ Tôn Thất, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái</p>
     <p class="sub2">Nguyên quán Truồi, Thừa Thiên Huế</p>
     <div class="stats" id="stats"></div>
   </div>
-  <div class="lang-sw" role="group" aria-label="Ngôn ngữ"><button type="button" data-lang="vi" aria-pressed="true" title="Tiếng Việt">VI</button><button type="button" data-lang="en" aria-pressed="false" title="English">EN</button></div>
-  <button type="button" class="about-ic" id="btnAbout" aria-label="Giới thiệu" title="Giới thiệu về người thực hiện"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.8" r=".7" fill="currentColor"/></svg></button>
   <div class="hv"></div>
 </header>
 
@@ -573,10 +583,6 @@ body.poster-open .toast{z-index:130}
   <button class="btn small" id="btnExpand">Mở hết</button>
   <button class="btn small" id="btnCollapse">Thu gọn</button>
   <button class="btn small" id="btnPrint">In bảng phả</button>
-  <button class="btn small" id="btnExport" style="display:none">Xuất JSON</button>
-  <button class="btn small" id="btnPhotos" style="display:none">Tải ảnh hàng loạt</button>
-  <button class="btn small primary" id="btnContrib">Đóng góp thông tin</button>
-  <button class="btn small" id="btnAuth">Quản trị</button>
 </div></div>
 
 <main>
@@ -585,7 +591,6 @@ body.poster-open .toast{z-index:130}
 
 <footer class="foot">
   <div class="hv"></div>
-  <div class="foot-tools" id="footTools" hidden></div>
   <p>Gia phả họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái</p>
 </footer>
 
@@ -1955,15 +1960,6 @@ $('#q').addEventListener('input', e=>{ query=e.target.value; searchState.clear()
 $('#btnExpand').onclick = ()=>{ persons.forEach(p=>{ if((kids.get(p.id)||[]).length){ open.add(p.id); if(curVS&&curVS.show.has(p.id)) searchState.set(p.id,'full'); } }); render(); };
 $('#btnCollapse').onclick = ()=>{ open.clear(); if(curVS) persons.forEach(p=>{ if(curVS.show.has(p.id)&&(kids.get(p.id)||[]).length) searchState.set(p.id,'collapsed'); }); render(); };
 $('#btnPrint').onclick = openPoster;
-/* ---------- Điện thoại: đưa các nút Đóng góp, Quản trị (và nút quản trị khác) xuống chân trang cho thanh công cụ gọn ---------- */
-(function(){
-  const mq=window.matchMedia('(max-width:640px)'), ids=['btnExport','btnPhotos','btnContrib','btnAuth'];
-  const home=document.querySelector('.bar-in'), dest=document.getElementById('footTools');
-  const place=()=>{ const tgt=mq.matches?dest:home; ids.forEach(id=>{ const b=document.getElementById(id); if(b&&b.parentNode!==tgt) tgt.appendChild(b); }); dest.hidden=!mq.matches; };
-  place(); if(mq.addEventListener) mq.addEventListener('change',place); else mq.addListener(place);
-})();
-
-
 /* ---------- Modal ---------- */
 function openModal(html){ $('#modal').innerHTML = `<button class="x" aria-label="Đóng">×</button>${html}`; $('#bd').classList.add('open'); $('#modal .x').onclick=closeModal; }
 function closeModal(){ $('#bd').classList.remove('open'); curDetailId=null; saveUI(); }
