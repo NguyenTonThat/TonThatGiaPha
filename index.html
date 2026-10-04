@@ -512,6 +512,27 @@ img.av[data-photo],img.photo[data-photo]{cursor:zoom-in}
 /* ---------- Bảng phả (áp phích) ---------- */
 .poster{position:fixed;inset:0;z-index:90;background:#2a1a17;display:flex;flex-direction:column}
 .poster-bar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:10px 14px;background:var(--giay);border-bottom:2px solid var(--hoang)}
+.poster-opts,.poster-act{display:contents}
+#pOptBtn,#pZoomBtn{display:none}
+.poster-bar select#pBranch{max-width:300px}
+.poster-bar label.chk{gap:6px;cursor:pointer;color:var(--ink)}
+.poster-bar label.chk input{width:18px;height:18px;flex:none}
+@media(max-width:640px){
+  .poster{overflow:hidden}
+  .poster-bar{display:contents}
+  .poster-opts{display:none;order:1;grid-template-columns:1fr 1fr;gap:10px 10px;padding:12px;background:var(--giay);border-bottom:2px solid var(--hoang);max-height:60vh;overflow:auto;-webkit-overflow-scrolling:touch}
+  .poster.opts-open .poster-opts{display:grid}
+  .poster-opts label{flex-direction:column;align-items:stretch;gap:4px;font-size:12px}
+  .poster-opts label.wide,.poster-opts .poster-info.wide{grid-column:1/-1}
+  .poster-opts label.chk{flex-direction:row;align-items:flex-start;font-size:13.5px;line-height:1.35}
+  .poster-opts select,.poster-bar select#pBranch{width:100%;max-width:none;height:44px;font-size:15px}
+  .poster-scroll{order:2;padding:8px}
+  .poster-act{order:3;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:var(--giay);border-top:2px solid var(--hoang)}
+  .poster-act .grow{display:none}
+  .poster-act .btn{flex:1 1 auto;min-height:44px;font-size:14px}
+  #pOptBtn,#pZoomBtn{display:inline-flex;align-items:center;justify-content:center}
+  .poster.opts-open #pOptBtn{background:#fff0c2;border-color:var(--dong)}
+}
 .poster-bar label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
 .poster-bar select{padding:6px 8px;border:1px solid #d7c9a6;border-radius:8px;background:#fff;color:var(--ink)}
 .poster-bar .grow{flex:1}
@@ -519,7 +540,8 @@ img.av[data-photo],img.photo[data-photo]{cursor:zoom-in}
 .poster-scroll{flex:1;overflow:auto;padding:18px}
 #posterSvgWrap{max-width:1100px;margin:0 auto;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.5)}
 #posterSvgWrap svg{display:block;width:100%;height:auto}
-@media (max-width:900px){ #posterSvgWrap{min-width:900px} }
+@media (max-width:900px) and (min-width:641px){ #posterSvgWrap{min-width:900px} }
+@media (max-width:640px){ #posterSvgWrap{min-width:0} .poster.zoomed #posterSvgWrap{min-width:1100px} .poster-opts{max-height:52vh} }
 body.poster-open{overflow:hidden}
 body.poster-open .backdrop{z-index:120}
 body.poster-open .toast{z-index:130}
@@ -597,42 +619,49 @@ body.poster-open .toast{z-index:130}
 <style id="pageCss"></style>
 <div class="poster" id="poster" hidden>
   <div class="poster-bar">
-    <label>Khổ giấy
-      <select id="pSize"><option value="A4">A4</option><option value="A3" selected>A3</option><option value="A2">A2</option><option value="A1">A1</option><option value="A0">A0</option></select>
-    </label>
-    <label>Hướng giấy
-      <select id="pOri"><option value="auto">Tự chọn cho vừa</option><option value="p">Dọc</option><option value="l">Ngang</option></select>
-    </label>
-    <label>Kiểu chữ
-      <select id="pText">
-        <option value="auto">Tự chọn cho dễ đọc</option>
-        <option value="mix">Ngang ở đời trên, dọc từ đời 4</option>
-        <option value="h">Tất cả chữ ngang</option>
-        <option value="h2">Chữ ngang, năm sinh xuống dòng</option>
-        <option value="v">Tất cả chữ dọc</option>
-      </select>
-    </label>
-    <label>In từ
-      <select id="pFrom"><option value="1">Tất cả các đời</option></select>
-    </label>
-    <label>Nhánh (in từ người này trở xuống)
-      <select id="pBranch"><option value="">Toàn bộ cây</option></select>
-    </label>
-    <label>Kiểu nối
-      <select id="pLink"><option value="branch" selected>Cành cây (không hoa lá)</option><option value="leaf">Cành cây có hoa lá</option><option value="line">Đường nối đỏ</option></select>
-    </label>
-    <label>Nền
-      <select id="pBg"><option value="img">Nền tranh (ảnh)</option><option value="draw">Nền vẽ đơn giản</option></select>
-    </label>
-    <label id="pFadeLbl">Làm mờ cảnh nền
-      <select id="pFade"><option value="off">Không</option><option value="light">Nhẹ</option><option value="mid" selected>Vừa</option><option value="strong">Nhiều</option></select>
-    </label>
-    <span class="poster-info" id="pInfo"></span>
-    <span class="grow"></span>
-    <button class="btn small" id="pEditText" hidden>Sửa chữ trên biển</button>
-    <button class="btn primary small" id="pPrint">In hoặc lưu PDF</button>
-    <button class="btn small" id="pPng">Tải ảnh PNG</button>
-    <button class="btn small" id="pClose">Đóng</button>
+    <div class="poster-opts" id="pOpts">
+      <label>Khổ giấy
+        <select id="pSize"><option value="A4">A4</option><option value="A3" selected>A3</option><option value="A2">A2</option><option value="A1">A1</option><option value="A0">A0</option></select>
+      </label>
+      <label>Hướng giấy
+        <select id="pOri"><option value="auto">Tự chọn cho vừa</option><option value="p">Dọc</option><option value="l">Ngang</option></select>
+      </label>
+      <label>Kiểu chữ
+        <select id="pText">
+          <option value="auto">Tự chọn cho dễ đọc</option>
+          <option value="mix">Ngang ở đời trên, dọc từ đời 4</option>
+          <option value="h">Tất cả chữ ngang</option>
+          <option value="h2">Chữ ngang, năm sinh xuống dòng</option>
+          <option value="v">Tất cả chữ dọc</option>
+        </select>
+      </label>
+      <label>In từ
+        <select id="pFrom"><option value="1">Tất cả các đời</option></select>
+      </label>
+      <label class="wide">Nhánh (in từ người này trở xuống)
+        <select id="pBranch"><option value="">Toàn bộ cây</option></select>
+      </label>
+      <label>Kiểu nối
+        <select id="pLink"><option value="line" selected>Đường nối đỏ</option><option value="branch">Cành cây (không hoa lá)</option><option value="leaf">Cành cây có hoa lá</option></select>
+      </label>
+      <label>Nền
+        <select id="pBg"><option value="img">Nền tranh (ảnh)</option><option value="draw">Nền vẽ đơn giản</option></select>
+      </label>
+      <label id="pFadeLbl">Làm mờ cảnh nền
+        <select id="pFade"><option value="off">Không</option><option value="light">Nhẹ</option><option value="mid" selected>Vừa</option><option value="strong">Nhiều</option></select>
+      </label>
+      <label class="chk wide"><input type="checkbox" id="pClan"> <span>Chỉ in người trong họ (không in vợ, chồng và con của con gái họ khác)</span></label>
+      <span class="poster-info wide" id="pInfo"></span>
+    </div>
+    <div class="poster-act">
+      <button class="btn small" id="pOptBtn" aria-expanded="false" aria-controls="pOpts">Tùy chọn</button>
+      <button class="btn small" id="pZoomBtn" aria-pressed="false">Phóng to</button>
+      <span class="grow"></span>
+      <button class="btn small" id="pEditText" hidden>Sửa chữ trên biển</button>
+      <button class="btn primary small" id="pPrint">In hoặc lưu PDF</button>
+      <button class="btn small" id="pPng">Tải ảnh PNG</button>
+      <button class="btn small" id="pClose">Đóng</button>
+    </div>
   </div>
   <div class="poster-scroll"><div id="posterSvgWrap"></div></div>
 </div>
@@ -861,7 +890,20 @@ function spouseLine(p){
   return `<div class="spouse">${label}: ${s.map(x=>esc(x.full_name)).join('; ')}</div>`;
 }
 const nameKey=p=>vnKey([p.full_name,p.alias].filter(Boolean).join(' '));
-function matches(p, q){ const k=vnKey(q); return !!k && nameKey(p).includes(k); }   // chỉ so khớp theo tên (không cần gõ dấu)
+/* So khớp theo TỪNG TỪ: mỗi từ bạn gõ phải là phần đầu của một từ trong tên (không khớp giữa chừng, nên "anh tu" không ra "Thanh Tuyết").
+   Gõ không dấu thì khớp mọi dấu ("tu" ra Tú, Tuấn, Tuyết); gõ có dấu thì phải đúng dấu ("tú" chỉ ra Tú). */
+const _wordsOf=s=>String(s||'').normalize('NFC').toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+const _stripAcc=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d');
+const _stripTone=s=>s.normalize('NFD').replace(/[\u0300\u0301\u0303\u0309\u0323]/g,'').normalize('NFC');   // bỏ dấu thanh, giữ â ê ô ơ ư ă đ
+const _nw=new Map();
+function nameWords(p){ const key=(p.full_name||'')+'|'+(p.alias||''); let r=_nw.get(key); if(!r){ const raw=_wordsOf([p.full_name,p.alias].filter(Boolean).join(' ')); r={raw,tone:raw.map(_stripTone),plain:raw.map(_stripAcc)}; if(_nw.size>5000) _nw.clear(); _nw.set(key,r); } return r; }
+function _tokMode(t){ const d=t.normalize('NFD'); return /[\u0300\u0301\u0303\u0309\u0323]/.test(d)?'raw':(/[\u0302\u0306\u031B]|đ/.test(d)?'tone':'plain'); }   // gõ đủ dấu thanh -> khớp đúng dấu; chỉ gõ â, ô… -> khớp mọi dấu thanh; không dấu -> khớp tất cả
+function _tokOK(t,mode,nw,i){ return nw[mode==='raw'?'raw':mode==='tone'?'tone':'plain'][i].startsWith(t); }
+function matchTokens(p,qt){
+  const nw=nameWords(p), used=new Set();
+  return qt.every(t=>{ const m=_tokMode(t); for(let i=0;i<nw.raw.length;i++){ if(used.has(i)) continue; if(_tokOK(t,m,nw,i)){ used.add(i); return true; } } return false; });
+}
+function matches(p, q){ const qt=_wordsOf(q); return qt.length>0 && matchTokens(p,qt); }   // chỉ so khớp theo tên
 function visibleSet(q){
   const hit = new Set(), show = new Set();
   for(const p of persons){
@@ -887,10 +929,11 @@ function sugWho(p){   // dòng phụ của gợi ý: luôn đúng ngôn ngữ đ
 }
 function hideSug(){ const u=$('#qSug'); if(!u) return; u.hidden=true; u.innerHTML=''; sugIdx=-1; sugRows=[]; $('#q').setAttribute('aria-expanded','false'); $('#q').removeAttribute('aria-activedescendant'); }
 function showSug(){
-  const u=$('#qSug'), k=vnKey($('#q').value);
-  if(!k || !(tab==='tree'||tab==='gio')){ hideSug(); return; }
-  const all=sugPool().filter(p=>nameKey(p).includes(k));
-  all.sort((a,b)=>{ const sa=nameKey(a).split(' ').some(w=>w.startsWith(k))?0:1, sb=nameKey(b).split(' ').some(w=>w.startsWith(k))?0:1; return sa-sb || vnKey(a.full_name).localeCompare(vnKey(b.full_name)); });
+  const u=$('#qSug'), qv=$('#q').value, qt=_wordsOf(qv), k=qt.map(_stripAcc).join(' ');
+  if(!qt.length || !(tab==='tree'||tab==='gio')){ hideSug(); return; }
+  const all=sugPool().filter(p=>matchTokens(p,qt));
+  const first=p=>{ const nw=nameWords(p); return qt.every((t,i)=>nw.raw[i]!==undefined && _tokOK(t,_tokMode(t),nw,i))?0:1; };   // khớp liền từ đầu tên lên trước
+  all.sort((a,b)=>{ const sa=nameKey(a).startsWith(k)?0:1, sb=nameKey(b).startsWith(k)?0:1; return (first(a)-first(b)) || (sa-sb) || vnKey(a.full_name).localeCompare(vnKey(b.full_name)); });
   sugRows=all.slice(0,10); sugIdx=-1;
   if(!all.length){ u.innerHTML=`<li class="none" role="presentation">${LANG==='en'?'No one matches this name':'Không có ai khớp tên này'}</li>`; }
   else u.innerHTML=sugRows.map((p,i)=>`<li role="option" id="sug${i}" data-sug="${p.id}"><span class="nm">${esc(p.full_name)}</span><small>${esc(sugWho(p))}</small></li>`).join('')+(all.length>10?`<li class="more" role="presentation">${LANG==='en'?`… and ${all.length-10} more, type more to narrow down`:`… và ${all.length-10} người khác, gõ thêm để thu hẹp`}</li>`:'');
@@ -1429,8 +1472,8 @@ let LANG='vi';   // 'vi' (mặc định) hoặc 'en'
 try{ if(localStorage.getItem('gp_lang')==='en') LANG='en'; }catch(e){}
 const ABOUT_FB='https://www.facebook.com/nguyentonuno/';
 /* ---------- Ngôn ngữ: Tiếng Việt (mặc định) hoặc English. Dịch giao diện bằng từ điển, lưu lựa chọn trên thiết bị ---------- */
-const EN_EXACT={"Phả hệ":"Family tree","Ngày giỗ":"Memorials","Tra quan hệ":"Kinship","Nguồn gốc":"Origins","Đóng góp":"Contributions","Tìm theo tên…":"Search by name…","Tìm kiếm":"Search","Mở hết":"Expand all","Thu gọn":"Collapse all","In bảng phả":"Print chart","Đóng góp thông tin":"Contribute","Quản trị":"Admin","Đăng xuất":"Log out","Đăng nhập":"Log in","Tải ảnh hàng loạt":"Bulk photo upload","Xuất JSON":"Export JSON","Giới thiệu":"About","Giới thiệu về người thực hiện":"About the creator","Ngôn ngữ":"Language","Họ Tôn Thất, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái":"Tôn Thất family · Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái","Nguyên quán Truồi, Thừa Thiên Huế":"Ancestral home: Truồi, Thừa Thiên Huế","Gia phả họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái":"Tôn Thất family tree · Nguyễn Phước Tộc · Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái","Danh sách":"List","Sơ đồ cây":"Tree diagram","Kiểu hiển thị cây":"Tree view style","Không có ai khớp tên này":"No one matches this name","Gõ tên để tìm…":"Type a name to search…","Tìm người":"Find person","Mở/đóng":"Expand/collapse","Chưa có dữ liệu.":"No data yet.","Nam":"Male","Nữ":"Female","Còn sống":"Alive","Vòng đỏ có dấu + là người còn con cháu chưa mở;":"A red ring with + means descendants are not shown yet;","Bấm vào một người để tô đậm đường lên gốc (bấm ra ngoài để bỏ tô) và mở con cháu. Bấm vòng đỏ để mở hoặc đóng, bấm ⓘ để xem chi tiết. Phóng to, thu nhỏ: nút +/−, giữ Ctrl và cuộn chuột, hoặc chụm hai ngón.":"Click a person to highlight the path up to the root (click outside to clear) and open their descendants. Click the red ring to open or close, ⓘ for details. Zoom: +/− buttons, hold Ctrl and scroll, or pinch.","Vừa khung":"Fit","Thu nhỏ":"Zoom out","Phóng to":"Zoom in","Bấm để xem ảnh đầy đủ":"Click to view the full photo","Bấm để xem ảnh lớn":"Click to enlarge","Sơ đồ cây phả hệ":"Family tree diagram","Sắp đến giỗ":"Upcoming memorial","Sắp đến sinh nhật":"Upcoming birthday","Đời":"Generation","Giới tính":"Gender","Ngày sinh":"Date of birth","Ngày mất":"Date of death","Tuổi":"Age","Hưởng dương":"Age at death","Cha":"Father","Mẹ":"Mother","Con":"Children","Quê quán":"Hometown","Nghề nghiệp":"Occupation","Phần mộ":"Burial place","Ngày giỗ (âm lịch)":"Memorial day (lunar)","Vợ":"Wife","Chồng":"Husband","Vợ/chồng":"Spouse","Đề xuất sửa thông tin":"Suggest an edit","Đề xuất thêm con":"Suggest adding a child","Đề xuất thêm vợ":"Suggest adding a spouse","Gửi ảnh cho người này":"Send a photo of this person","Chụp ảnh":"Take a photo","Thêm ảnh":"Add photo","Đổi ảnh":"Change photo","Xóa ảnh":"Delete photo","Xem tiểu sử, ghi chú":"Show biography and notes","Ẩn tiểu sử, ghi chú":"Hide biography and notes","Tiểu sử, ghi chú":"Biography and notes","Đã mất (chưa rõ ngày)":"Deceased (date unknown)","Sửa":"Edit","Xóa":"Delete","Thêm con":"Add child","Thêm vợ/chồng":"Add spouse","Đóng":"Close","☆ Nhắc giỗ ở trang Phả hệ":"☆ Remind memorial on Family tree page","★ Đang nhắc giỗ":"★ Memorial reminder on","☆ Nhắc sinh nhật ở trang Phả hệ":"☆ Remind birthday on Family tree page","★ Đang nhắc sinh nhật":"★ Birthday reminder on","Sinh nhật":"Birthdays","Dương lịch":"Solar","Âm lịch":"Lunar","Chọn danh sách":"Choose list","Chọn lịch tính sinh nhật":"Choose calendar for birthdays","Chọn nhiều người":"Select several","Chọn tất cả đang hiện":"Select all shown","Bỏ chọn tất cả đang hiện":"Deselect all shown","Xong":"Done","Chọn người nhắc giỗ":"Choose people for memorial reminders","Chọn người nhắc sinh nhật":"Choose people for birthday reminders","Không tìm thấy.":"Not found.","Sắp đến giỗ (60 ngày tới)":"Upcoming memorials (next 60 days)","Sắp đến sinh nhật (60 ngày tới)":"Upcoming birthdays (next 60 days)","Các sinh nhật khác":"Other birthdays","Bấm":"Click","để đánh dấu người bạn muốn được":"to mark people you want to be","nhắc giỗ ở trang Phả hệ":"reminded of the memorial on the Family tree page","nhắc sinh nhật ở trang Phả hệ":"reminded of the birthday on the Family tree page","Nhắc người này ở trang Phả hệ":"Remind about this person on the Family tree page","Bỏ nhắc ở trang Phả hệ":"Stop reminding on the Family tree page","Hãy thử gõ một phần tên khác":"Try a different part of the name","Bỏ chọn":"Clear","Đã mở":"Opened","Chọn ngày trên lịch":"Pick a date on the calendar","Chọn trên lịch":"Pick on calendar","Tra quan hệ họ hàng":"Find a family relationship","Chọn hai người trong gia phả để biết hai người gọi nhau là gì.":"Choose two people in the family tree to see what they call each other.","Người thứ nhất":"First person","Người thứ hai":"Second person","⇄ Đổi":"⇄ Swap","Đổi chỗ hai người":"Swap the two people","Chọn người thứ nhất và người thứ hai.":"Choose the first and second person.","Gõ tên người thứ nhất…":"Type the first person's name…","Gõ tên người thứ hai…":"Type the second person's name…","Gõ tên người đầu nhánh…":"Type the branch head's name…","Sơ đồ cây theo đời":"Family tree by generation","Gốc chung gần nhất":"Nearest common ancestor","Gốc chung gần nhất:":"Nearest common ancestor:","Cách xưng hô có thể khác nhau tùy vùng miền và từng gia đình, mục này theo cách gọi phổ biến.":"Terms of address vary by region and family; this uses the most common usage.","Người thứ nhất ":"First person ","đi lên":"going up","đi xuống":"going down","Bấm vào một người trong sơ đồ để xem tất cả các con của người đó (ô viền vàng là người đã có trong sơ đồ); bấm ra ngoài để thu lại.":"Click a person in the diagram to see all their children (gold outline = already in the diagram); click outside to close.","Liên hệ qua Facebook":"Contact via Facebook","Gửi đóng góp trên trang này":"Send a contribution on this site","Xem tài liệu tham khảo":"See the references","Lời cảm ơn":"With gratitude","Liên hệ và đóng góp":"Contact and contributions","Đang tải danh sách…":"Loading…","Đóng ảnh":"Close photo","Mở ảnh gốc ↗":"Open original ↗","Đăng nhập người đóng góp":"Contributor sign-in","Xin chào,":"Hello,","Đổi thông tin":"Change details","Thêm người vào gia phả":"Add a person to the family tree","Con, cháu, dâu, rể hoặc người còn thiếu":"Child, grandchild, in-law or someone missing","Sửa hoặc bổ sung thông tin một người":"Edit or add information about a person","Chỉnh ngày sinh, ngày mất, quê quán, ảnh…":"Update birth or death dates, hometown, photo…","Chọn người cần sửa":"Choose the person to edit","Tiếp tục":"Continue","Xem các đóng góp bạn đã gửi đã được duyệt chưa":"See whether your contributions were approved","Mọi đóng góp đều được quản trị viên xem lại trước khi đưa vào gia phả. Bạn gửi được nhiều đóng góp.":"All contributions are reviewed by an administrator before being added. You may send as many as you like.","Họ và tên *":"Full name *","Họ tên của bạn *":"Your full name *","Số điện thoại hoặc email (không bắt buộc)":"Phone or email (optional)","Tên húy / hiệu":"Birth/alternate name","Quê quán / nơi ở":"Hometown / residence","Link ảnh (tự điền khi tải lên, hoặc dán link)":"Photo link (filled when you upload, or paste a link)","Chọn / tải ảnh lên":"Choose / upload photo","Bỏ ảnh":"Remove photo","Lưu":"Save","Hủy":"Cancel","Gửi":"Send","Duyệt":"Approve","Từ chối":"Reject","Ngày mất (ngày giỗ sẽ tự tính)":"Date of death (memorial day is calculated automatically)","Là dâu/rể của (để trống nếu là con cháu trong họ)":"In-law of (leave empty for a clan descendant)","Truồi, Thừa Thiên Huế":"Truồi, Thừa Thiên Huế","dd/mm/yyyy hoặc chỉ năm":"dd/mm/yyyy or year only","ngày":"day","tháng":"month","năm":"year","tháng nhuận":"leap month","Ngày âm":"Lunar day","Tháng âm":"Lunar month","Năm âm":"Lunar year","Kiểu nhập ngày":"Date entry type","In hoặc lưu PDF":"Print or save as PDF","In từ":"Print from","Nhánh (in từ người này trở xuống)":"Branch (print from this person down)","Tải ảnh PNG":"Download PNG image","Nền tranh (ảnh)":"Background (image)","Cành cây (không hoa lá)":"Branches (no flowers or leaves)","Chưa xếp thứ tự":"Unordered","Làm mờ cảnh nền":"Fade scenery","Nhẹ":"Light","Vừa":"Medium","Nhiều":"Strong","Không":"None","đường từ ông Kỳ đến cụ Dốc":"path from Mr. Kỳ to cụ Dốc","nữ (C. = cô)":"female (C. = daughter)","Tải lên":"Upload","Chọn ảnh…":"Choose photos…","Kiểm tra tải ảnh":"Check photo upload","Ảnh":"Photo","File":"File","Người trong gia phả":"Person in the tree","Tổng quan":"Overview","Dòng thời gian":"Timeline","Sơ đồ Đệ Tứ Chi":"Đệ Tứ Chi chart","Sơ đồ Đệ Tứ Chi, Đệ Nhị Phái":"Đệ Tứ Chi, Đệ Nhị Phái chart","Thế phổ dòng họ ta":"Our place in the lineage","Tư liệu gia tộc":"Clan documents","Tài liệu tham khảo":"References","Tiền hệ, Phiên hệ, Đế hệ":"Tiền hệ, Phiên hệ, Đế hệ (the royal lineages)","Mục lục":"Contents","Các mục nhỏ":"Subsections","Chữ lót":"Middle names","Chữ Hán":"Chinese characters","Sơ đồ cây theo đời từ người thứ nhất lên tổ chung rồi xuống người thứ hai":"Generation tree from the first person up to the common ancestor and down to the second person","Khổ giấy":"Paper size","Hướng giấy":"Orientation","Kiểu chữ":"Font style","Kiểu nối":"Connector style","Nền":"Background","Sửa chữ trên biển":"Edit sign text","Tiếng Việt":"Vietnamese","Trượt ngang phả hệ":"Scroll the tree sideways","Thêm vợ":"Add wife","Thêm chồng":"Add husband","Sửa thông tin":"Edit information","Chữ đệm / chữ đời":"Middle name / generation name","Thứ tự anh chị em":"Birth order among siblings","Ghi chú":"Notes","Xem thông tin":"View details","gọi":"calls","là:":"—","Quan hệ trực hệ (ông bà, cha mẹ, con cháu)":"Direct line (grandparents, parents, descendants)","Anh chị em ruột":"Full siblings","Anh chị em cùng cha khác mẹ":"Half-siblings (same father)","Anh chị em ruột (cùng cha)":"Siblings (same father)","Anh chị em cùng mẹ khác cha":"Half-siblings (same mother)","Anh chị em ruột (cùng mẹ)":"Siblings (same mother)","Chú, bác, cô, dì, cậu và cháu":"Uncle or aunt and nephew or niece","Anh chị em họ (cùng cụ, cách 3 đời)":"Cousins (same great-grandparent, 3 generations)","Quan hệ qua hôn nhân (dâu, rể, thông gia)":"Relationship by marriage (in-laws)","Quan hệ thông gia":"In-law relationship","Vợ chồng":"Spouses","Dạ, kính thưa chư vị tôn trưởng trong dòng tộc,":"Respectfully, to the venerable elders of our clan,","Tích vào những người bạn muốn được nhắc giỗ ở trang Phả hệ (nhắc khi sắp tới trong 30 ngày). Lựa chọn được lưu riêng trên thiết bị này; thiết bị khác tự chọn lại.":"Tick the people you want to be reminded of (memorial days) on the Family tree page (shown when within 30 days). Your choices are saved on this device only; other devices choose separately.","Tích vào những người bạn muốn được nhắc sinh nhật ở trang Phả hệ (nhắc khi sắp tới trong 30 ngày). Lựa chọn được lưu riêng trên thiết bị này; thiết bị khác tự chọn lại.":"Tick the people you want to be reminded of (birthdays) on the Family tree page (shown when within 30 days). Your choices are saved on this device only; other devices choose separately.","Nhập tên của bạn một lần. Trang ghi nhớ ngay trên máy của bạn, lần sau gửi đóng góp không phải nhập lại. Số điện thoại hoặc email giúp quản trị viên liên hệ khi cần, chỉ quản trị viên thấy. Họ tên của bạn có thể được ghi nhận trong mục Giới thiệu (biểu tượng ⓘ ở đầu trang) để cảm ơn khi đóng góp của bạn được duyệt.":"Enter your name once. This site remembers it on your device so you do not have to type it again. A phone number or email lets the administrator contact you when needed and is visible only to the administrator. Your name may be recognised in the About section (the ⓘ icon at the top) to thank you once your contribution is approved.","Nguồn gốc dòng họ":"Origins of the clan","Cách đặt tên":"Naming conventions","Dạ, tôi xin phép được thưa đôi lời.":"Allow me to say a few words."};
-const EN_RX=[["^Đời (\\d+) · (.*)$","Gen. $1 · $2"],["^Cách (\\d+) đời \\(vai ông bà và cháu\\)$","$1 generations apart (grandparent and grandchild)"],["^Anh chị em họ: (.*)$","Cousins: $1"],["^Anh chị em họ xa \\(cùng tổ đời thứ (\\d+)\\)$","Distant cousins (common ancestor in generation $1)"],["^Âm lịch: (.*), năm (.*)$","Lunar: $1, year $2"],["^\\(đời (\\d+)\\)\\. (.*) cách gốc (\\d+) đời, (.*) cách gốc (\\d+) đời\\.$","(generation $1). $2 is $3 generations from the ancestor; $4 is $5 generations from the ancestor."],["^Đời (\\d+)$","Gen. $1"],["^Th (\\d+) ÂL$","L-month $1"],["^Tháng (\\d+) âm lịch$","Lunar month $1"],["^Tháng (\\d+)$","Month $1"],["^(\\d+) thành viên, từ đời (\\d+) đến đời (\\d+)$","$1 members, from generation $2 to $3"],["^Hậu duệ Đời (\\d+) · (.*)$","Generation $1 descendant · $2"],["^sinh (\\d{4})(.*)$","b. $1$2"],["^(\\d+) đóng góp$","$1 contributions"],["^Đã chọn (\\d+)/(\\d+)$","Selected $1/$2"],["^(.*) — đời (\\d+), (\\d+) người — con ông (.*)$","$1 — gen. $2, $3 people — son of $4"],["^(.*) — đời (\\d+), (\\d+) người$","$1 — gen. $2, $3 people"],["^(.*) — đời (\\d+) — con ông (.*)$","$1 — gen. $2 — son of $3"],["^Vợ của (.*)$","Wife of $1"],["^Chồng của (.*)$","Husband of $1"],["^Vợ: (.*)$","Wife: $1"],["^Chồng: (.*)$","Husband: $1"],["^… và (\\d+) người khác, gõ thêm để thu hẹp$","… and $1 more, type more to narrow down"],["^Không tìm thấy “(.*)”\\.$","Nothing found for “$1”."],["^(.*): bấm để xem thêm các con$","$1: click to see more children"],["^(.*), có (\\d+) người con$","$1, has $2 children"],["^Xem thông tin (.*)$","View details of $1"],["^Xem chi tiết (.*)$","View details of $1"],["^Xem tài liệu (\\d+)$","See reference $1"],["^Nhắc (.*)$","Remind: $1"],["^Bỏ nhắc (.*)$","Stop reminding: $1"],["^(.*) · bấm để xem thông tin$","$1 · click for details"],["^(.*) · đã có trong sơ đồ · bấm để xem thông tin$","$1 · already in the diagram · click for details"],["^Vòng đỏ có dấu \\+ là người còn con cháu chưa mở; (\\d+) người đang hiện\\.$","A red ring with + means descendants are hidden; $1 people shown."],["^Hậu duệ Đời (\\d+)$","Generation $1 descendant"]].map(([a,b])=>[new RegExp(a),b]);
+const EN_EXACT={"Phả hệ":"Family tree","Ngày giỗ":"Memorials","Tra quan hệ":"Kinship","Nguồn gốc":"Origins","Đóng góp":"Contributions","Tìm theo tên…":"Search by name…","Tìm kiếm":"Search","Mở hết":"Expand all","Thu gọn":"Collapse all","In bảng phả":"Print chart","Đóng góp thông tin":"Contribute","Quản trị":"Admin","Đăng xuất":"Log out","Đăng nhập":"Log in","Tải ảnh hàng loạt":"Bulk photo upload","Xuất JSON":"Export JSON","Giới thiệu":"About","Giới thiệu về người thực hiện":"About the creator","Ngôn ngữ":"Language","Họ Tôn Thất, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái":"Tôn Thất family · Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái","Nguyên quán Truồi, Thừa Thiên Huế":"Ancestral home: Truồi, Thừa Thiên Huế","Gia phả họ Tôn Thất, Nguyễn Phước Tộc, Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái":"Tôn Thất family tree · Nguyễn Phước Tộc · Đệ Tam Hệ, Đệ Nhất Phòng, Đệ Tứ Chi, Đệ Nhị Phái","Danh sách":"List","Sơ đồ cây":"Tree diagram","Kiểu hiển thị cây":"Tree view style","Không có ai khớp tên này":"No one matches this name","Gõ tên để tìm…":"Type a name to search…","Tìm người":"Find person","Mở/đóng":"Expand/collapse","Chưa có dữ liệu.":"No data yet.","Nam":"Male","Nữ":"Female","Còn sống":"Alive","Vòng đỏ có dấu + là người còn con cháu chưa mở;":"A red ring with + means descendants are not shown yet;","Bấm vào một người để tô đậm đường lên gốc (bấm ra ngoài để bỏ tô) và mở con cháu. Bấm vòng đỏ để mở hoặc đóng, bấm ⓘ để xem chi tiết. Phóng to, thu nhỏ: nút +/−, giữ Ctrl và cuộn chuột, hoặc chụm hai ngón.":"Click a person to highlight the path up to the root (click outside to clear) and open their descendants. Click the red ring to open or close, ⓘ for details. Zoom: +/− buttons, hold Ctrl and scroll, or pinch.","Vừa khung":"Fit","Thu nhỏ":"Zoom out","Phóng to":"Zoom in","Bấm để xem ảnh đầy đủ":"Click to view the full photo","Bấm để xem ảnh lớn":"Click to enlarge","Sơ đồ cây phả hệ":"Family tree diagram","Sắp đến giỗ":"Upcoming memorial","Sắp đến sinh nhật":"Upcoming birthday","Đời":"Generation","Giới tính":"Gender","Ngày sinh":"Date of birth","Ngày mất":"Date of death","Tuổi":"Age","Hưởng dương":"Age at death","Cha":"Father","Mẹ":"Mother","Con":"Children","Quê quán":"Hometown","Nghề nghiệp":"Occupation","Phần mộ":"Burial place","Ngày giỗ (âm lịch)":"Memorial day (lunar)","Vợ":"Wife","Chồng":"Husband","Vợ/chồng":"Spouse","Đề xuất sửa thông tin":"Suggest an edit","Đề xuất thêm con":"Suggest adding a child","Đề xuất thêm vợ":"Suggest adding a spouse","Gửi ảnh cho người này":"Send a photo of this person","Chụp ảnh":"Take a photo","Thêm ảnh":"Add photo","Đổi ảnh":"Change photo","Xóa ảnh":"Delete photo","Xem tiểu sử, ghi chú":"Show biography and notes","Ẩn tiểu sử, ghi chú":"Hide biography and notes","Tiểu sử, ghi chú":"Biography and notes","Đã mất (chưa rõ ngày)":"Deceased (date unknown)","Sửa":"Edit","Xóa":"Delete","Thêm con":"Add child","Thêm vợ/chồng":"Add spouse","Đóng":"Close","☆ Nhắc giỗ ở trang Phả hệ":"☆ Remind memorial on Family tree page","★ Đang nhắc giỗ":"★ Memorial reminder on","☆ Nhắc sinh nhật ở trang Phả hệ":"☆ Remind birthday on Family tree page","★ Đang nhắc sinh nhật":"★ Birthday reminder on","Sinh nhật":"Birthdays","Dương lịch":"Solar","Âm lịch":"Lunar","Chọn danh sách":"Choose list","Chọn lịch tính sinh nhật":"Choose calendar for birthdays","Chọn nhiều người":"Select several","Chọn tất cả đang hiện":"Select all shown","Bỏ chọn tất cả đang hiện":"Deselect all shown","Xong":"Done","Chọn người nhắc giỗ":"Choose people for memorial reminders","Chọn người nhắc sinh nhật":"Choose people for birthday reminders","Không tìm thấy.":"Not found.","Sắp đến giỗ (60 ngày tới)":"Upcoming memorials (next 60 days)","Sắp đến sinh nhật (60 ngày tới)":"Upcoming birthdays (next 60 days)","Các sinh nhật khác":"Other birthdays","Bấm":"Click","để đánh dấu người bạn muốn được":"to mark people you want to be","nhắc giỗ ở trang Phả hệ":"reminded of the memorial on the Family tree page","nhắc sinh nhật ở trang Phả hệ":"reminded of the birthday on the Family tree page","Nhắc người này ở trang Phả hệ":"Remind about this person on the Family tree page","Bỏ nhắc ở trang Phả hệ":"Stop reminding on the Family tree page","Hãy thử gõ một phần tên khác":"Try a different part of the name","Bỏ chọn":"Clear","Đã mở":"Opened","Chọn ngày trên lịch":"Pick a date on the calendar","Chọn trên lịch":"Pick on calendar","Tra quan hệ họ hàng":"Find a family relationship","Chọn hai người trong gia phả để biết hai người gọi nhau là gì.":"Choose two people in the family tree to see what they call each other.","Người thứ nhất":"First person","Người thứ hai":"Second person","⇄ Đổi":"⇄ Swap","Đổi chỗ hai người":"Swap the two people","Chọn người thứ nhất và người thứ hai.":"Choose the first and second person.","Gõ tên người thứ nhất…":"Type the first person's name…","Gõ tên người thứ hai…":"Type the second person's name…","Gõ tên người đầu nhánh…":"Type the branch head's name…","Sơ đồ cây theo đời":"Family tree by generation","Gốc chung gần nhất":"Nearest common ancestor","Gốc chung gần nhất:":"Nearest common ancestor:","Cách xưng hô có thể khác nhau tùy vùng miền và từng gia đình, mục này theo cách gọi phổ biến.":"Terms of address vary by region and family; this uses the most common usage.","Người thứ nhất ":"First person ","đi lên":"going up","đi xuống":"going down","Bấm vào một người trong sơ đồ để xem tất cả các con của người đó (ô viền vàng là người đã có trong sơ đồ); bấm ra ngoài để thu lại.":"Click a person in the diagram to see all their children (gold outline = already in the diagram); click outside to close.","Liên hệ qua Facebook":"Contact via Facebook","Gửi đóng góp trên trang này":"Send a contribution on this site","Xem tài liệu tham khảo":"See the references","Lời cảm ơn":"With gratitude","Liên hệ và đóng góp":"Contact and contributions","Đang tải danh sách…":"Loading…","Đóng ảnh":"Close photo","Mở ảnh gốc ↗":"Open original ↗","Đăng nhập người đóng góp":"Contributor sign-in","Xin chào,":"Hello,","Đổi thông tin":"Change details","Thêm người vào gia phả":"Add a person to the family tree","Con, cháu, dâu, rể hoặc người còn thiếu":"Child, grandchild, in-law or someone missing","Sửa hoặc bổ sung thông tin một người":"Edit or add information about a person","Chỉnh ngày sinh, ngày mất, quê quán, ảnh…":"Update birth or death dates, hometown, photo…","Chọn người cần sửa":"Choose the person to edit","Tiếp tục":"Continue","Xem các đóng góp bạn đã gửi đã được duyệt chưa":"See whether your contributions were approved","Mọi đóng góp đều được quản trị viên xem lại trước khi đưa vào gia phả. Bạn gửi được nhiều đóng góp.":"All contributions are reviewed by an administrator before being added. You may send as many as you like.","Họ và tên *":"Full name *","Họ tên của bạn *":"Your full name *","Số điện thoại hoặc email (không bắt buộc)":"Phone or email (optional)","Tên húy / hiệu":"Birth/alternate name","Quê quán / nơi ở":"Hometown / residence","Link ảnh (tự điền khi tải lên, hoặc dán link)":"Photo link (filled when you upload, or paste a link)","Chọn / tải ảnh lên":"Choose / upload photo","Bỏ ảnh":"Remove photo","Lưu":"Save","Hủy":"Cancel","Gửi":"Send","Duyệt":"Approve","Từ chối":"Reject","Ngày mất (ngày giỗ sẽ tự tính)":"Date of death (memorial day is calculated automatically)","Là dâu/rể của (để trống nếu là con cháu trong họ)":"In-law of (leave empty for a clan descendant)","Truồi, Thừa Thiên Huế":"Truồi, Thừa Thiên Huế","dd/mm/yyyy hoặc chỉ năm":"dd/mm/yyyy or year only","ngày":"day","tháng":"month","năm":"year","tháng nhuận":"leap month","Ngày âm":"Lunar day","Tháng âm":"Lunar month","Năm âm":"Lunar year","Kiểu nhập ngày":"Date entry type","In hoặc lưu PDF":"Print or save as PDF","In từ":"Print from","Nhánh (in từ người này trở xuống)":"Branch (print from this person down)","Tải ảnh PNG":"Download PNG image","Nền tranh (ảnh)":"Background (image)","Cành cây (không hoa lá)":"Branches (no flowers or leaves)","Chưa xếp thứ tự":"Unordered","Tùy chọn":"Options","Tên gọi khác":"Other name","(ghi trong ngoặc ở tài liệu gốc)":"(shown in parentheses in the source document)","Vừa màn hình":"Fit to screen","Đường nối đỏ":"Red connector lines","Cành cây có hoa lá":"Branches with flowers and leaves","Chỉ in người trong họ (không in vợ, chồng và con của con gái họ khác)":"Clan members only (omit spouses, in-laws and daughters' children)","Làm mờ cảnh nền":"Fade scenery","Nhẹ":"Light","Vừa":"Medium","Nhiều":"Strong","Không":"None","đường từ ông Kỳ đến cụ Dốc":"path from Mr. Kỳ to cụ Dốc","nữ (C. = cô)":"female (C. = daughter)","Tải lên":"Upload","Chọn ảnh…":"Choose photos…","Kiểm tra tải ảnh":"Check photo upload","Ảnh":"Photo","File":"File","Người trong gia phả":"Person in the tree","Tổng quan":"Overview","Dòng thời gian":"Timeline","Sơ đồ Đệ Tứ Chi":"Đệ Tứ Chi chart","Sơ đồ Đệ Tứ Chi, Đệ Nhị Phái":"Đệ Tứ Chi, Đệ Nhị Phái chart","Thế phổ dòng họ ta":"Our place in the lineage","Tư liệu gia tộc":"Clan documents","Tài liệu tham khảo":"References","Tiền hệ, Phiên hệ, Đế hệ":"Tiền hệ, Phiên hệ, Đế hệ (the royal lineages)","Mục lục":"Contents","Các mục nhỏ":"Subsections","Chữ lót":"Middle names","Chữ Hán":"Chinese characters","Sơ đồ cây theo đời từ người thứ nhất lên tổ chung rồi xuống người thứ hai":"Generation tree from the first person up to the common ancestor and down to the second person","Khổ giấy":"Paper size","Hướng giấy":"Orientation","Kiểu chữ":"Font style","Kiểu nối":"Connector style","Nền":"Background","Sửa chữ trên biển":"Edit sign text","Tiếng Việt":"Vietnamese","Trượt ngang phả hệ":"Scroll the tree sideways","Thêm vợ":"Add wife","Thêm chồng":"Add husband","Sửa thông tin":"Edit information","Chữ đệm / chữ đời":"Middle name / generation name","Thứ tự anh chị em":"Birth order among siblings","Ghi chú":"Notes","Xem thông tin":"View details","gọi":"calls","là:":"—","Quan hệ trực hệ (ông bà, cha mẹ, con cháu)":"Direct line (grandparents, parents, descendants)","Anh chị em ruột":"Full siblings","Anh chị em cùng cha khác mẹ":"Half-siblings (same father)","Anh chị em ruột (cùng cha)":"Siblings (same father)","Anh chị em cùng mẹ khác cha":"Half-siblings (same mother)","Anh chị em ruột (cùng mẹ)":"Siblings (same mother)","Chú, bác, cô, dì, cậu và cháu":"Uncle or aunt and nephew or niece","Anh chị em họ (cùng cụ, cách 3 đời)":"Cousins (same great-grandparent, 3 generations)","Quan hệ qua hôn nhân (dâu, rể, thông gia)":"Relationship by marriage (in-laws)","Quan hệ thông gia":"In-law relationship","Vợ chồng":"Spouses","Dạ, kính thưa chư vị tôn trưởng trong dòng tộc,":"Respectfully, to the venerable elders of our clan,","Tích vào những người bạn muốn được nhắc giỗ ở trang Phả hệ (nhắc khi sắp tới trong 30 ngày). Lựa chọn được lưu riêng trên thiết bị này; thiết bị khác tự chọn lại.":"Tick the people you want to be reminded of (memorial days) on the Family tree page (shown when within 30 days). Your choices are saved on this device only; other devices choose separately.","Tích vào những người bạn muốn được nhắc sinh nhật ở trang Phả hệ (nhắc khi sắp tới trong 30 ngày). Lựa chọn được lưu riêng trên thiết bị này; thiết bị khác tự chọn lại.":"Tick the people you want to be reminded of (birthdays) on the Family tree page (shown when within 30 days). Your choices are saved on this device only; other devices choose separately.","Nhập tên của bạn một lần. Trang ghi nhớ ngay trên máy của bạn, lần sau gửi đóng góp không phải nhập lại. Số điện thoại hoặc email giúp quản trị viên liên hệ khi cần, chỉ quản trị viên thấy. Họ tên của bạn có thể được ghi nhận trong mục Giới thiệu (biểu tượng ⓘ ở đầu trang) để cảm ơn khi đóng góp của bạn được duyệt.":"Enter your name once. This site remembers it on your device so you do not have to type it again. A phone number or email lets the administrator contact you when needed and is visible only to the administrator. Your name may be recognised in the About section (the ⓘ icon at the top) to thank you once your contribution is approved.","Nguồn gốc dòng họ":"Origins of the clan","Cách đặt tên":"Naming conventions","Dạ, tôi xin phép được thưa đôi lời.":"Allow me to say a few words."};
+const EN_RX=[["^Tên gọi khác: (.*)$","Other name: $1"],["^Đời (\\d+) · (.*)$","Gen. $1 · $2"],["^Cách (\\d+) đời \\(vai ông bà và cháu\\)$","$1 generations apart (grandparent and grandchild)"],["^Anh chị em họ: (.*)$","Cousins: $1"],["^Anh chị em họ xa \\(cùng tổ đời thứ (\\d+)\\)$","Distant cousins (common ancestor in generation $1)"],["^Âm lịch: (.*), năm (.*)$","Lunar: $1, year $2"],["^\\(đời (\\d+)\\)\\. (.*) cách gốc (\\d+) đời, (.*) cách gốc (\\d+) đời\\.$","(generation $1). $2 is $3 generations from the ancestor; $4 is $5 generations from the ancestor."],["^Đời (\\d+)$","Gen. $1"],["^Th (\\d+) ÂL$","L-month $1"],["^Tháng (\\d+) âm lịch$","Lunar month $1"],["^Tháng (\\d+)$","Month $1"],["^(\\d+) thành viên, từ đời (\\d+) đến đời (\\d+)$","$1 members, from generation $2 to $3"],["^Hậu duệ Đời (\\d+) · (.*)$","Generation $1 descendant · $2"],["^sinh (\\d{4})(.*)$","b. $1$2"],["^(\\d+) đóng góp$","$1 contributions"],["^Đã chọn (\\d+)/(\\d+)$","Selected $1/$2"],["^(.*) — đời (\\d+), (\\d+) người — con ông (.*)$","$1 — gen. $2, $3 people — son of $4"],["^(.*) — đời (\\d+), (\\d+) người$","$1 — gen. $2, $3 people"],["^(.*) — đời (\\d+) — con ông (.*)$","$1 — gen. $2 — son of $3"],["^Vợ của (.*)$","Wife of $1"],["^Chồng của (.*)$","Husband of $1"],["^Vợ: (.*)$","Wife: $1"],["^Chồng: (.*)$","Husband: $1"],["^… và (\\d+) người khác, gõ thêm để thu hẹp$","… and $1 more, type more to narrow down"],["^Không tìm thấy “(.*)”\\.$","Nothing found for “$1”."],["^(.*): bấm để xem thêm các con$","$1: click to see more children"],["^(.*), có (\\d+) người con$","$1, has $2 children"],["^Xem thông tin (.*)$","View details of $1"],["^Xem chi tiết (.*)$","View details of $1"],["^Xem tài liệu (\\d+)$","See reference $1"],["^Nhắc (.*)$","Remind: $1"],["^Bỏ nhắc (.*)$","Stop reminding: $1"],["^(.*) · bấm để xem thông tin$","$1 · click for details"],["^(.*) · đã có trong sơ đồ · bấm để xem thông tin$","$1 · already in the diagram · click for details"],["^Vòng đỏ có dấu \\+ là người còn con cháu chưa mở; (\\d+) người đang hiện\\.$","A red ring with + means descendants are hidden; $1 people shown."],["^Hậu duệ Đời (\\d+)$","Generation $1 descendant"]].map(([a,b])=>[new RegExp(a),b]);
 const EN_PH=[["giỗ tới:","next memorial:"],["sinh nhật tới:","next birthday:"],["sinh nhật âm lịch","lunar birthday"],["sinh nhật","birthday"],["dương lịch","solar"],["âm lịch","lunar"],["hôm nay","today"],["còn (\\d+) ngày","$1 days left"],["tròn (\\d+) tuổi","turns $1"],["mất năm","died"],["mộ:","grave:"],["\\(năm ([^)]+)\\)","(year $1)"],[", năm ",", year "],["tuổi ta (\\d+)","Vietnamese age $1"],["(\\d+) tuổi \\(ước tính theo năm sinh\\)","$1 years old (estimated from birth year)"],["(\\d+) tuổi tròn \\(theo năm\\)","$1 full years (by year)"],["(\\d+) tuổi \\(tuổi ta\\)","$1 (Vietnamese age)"],["(\\d+) tuổi","$1 years old"],["giỗ (\\d+/\\d+)","memorial $1"],["tuổi ta","Vietnamese age"],["; ","; "],["đang đánh dấu","marked"],["người, lưu riêng trên thiết bị này\\)","people, saved on this device)"],["\\(marked (\\d+) ","(marked $1 "]].map(([a,b])=>[new RegExp(a,'g'),b]);
 
 
@@ -2037,6 +2080,7 @@ function showDetail(id){
   const rows = [
     ['Đời', 'Đời '+(depthOf(p.id)+genOff())+(p.spouse_of?' (dâu/rể)':'')],
     ['Giới tính', p.gender==='M'?'Nam':'Nữ'],
+    ['Tên gọi khác', p.alias],
     ['Ngày sinh', birthText(p)],
     ['Ngày mất', p.is_alive?'':deathText(p)],   // người còn sống (hoặc chưa rõ): không hiện dòng này
     ageRow(p)||['',''],
@@ -2050,7 +2094,7 @@ function showDetail(id){
   openModal(`
     ${p.photo_url?`<img class="photo" src="${esc(p.photo_url)}" alt="" data-photo="${p.id}" title="Bấm để xem ảnh đầy đủ" tabindex="0" role="button">`:''}
     <h3>${esc(p.full_name)}</h3>
-    ${p.alias?`<div class="sub">${esc(p.alias)}</div>`:''}
+    ${p.alias?`<div class="sub">Tên gọi khác: <b>${esc(p.alias)}</b> <span class="sub">(ghi trong ngoặc ở tài liệu gốc)</span></div>`:''}
     <dl>${rows.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>
     ${(p.notes||'').trim()?`<div class="bio"><button type="button" class="bio-btn" id="bioBtn" aria-expanded="false" aria-controls="bioBox"><span class="caret" aria-hidden="true">▸</span><span class="bio-t">Xem tiểu sử, ghi chú</span></button><div class="bio-box" id="bioBox" role="region" aria-label="Tiểu sử, ghi chú" hidden>${esc(p.notes)}</div></div>`:''}
     ${sp.length?`<div class="sp-sec"><div class="sp-h">${p.gender==='M'?'Vợ':'Chồng'}</div>${sp.map(s=>`<div class="sp-row"><a class="sp-name" href="#" data-sp="${s.id}">${esc(s.full_name)}</a><span class="sub">${esc(pYears(s))}</span>${isAdmin?`<span class="sp-act"><button class="btn small" data-spe="${s.id}">Sửa</button><button class="btn small danger" data-spd="${s.id}">Xóa</button></span>`:''}</div>`).join('')}</div>`:''}
@@ -3001,11 +3045,12 @@ function pYears(p){
   if(!p.is_alive) return (b||d) ? `(${b||'?'} – ${d||'?'})` : '';
   return b ? `(${b})` : '';
 }
-function pLines(p, split){
+function isClanPerson(p){ return !p.spouse_of && /^(ton|cong ton|cong tang ton|cong huyen ton|huyen ton)\b/.test(vnKey(p.full_name)); }   // Tôn Thất, Tôn Nữ, Công Tôn Nữ…
+function pLines(p, split, clanOnly){
   const y = pYears(p), L = [];
   if(split){ L.push({t:p.full_name,b:true}); if(y) L.push({t:y,b:false}); }
   else L.push({t: p.full_name + (y?' '+y:''), b:true});
-  (spouses.get(p.id)||[]).forEach(s=>{
+  (clanOnly?[]:(spouses.get(p.id)||[])).forEach(s=>{
     const sy = pYears(s), lab = (p.gender==='M'?'Vợ: ':'Chồng: ')+s.full_name;
     if(split){ L.push({t:lab,b:false}); if(sy) L.push({t:sy,b:false}); }
     else L.push({t: lab+(sy?' '+sy:''), b:false});
@@ -3261,16 +3306,21 @@ function fitZones(Wd,Hd,rows,treeW,treeH,labLeft,smax){
   }
   return null;
 }
-function fadeSVG(Wd,Hd,level){   // làm mờ cảnh nền trên toàn khoảng giấy giữa hai trục cuộn; mép mờ dần để không lộ khung chữ nhật
+function fadeSVG(Wd,Hd,level){   // làm mờ cảnh nền trên toàn khoảng giấy giữa hai trục cuộn; mép chuyển màu mượt bằng gradient (không dùng filter/mask để Safari vẫn in đúng)
   const T={light:.5,mid:.78,strong:.92}[level]; if(!T) return '';
-  const L=.085*Wd, R=.915*Wd, Tp=.226*Hd, B=.866*Hd;   // không đè tấm biển trên, tấm biển dưới và hai trục cuộn
-  const N=8, a=1-Math.pow(1-T,1/N), step=Math.max(5,Wd*.0065); let s='<g>';
-  for(let k=0;k<N;k++){
-    const g=k*step;   // lớp ngoài cùng rộng nhất; các lớp sau thu vào trong, nên mép mờ dần
-    const x0=L+g, x1=R-g, y0=Tp+g, y1=B-g;
-    if(x1>x0&&y1>y0) s+=`<rect x="${x0.toFixed(1)}" y="${y0.toFixed(1)}" width="${(x1-x0).toFixed(1)}" height="${(y1-y0).toFixed(1)}" rx="${(10+g).toFixed(1)}" fill="#F4ECD6" fill-opacity="${a.toFixed(3)}"/>`;
-  }
-  return s+'</g>';
+  const L=Math.round(.085*Wd), R=Math.round(.915*Wd), Tp=Math.round(.226*Hd), B=Math.round(.866*Hd), f=Math.round(Wd*.055);
+  const col='#F4ECD6', sm=t=>t*t*(3-2*t), N=9;   // smoothstep: bắt đầu và kết thúc êm, không lộ vạch
+  const stops=rev=>Array.from({length:N},(_,i)=>{ const t=i/(N-1); return `<stop offset="${t.toFixed(3)}" stop-color="${col}" stop-opacity="${(T*sm(rev?1-t:t)).toFixed(4)}"/>`; }).join('');
+  const lin=(id,x1,y1,x2,y2,rev)=>`<linearGradient id="${id}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">${stops(rev)}</linearGradient>`;
+  const rad=(id,cx,cy)=>`<radialGradient id="${id}" cx="${cx}" cy="${cy}" r="1" fx="${cx}" fy="${cy}">${stops(true)}</radialGradient>`;
+  const defs=`<defs>${lin('pfT',0,0,0,1,false)}${lin('pfB',0,0,0,1,true)}${lin('pfL',0,0,1,0,false)}${lin('pfR',0,0,1,0,true)}${rad('pfTL',1,1)}${rad('pfTR',0,1)}${rad('pfBL',1,0)}${rad('pfBR',0,0)}</defs>`;
+  const r=(x,y,w,hh,fill,extra='')=>`<rect x="${x}" y="${y}" width="${w}" height="${hh}" fill="${fill}"${extra}/>`;
+  const iw=R-L-2*f, ih=B-Tp-2*f;
+  return `<g>${defs}`+
+    r(L+f,Tp+f,iw,ih,col,` fill-opacity="${T}"`)+
+    r(L+f,Tp,iw,f,'url(#pfT)')+r(L+f,B-f,iw,f,'url(#pfB)')+
+    r(L,Tp+f,f,ih,'url(#pfL)')+r(R-f,Tp+f,f,ih,'url(#pfR)')+
+    r(L,Tp,f,f,'url(#pfTL)')+r(R-f,Tp,f,f,'url(#pfTR)')+r(L,B-f,f,f,'url(#pfBL)')+r(R-f,B-f,f,f,'url(#pfBR)')+'</g>';
 }
 function posterSVG(opts){
   if(opts.text==='auto'){   // thử 3 kiểu chữ, lấy kiểu cho chữ to và dễ đọc nhất khi có ảnh nền
@@ -3280,8 +3330,8 @@ function posterSVG(opts){
     const best=Math.max(...c.map(x=>x.scale||0));
     return c.find(x=>(x.scale||0)>=best*0.75) || c[0];   // ưu tiên chữ ngang nếu không nhỏ hơn quá 25%
   }
-  const mk = (p,d)=>({p, depth:d, lines:pLines(p, opts.text==='h2'), kids:(kids.get(p.id)||[]).map(c=>mk(c,d+1))});
-  let forest = roots().map(r=>mk(r,0));
+  const mk = (p,d)=>({p, depth:d, lines:pLines(p, opts.text==='h2', opts.clan), kids:(kids.get(p.id)||[]).filter(c=>!opts.clan||isClanPerson(c)).map(c=>mk(c,d+1))});
+  let forest = roots().filter(r=>!opts.clan||isClanPerson(r)).map(r=>mk(r,0));
   let from=Math.max(1,opts.from||1), off=from-1;
   const bp=opts.branch ? byId.get(opts.branch) : null;
   if(bp){   // chỉ in người được chọn và toàn bộ con cháu của người đó
@@ -3533,7 +3583,7 @@ async function renderPoster(){
   const useImg = $('#pBg').value==='img';
   const avail = useImg ? await ensureBg() : null;
   $('#pFadeLbl').hidden=!useImg;
-  const r = posterSVG({fade:$('#pFade').value, text:$('#pText').value, ori:$('#pOri').value, img:avail, from:+$('#pFrom').value||1, link:$('#pLink').value, branch:$('#pBranch').value||null});
+  const r = posterSVG({fade:$('#pFade').value, text:$('#pText').value, ori:$('#pOri').value, img:avail, from:+$('#pFrom').value||1, link:$('#pLink').value, clan:$('#pClan').checked, branch:$('#pBranch').value||null});
   if(!r){ $('#posterSvgWrap').innerHTML='<div class="empty" style="padding:60px">Chưa có dữ liệu để in.</div>'; return; }
   lastPoster=r;
   $('#posterSvgWrap').innerHTML=r.svg;
@@ -3553,18 +3603,17 @@ async function renderPoster(){
   }
 }
 function descCount(id){ let n=0; (kids.get(id)||[]).forEach(c=>{ n+=1+descCount(c.id); }); return n; }
-function fillBranch(){
+function fillBranch(){   // danh sách xổ xuống thông thường, gom theo đời (không dùng ô gõ tìm để điện thoại cũng kéo chọn được)
   const sel=$('#pBranch'); const prev=sel.value;
   const list=persons.filter(p=>!p.spouse_of && (kids.get(p.id)||[]).length)
     .map(p=>({p,g:depthOf(p.id)+genOff(),n:descCount(p.id)+1}))
-    .sort((a,b)=>a.g-b.g || (a.p.sort_order||0)-(b.p.sort_order||0));
-  sel.innerHTML='<option value="">Toàn bộ cây</option>'+list.map(x=>{
-    const par=byId.get(clanParent(x.p)); const y=pYears(x.p);
-    return `<option value="${x.p.id}">${esc(x.p.full_name)}${y?' '+esc(y):''} — đời ${x.g}, ${x.n} người${par?` — con ông ${esc(par.full_name)}`:''}</option>`;
-  }).join('');
+    .sort((a,b)=>a.g-b.g || (a.p.sort_order||0)-(b.p.sort_order||0) || vnKey(a.p.full_name).localeCompare(vnKey(b.p.full_name)));
+  const opt=x=>{ const par=byId.get(clanParent(x.p)); const y=pYears(x.p);
+    return `<option value="${x.p.id}">${esc(x.p.full_name)}${y?' '+esc(y):''} — ${x.n} người${par?` — con ông ${esc(par.full_name)}`:''}</option>`; };
+  const groups=[]; list.forEach(x=>{ const g=groups[groups.length-1]; if(g&&g.g===x.g) g.items.push(x); else groups.push({g:x.g,items:[x]}); });
+  sel.innerHTML='<option value="">Toàn bộ cây</option>'+groups.map(g=>`<optgroup label="Đời ${g.g}">${g.items.map(opt).join('')}</optgroup>`).join('');
   sel.value=list.some(x=>x.p.id===prev)?prev:'';
   sel.closest('label').querySelectorAll('.pk').forEach(e=>e.remove()); delete sel.dataset.pk; sel.hidden=false;
-  enhancePicker(sel,'Gõ tên người đầu nhánh…');
 }
 function syncBranchUi(){ const b=$('#pBranch').value; $('#pFrom').disabled=!!b; $('#pFrom').parentElement.style.opacity=b?'.5':''; }
 function fillFrom(){
@@ -3573,14 +3622,18 @@ function fillFrom(){
   for(let g=1; g<=n; g++){ const o=document.createElement('option'); o.value=g; o.textContent = g===1 ? 'Tất cả các đời' : `Từ đời ${g+genOff()} trở xuống`; sel.appendChild(o); }
   sel.value=1;   // mặc định in hết
 }
-function openPoster(){ document.body.classList.add('poster-open'); $('#poster').hidden=false; fillFrom(); fillBranch(); syncBranchUi(); renderPoster(); }
+function openPoster(){ document.body.classList.add('poster-open'); $('#poster').hidden=false; $('#poster').classList.remove('opts-open','zoomed'); $('#pOptBtn').setAttribute('aria-expanded','false'); $('#pZoomBtn').textContent=LANG==='en'?'Zoom in':'Phóng to'; fillFrom(); fillBranch(); syncBranchUi(); renderPoster(); }
 function closePoster(){ $('#poster').hidden=true; document.body.classList.remove('poster-open'); }
-try{ const l=localStorage.getItem('gp_poster_link'); if(l) $('#pLink').value=l; }catch(e){}
-$('#pLink').addEventListener('change',()=>{ try{ localStorage.setItem('gp_poster_link',$('#pLink').value); }catch(e){} });
+try{ const l=localStorage.getItem('gp_poster_link2'); if(l&&['line','branch','leaf'].includes(l)) $('#pLink').value=l; }catch(e){}   // khóa mới: mặc định đường nối đỏ cho mọi thiết bị
+$('#pLink').addEventListener('change',()=>{ try{ localStorage.setItem('gp_poster_link2',$('#pLink').value); }catch(e){} });
 try{ const f=localStorage.getItem('gp_poster_fade'); if(f&&['off','light','mid','strong'].includes(f)) $('#pFade').value=f; }catch(e){}
 $('#pFade').addEventListener('change',()=>{ try{ localStorage.setItem('gp_poster_fade',$('#pFade').value); }catch(e){} });
-['pSize','pOri','pText','pBg','pFrom','pLink','pFade'].forEach(id=>$('#'+id).addEventListener('change',renderPoster));
+['pSize','pOri','pText','pBg','pFrom','pLink','pFade','pClan'].forEach(id=>$('#'+id).addEventListener('change',renderPoster));
+try{ $('#pClan').checked=localStorage.getItem('gp_poster_clan')==='1'; }catch(e){}
+$('#pClan').addEventListener('change',()=>{ try{ localStorage.setItem('gp_poster_clan',$('#pClan').checked?'1':'0'); }catch(e){} });
 $('#pBranch').addEventListener('change',()=>{ syncBranchUi(); renderPoster(); });
+$('#pOptBtn').onclick=()=>{ const o=$('#poster').classList.toggle('opts-open'); $('#pOptBtn').setAttribute('aria-expanded',String(o)); };
+$('#pZoomBtn').onclick=()=>{ const z=$('#poster').classList.toggle('zoomed'); $('#pZoomBtn').setAttribute('aria-pressed',String(z)); $('#pZoomBtn').textContent=z?(LANG==='en'?'Fit to screen':'Vừa màn hình'):(LANG==='en'?'Zoom in':'Phóng to'); };
 $('#pPrint').onclick=()=>window.print();
 $('#pEditText').onclick=()=>openBannerEditor('main');
 $('#pClose').onclick=closePoster;
