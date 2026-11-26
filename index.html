@@ -2999,7 +2999,7 @@ function openForm(p={}, preset={}, hook=null){
         <label>Link ảnh (tự điền khi tải lên, hoặc dán link)<input id="f_photo_url" maxlength="500" value="${val('photo_url')}" placeholder="https://…"></label>
         <div class="hint" id="ph_msg"></div>
       </div>
-      <label class="full">Ghi chú<textarea id="f_notes" rows="9">${val('notes')}</textarea></label>
+      <label class="full">Tiểu sử, ghi chú<textarea id="f_notes" rows="9">${val('notes')}</textarea></label>
     </div>
     <div class="err" id="ferr"></div>
     <div class="actions"><button class="btn primary" id="fSave">Lưu</button><button class="btn" id="fCancel">Hủy</button></div>`);
@@ -3790,7 +3790,7 @@ $('#pPng').onclick=async ()=>{
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('#poster').hidden && !$('#bd').classList.contains('open')) closePoster(); });
 
 /* ---------- Đóng góp từ người xem, quản trị duyệt ---------- */
-const FIELD_LABELS={full_name:'Họ và tên',alias:'Tên húy / hiệu',generation_word:'Chữ đệm / chữ đời',gender:'Giới tính',birth_date:'Ngày sinh',birth_year:'Năm sinh',death_date:'Ngày mất',death_year:'Năm mất',death_lunar:'Ngày giỗ (âm lịch)',is_alive:'Tình trạng',hometown:'Quê quán / nơi ở',occupation:'Nghề nghiệp',burial_place:'Phần mộ',notes:'Ghi chú',photo_url:'Link ảnh',father_id:'Cha',mother_id:'Mẹ',spouse_of:'Là vợ/chồng của',sort_order:'Thứ tự anh chị em'};
+const FIELD_LABELS={full_name:'Họ và tên',alias:'Tên húy / hiệu',generation_word:'Chữ đệm / chữ đời',gender:'Giới tính',birth_date:'Ngày sinh',birth_year:'Năm sinh',death_date:'Ngày mất',death_year:'Năm mất',death_lunar:'Ngày giỗ (âm lịch)',is_alive:'Tình trạng',hometown:'Quê quán / nơi ở',occupation:'Nghề nghiệp',burial_place:'Phần mộ',notes:'Tiểu sử, ghi chú',photo_url:'Link ảnh',father_id:'Cha',mother_id:'Mẹ',spouse_of:'Là vợ/chồng của',sort_order:'Thứ tự anh chị em'};
 function fmtFieldHTML(k,v){ return (k==='photo_url' && v) ? `<img src="${esc(v)}" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:50%;border:2px solid var(--thep)">` : esc(fmtField(k,v)); }
 function fmtField(k,v){
   if(v===null||v===undefined||v==='') return '(trống)';
@@ -3955,7 +3955,7 @@ function showSentScreen({title,lines,when,dup}){   // màn hình lớn, rõ: đ�
 }
 function sentSummary(kind,target,payload,row){
   if(kind==='new_person') return [tx(`Đề nghị thêm <b>${esc(row.full_name||'')}</b> vào gia phả.`,`Request to add <b>${esc(row.full_name||'')}</b> to the family tree.`)];
-  const EN_F={full_name:'Name',alias:'Other name',generation_word:'Generation word',gender:'Gender',birth_date:'Date of birth',birth_year:'Year of birth',death_date:'Date of death',death_year:'Year of death',death_lunar:'Death anniversary (lunar)',is_alive:'Status',hometown:'Hometown / residence',occupation:'Occupation',burial_place:'Burial place',notes:'Notes',photo_url:'Photo'};
+  const EN_F={full_name:'Name',alias:'Other name',generation_word:'Generation word',gender:'Gender',birth_date:'Date of birth',birth_year:'Year of birth',death_date:'Date of death',death_year:'Year of death',death_lunar:'Death anniversary (lunar)',is_alive:'Status',hometown:'Hometown / residence',occupation:'Occupation',burial_place:'Burial place',notes:'Biography and notes',photo_url:'Photo'};
   const labels=[...new Set(Object.keys(payload).map(k=>k==='photo_url'?tx('Ảnh','Photo'):(LANG==='en'?(EN_F[k]||k):(FIELD_LABELS[k]||k))))];
   return [tx(`Đề nghị sửa thông tin của <b>${esc(target.full_name)}</b>: ${esc(labels.join(', '))}.`,`Edit request for <b>${esc(target.full_name)}</b>: ${esc(labels.join(', '))}.`)];
 }
@@ -4005,7 +4005,7 @@ async function openContribForm(kind, target, preset={}){
         <label>Link ảnh (tự điền khi tải lên, hoặc dán link)<input id="f_photo_url" maxlength="500" value="${val('photo_url')}" placeholder="https://…"></label>
         <div class="hint" id="ph_msg"></div>
       </div>
-      <label class="full">Ghi chú về người này<textarea id="f_notes" rows="3" maxlength="1000">${val('notes')}</textarea></label>
+      <label class="full">Tiểu sử, ghi chú<textarea id="f_notes" rows="3" maxlength="1000">${val('notes')}</textarea></label>
       <div class="full sep">Người gửi</div>
       <div class="full whobox" style="margin:0">Gửi với tên <b>${esc(prof.name)}</b>${prof.contact?`, liên hệ ${esc(prof.contact)}`:''}. Muốn đổi, vào mục Đóng góp thông tin rồi bấm Đổi thông tin.</div>
       <label class="full">Lời nhắn cho quản trị viên (nguồn thông tin…)<textarea id="c_note" rows="2" maxlength="1000"></textarea></label>
